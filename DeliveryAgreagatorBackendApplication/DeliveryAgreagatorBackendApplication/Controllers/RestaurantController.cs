@@ -12,11 +12,37 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         {
             try
             {
-                throw
+                throw new NotImplementedException();
             }
-            catch
+            catch(NotImplementedException)
             {
+                return Problem(title: "Not implemented", statusCode: 501);
+            }
+        }
 
+        [HttpGet("{name}")]
+        public async Task<IActionResult> Get(string name)
+        {
+            try
+            {
+                throw new NotImplementedException();
+            }
+            catch (NotImplementedException)
+            {
+                return Problem(title: "Not implemented", statusCode: 501);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get(int page)
+        {
+            try
+            {
+                throw new NotImplementedException();
+            }
+            catch (NotImplementedException)
+            {
+                return Problem(title: "Not implemented", statusCode: 501);
             }
         }
     }
