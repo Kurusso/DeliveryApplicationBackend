@@ -1,6 +1,8 @@
 using DeliveryAgreagatorBackendApplication;
+using DeliveryAgreagatorBackendApplication.Schemas;
 using DeliveryAgreagatorBackendApplication.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +12,14 @@ builder.Services.AddDbContext<BackendDbContext>(options => options.UseNpgsql(con
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+	c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+	c.SchemaFilter<EnumSchemaFilter>();
+
+});
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
+builder.Services.AddScoped<IMenuService, MenuService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public bool isOld { get; set; }
+        public bool isActive { get; set; }
         public RestaurantDbModel Restaurant { get; set; }
         public ICollection<DishDbModel> Dishes { get; set; }
 
