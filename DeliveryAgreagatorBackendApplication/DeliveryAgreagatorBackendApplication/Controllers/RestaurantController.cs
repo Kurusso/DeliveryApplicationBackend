@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DeliveryAgreagatorBackendApplication.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeliveryAgreagatorBackendApplication.Controllers
@@ -7,40 +8,46 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
     [ApiController]
     public class RestaurantController : ControllerBase
     {
-        [HttpGet("{Id}")]
-        public async Task<IActionResult> Get(Guid Id) 
+        private readonly IRestaurantService _restaurantService;
+        public RestaurantController(IRestaurantService restaurantService) 
+        {
+        _restaurantService = restaurantService;
+        }
+        [HttpGet("{Id}/GetById")]
+        public async Task<IActionResult> GetById(Guid Id) 
         {
             try
             {
                 throw new NotImplementedException();
             }
-            catch(NotImplementedException)
+            catch(NotImplementedException e)
             {
                 return Problem(title: "Not implemented", statusCode: 501);
             }
         }
 
-        [HttpGet("{name}")]
-        public async Task<IActionResult> Get(string name)
+        [HttpGet("{name}/GetByName")]
+        public async Task<IActionResult> GetByName(string name)
         {
             try
             {
                 throw new NotImplementedException();
             }
-            catch (NotImplementedException)
+            catch (NotImplementedException e)
             {
                 return Problem(title: "Not implemented", statusCode: 501);
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get(int page)
+        [HttpGet("{page}/GetMoviesOnPage")]
+        public async Task<IActionResult> GetAllOnPage(int page, string? name)
         {
             try
             {
-                throw new NotImplementedException();
+                var restaurants = await _restaurantService.GetRestaurants(page, name);
+                return Ok(restaurants);
             }
-            catch (NotImplementedException)
+            catch (NotImplementedException e)
             {
                 return Problem(title: "Not implemented", statusCode: 501);
             }
