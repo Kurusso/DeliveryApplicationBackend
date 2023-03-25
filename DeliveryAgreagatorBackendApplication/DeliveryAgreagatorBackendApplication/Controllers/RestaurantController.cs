@@ -47,9 +47,9 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 var restaurants = await _restaurantService.GetRestaurants(page, name);
                 return Ok(restaurants);
             }
-            catch (NotImplementedException e)
+            catch (ArgumentOutOfRangeException e)
             {
-                return Problem(title: "Not implemented", statusCode: 501);
+                return Problem(title: e.Message, statusCode: 401);
             }
         }
     }

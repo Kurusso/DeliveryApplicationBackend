@@ -29,7 +29,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
 			}
 			if (page > _pageCount || page <= 0)
 			{
-				throw new Exception("Incorrect page number");
+				throw new ArgumentOutOfRangeException($"{page} is incorrect page number!");
 			}
 			var Restaurants = _context.Restaurants.Where(
 			c => Regex.IsMatch(c.Name, _regexp))
