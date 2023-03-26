@@ -39,7 +39,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
 
-        [HttpGet("{page}/GetMoviesOnPage")]
+        [HttpGet("{page}/GetRestaurantsOnPage")]
         public async Task<IActionResult> GetAllOnPage(int page, string? name)
         {
             try

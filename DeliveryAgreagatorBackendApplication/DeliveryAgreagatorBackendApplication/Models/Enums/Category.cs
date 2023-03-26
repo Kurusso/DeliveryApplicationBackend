@@ -1,5 +1,6 @@
 ﻿namespace DeliveryAgreagatorBackendApplication.Models.Enums
 {
+
     public enum Category
     {
         WOK,

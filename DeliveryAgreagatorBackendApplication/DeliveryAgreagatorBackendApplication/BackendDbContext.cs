@@ -9,6 +9,7 @@ namespace DeliveryAgreagatorBackendApplication
         public DbSet<CourierDbModel> Couriers { get; set; }
         public DbSet<CustomerDbModel> Customers { get; set; }
         public DbSet<DishDbModel> Dishes { get; set; }
+        public DbSet<DishInCartDbModel> DishInCart { get; set; }
         public DbSet<MenuDbModel> Menus { get; set; }
         public DbSet<OrderDbModel> Orders { get; set; }
         public DbSet<RatingDbModel> Ratings { get; set; }
