@@ -3,6 +3,7 @@ using DeliveryAgreagatorBackendApplication.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Collections.Generic;
 
 namespace DeliveryAgreagatorBackendApplication.Controllers
 {
@@ -23,19 +24,23 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Ok(menus);
             }
             catch(ArgumentException e) {
-                return Problem(title:e.Message, statusCode:401);
+                return Problem(title:e.Message, statusCode:404);
 			}
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetMenu(Guid restaurantId, Guid id, [FromQuery] Category[] categories, bool isVegetarian, DishFilter filter, int page) {
+        public async Task<IActionResult> GetMenu(Guid restaurantId, Guid id, [FromQuery] List<Category> categories, bool? isVegetarian, DishFilter? filter, int page) {
             try {
-				throw new NotImplementedException();
+                var dishes = await _menuService.GetMenuDishes(restaurantId, id, categories, isVegetarian, filter, page);
+                return Ok(dishes);
 			}
-			catch (NotImplementedException e)
+			catch (ArgumentOutOfRangeException e)
 			{
-				return Problem(title: "Not implemented", statusCode: 501);
+				return Problem(title: e.Message, statusCode: 401);
 			}
+            catch(ArgumentException e) {
+                return Problem(title: e.Message, statusCode: 404);
+            }
 		}
 
     }

@@ -8,6 +8,7 @@ namespace DeliveryAgreagatorBackendApplication.Models.DTO
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public int Price { get; set; }
+		public float Rating { get; set; }
 		public bool IsVegetarian { get; set; }
 		public string PhotoUrl { get; set; }
 		public Category Category { get; set; }
@@ -20,6 +21,7 @@ namespace DeliveryAgreagatorBackendApplication.Models.DTO
 			IsVegetarian= dish.IsVegetarian;
 			PhotoUrl= dish.PhotoUrl;
 			Category = dish.Category;
-		}
+			Rating =dish.Ratings.Any() ? (float)dish.Ratings.Sum(x => x.Value) / (float)dish.Ratings.Count() : 0;
+        }
 	}
 }
