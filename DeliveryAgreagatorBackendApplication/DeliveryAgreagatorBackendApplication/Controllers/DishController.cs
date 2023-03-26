@@ -16,16 +16,33 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid restaurantId, Guid Id) 
+        public async Task<IActionResult> Get(Guid restaurantId, Guid Id)
         {
-            try 
+            try
             {
-               var dish = await _dishService.GetDish(restaurantId, Id);
+                var dish = await _dishService.GetDish(restaurantId, Id);
                 return Ok(dish);
             }
-            catch(ArgumentException e) 
+            catch (ArgumentException e)
             {
-                return Problem(title:e.Message, statusCode: 404);
+                return Problem(title: e.Message, statusCode: 404);
+            }
+        }
+        [HttpPost("{id}/rating")]
+        public async Task<IActionResult> SetRating(Guid restaurantId, Guid Id, Guid userId, int rating)  //TODO: заменить получение userID из запроса, на получение из токена. 
+        {
+            try
+            {
+                await _dishService.SetRating( restaurantId, Id, userId,rating);
+                return Ok();
+            }
+            catch (ArgumentNullException e)
+            {
+                return Problem(title: e.Message, statusCode: 401);
+            }
+            catch (ArgumentException e)
+            {
+                return Problem(title: e.Message, statusCode: 404);
             }
         }
     }
