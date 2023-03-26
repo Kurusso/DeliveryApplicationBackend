@@ -20,6 +20,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<IDishService, DishService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
