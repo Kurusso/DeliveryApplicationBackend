@@ -28,5 +28,31 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem("Not implemented", statusCode: 501);
             }
         }
+        [HttpPost("dish/{dishId}")]
+        public async Task<IActionResult> PostToCart(Guid dishId,Guid userId) //TODO: заменить получение id из запроса, на получение из токена
+        {
+            try
+            {
+                await _cartService.AddDishToCart( dishId, userId);
+                return Ok();
+            }
+            catch (ArgumentException e)
+            {
+                return Problem(title:e.Message, statusCode: 404);
+            }
+        }
+        [HttpDelete("dish/{dishId}")]
+        public async Task<IActionResult> DeleteDecrease( Guid dishId, Guid userId, bool deacrease=false) //TODO: заменить получение id из запроса, на получение из токена
+        {
+            try
+            {
+                await _cartService.DeleteOrDecreaseDishInCart( dishId, userId, deacrease);
+                return Ok();
+            }
+            catch (ArgumentException e)
+            {
+                return Problem(title: e.Message, statusCode: 404);
+            }
+        }
     }
 }
