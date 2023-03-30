@@ -21,5 +21,19 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public CookDbModel? Cook { get; set; }
 
         public ICollection<DishInCartDbModel> DishesInCart { get; set;}
+        public OrderDbModel(OrderDbModel model)
+        {
+            var guid = Guid.NewGuid();
+            Id = guid;
+            DeliveryTime = model.DeliveryTime;
+            OrderTime = DateTime.UtcNow;
+            Console.WriteLine(OrderTime);
+            Address = model.Address;
+            Status = Status.Created; 
+            CustomerId = model.CustomerId;
+            DishesInCart = model.DishesInCart.Select(x => new DishInCartDbModel(x, guid)).ToList();
+            Price = model.DishesInCart.Sum(x => x.Dish.Price * x.Counter);
+        }
+        public OrderDbModel() { }
     }
 }

@@ -9,6 +9,7 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public string Description { get; set; }
         public int Price { get; set; }
         public bool IsVegetarian { get; set; }
+        public bool IsActive { get; set; }
         public string PhotoUrl { get; set; }
         public Guid RestaurantId { get; set; }
         public RestaurantDbModel Restaurant { get; set; }
