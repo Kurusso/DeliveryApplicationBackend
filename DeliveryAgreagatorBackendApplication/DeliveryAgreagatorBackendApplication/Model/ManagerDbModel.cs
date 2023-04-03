@@ -1,10 +1,11 @@
-﻿namespace DeliveryAgreagatorBackendApplication.Models
+﻿using DeliveryAgreagatorBackendApplication.Models;
+
+namespace DeliveryAgreagatorBackendApplication.Model
 {
-    public class CookDbModel
+    public class ManagerDbModel
     {
         public Guid Id { get; set; }
         public Guid RestaurantId { get; set; }
         public RestaurantDbModel Restaurant { get; set; }
-
     }
 }

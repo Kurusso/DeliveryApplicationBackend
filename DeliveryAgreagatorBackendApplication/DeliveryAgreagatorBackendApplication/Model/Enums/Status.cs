@@ -5,6 +5,7 @@
         Created,
         Kitchen,
         Packaging,
+        Packed,
         Delivery,
         Delivered,
         Canceled

@@ -1,7 +1,9 @@
-﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
+﻿using DeliveryAgreagatorBackendApplication.Model.Enums;
+using DeliveryAgreagatorBackendApplication.Models.DTO;
 using DeliveryAgreagatorBackendApplication.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DeliveryAgreagatorBackendApplication.Controllers
 {
@@ -64,11 +66,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllOrders(int page, Guid userId, bool? filterDateAsc = null, string? name = null)
+        public async Task<IActionResult> GetAllOrders(int page, Guid userId, DateTime startDate, DateTime endDate, int? number = null)
         {
             try
             {
-               var orders = await _orderService.GetAllOrders(page, userId, filterDateAsc, name);
+               var orders = await _orderService.GetAllOrders(page, userId, startDate, endDate, number);
                 return Ok(orders);
             }
             catch(ArgumentOutOfRangeException ex) 
@@ -91,6 +93,101 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             catch(InvalidOperationException ex)
             {
                 return Problem(title: ex.Message, statusCode: 401);
+            }
+        }
+        [HttpGet("cook/active")]
+        public async Task<IActionResult> Get(int page, Guid cookId, DateSort? sort = null) //TODO: заменить получение id из запроса, на получение из токена
+        {
+            try
+            {
+                var orders = await _orderService.GetOrdersAvaliableToCook(sort, page, cookId); 
+                return Ok(orders);
+            }
+            catch(Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 500);
+            }
+        }
+        [HttpPut("{id}/cook/{take}")]
+        public async Task<IActionResult> Put(Guid id, bool take, Guid cookId)
+        {
+            try
+            {
+                await _orderService.TakeOrderCook(id, take ,cookId);
+                return Ok();
+            }
+            catch(ArgumentException ex)
+            {
+                return Problem(title:ex.Message, statusCode: 404);
+            }
+        }
+
+        [HttpGet("cook/done")]
+        public async Task<IActionResult> Get(int page, Guid cookId, int? number=null) //TODO: заменить получение id из запроса, на получение из токена
+        {
+            try
+            {
+                var orders = _orderService.GetCookOrdersStory(number,page,cookId);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 500);
+            }
+        }
+        [HttpGet("courier")]
+        public async Task<IActionResult> Get(int page, Guid courierId) //TODO: заменить получение id из запроса, на получение из токена
+        {
+            try
+            {
+                var orders = await _orderService.GetOrdersAvaliableToCourier(courierId);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 500);
+            }
+        }
+        [HttpPut("{id}/courier/take")]
+        public async Task<IActionResult> Put(Guid id, Guid courierId)
+        {
+            try
+            {
+                await _orderService.TakeOrderCourier(id, courierId);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(title: ex.Message, statusCode: 401);
+            }
+        }
+        [HttpPut("{id}/courier/cancel")]
+        public async Task<IActionResult> CancelCourier(Guid id, Guid courierId)
+        {
+            try
+            {
+                await _orderService.CancelOrderCourier(id, courierId);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(title: ex.Message, statusCode: 401);
+            }
+            catch(ArgumentException ex)
+            {
+                return Problem(title: ex.Message, statusCode: 404);
+            }
+        }
+        [HttpGet("manager")]
+        public async Task<IActionResult> Get(int page, Guid managerId, DateTime startDateOrder, DateTime endDateOrder, DateTime startDateDelivery, DateTime endDateDelivery,  int? number = null)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch
+            {
+                return Problem();
             }
         }
     }

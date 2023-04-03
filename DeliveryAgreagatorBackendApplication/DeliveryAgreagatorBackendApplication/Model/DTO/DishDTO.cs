@@ -21,7 +21,7 @@ namespace DeliveryAgreagatorBackendApplication.Models.DTO
 			IsVegetarian= dish.IsVegetarian;
 			PhotoUrl= dish.PhotoUrl;
 			Category = dish.Category;
-			Rating =dish.Ratings.Any() ? (float)dish.Ratings.Sum(x => x.Value) / (float)dish.Ratings.Count() : 0;
+			Rating = (dish.Ratings!=null && dish.Ratings.Any()) ? (float)dish.Ratings.Sum(x => x.Value) / (float)dish.Ratings.Count() : 0;
         }
 	}
 }

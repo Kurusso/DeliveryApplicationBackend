@@ -1,4 +1,5 @@
-﻿using DeliveryAgreagatorBackendApplication.Models;
+﻿using DeliveryAgreagatorBackendApplication.Model;
+using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryAgreagatorBackendApplication
@@ -14,6 +15,7 @@ namespace DeliveryAgreagatorBackendApplication
         public DbSet<OrderDbModel> Orders { get; set; }
         public DbSet<RatingDbModel> Ratings { get; set; }
         public DbSet<RestaurantDbModel> Restaurants { get; set; }
+        public DbSet<ManagerDbModel> Managers { get; set; }
         public BackendDbContext(DbContextOptions<BackendDbContext> options) : base(options) { }
 
 
