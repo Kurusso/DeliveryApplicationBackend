@@ -19,6 +19,10 @@ builder.Services.AddSwaggerGen(c =>
 {
 	c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 	c.SchemaFilter<EnumSchemaFilter>();
+    var basePath = AppContext.BaseDirectory;
+
+    var xmlPath = Path.Combine(basePath, "DeliveryAgreagatorBackendApplication.xml");
+    c.IncludeXmlComments(xmlPath);
 
 });
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();

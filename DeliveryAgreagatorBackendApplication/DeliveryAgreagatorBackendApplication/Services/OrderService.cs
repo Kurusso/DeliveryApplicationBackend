@@ -34,21 +34,21 @@ namespace DeliveryAgreagatorBackendApplication.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<OrderDTO>> GetActiveOrders(Guid userId)
+        public async Task<List<OrderDTO>> GetActiveOrders(Guid userId) //TODO: удалить метод, если не понадобиться
         {
             var orders = _context.Orders.Include(x=>x.DishesInCart).ThenInclude(c=>c.Dish).ThenInclude(z=>z.Ratings).Where(x=>x.Status!=Status.Canceled && x.Status!=Status.Delivered && x.CustomerId==userId).ToList();
             var ordersDTO = orders.Select(x => new OrderDTO(x)).ToList();
             return ordersDTO;
         }
 
-        public async Task<List<OrderDTO>> GetAllOrders(int page, Guid userId, DateTime startDate, DateTime endDate, int? number)
+        public async Task<List<OrderDTO>> GetAllOrders(int page, Guid userId, DateTime startDate, DateTime endDate,bool active, int? number)
         {
             if (number != null)
             {
                 _regexp = number.ToString();
             }
             var orders = _context.Orders.Include(c=>c.DishesInCart).ThenInclude(c => c.Dish).ThenInclude(z => z.Ratings).Where(
-            c => Regex.IsMatch(c.Id.ToString(), _regexp) && c.CustomerId==userId && c.OrderTime<=endDate && c.OrderTime>=startDate).ToList();
+            c => Regex.IsMatch(c.Id.ToString(), _regexp) && c.CustomerId==userId && c.OrderTime<=endDate && c.OrderTime>=startDate && c.DishesInCart.First().Active==active).ToList();
             if ((orders.Count() % _pageSize) == 0)
             {
                 _pageCount = (orders.Count() / _pageSize);
@@ -208,16 +208,28 @@ namespace DeliveryAgreagatorBackendApplication.Services
             return ordersDTO;
         }
 
-        public async Task TakeOrderCourier(Guid orderId, Guid courierId)
+        public async Task TakeOrderCourier(Guid orderId, bool take, Guid courierId)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(x=>x.Id == orderId && x.Status==Status.Packed);
-            if (order == null)
+            if (take)
             {
-                throw new InvalidOperationException($"You can't take order with this {orderId} id!"); //TODO: сделать более точные исключения
+                var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == Status.Packed);
+                if (order == null)
+                {
+                    throw new InvalidOperationException($"You can't take order with this {orderId} id!"); //TODO: сделать более точные исключения
+                }
+                order.DeliveryTime = DateTime.UtcNow.AddHours(1);
+                order.Status = Status.Delivery;
+                order.CourierId = courierId;
             }
-            order.DeliveryTime = DateTime.UtcNow.AddHours(1);          
-            order.Status = Status.Delivery;
-            order.CourierId = courierId;
+            else
+            {
+                var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == Status.Delivery && x.CourierId==courierId);
+                if (order == null)
+                {
+                    throw new InvalidOperationException($"You can't modify order with this {orderId} id!"); //TODO: сделать более точные исключения
+                }
+                order.Status = Status.Delivered;
+            }
             await _context.SaveChangesAsync(); 
         }
 

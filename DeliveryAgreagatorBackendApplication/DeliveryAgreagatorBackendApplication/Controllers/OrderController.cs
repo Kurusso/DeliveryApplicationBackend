@@ -52,25 +52,13 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(title: ex.Message, statusCode: 401);
             }
         }
-        [HttpGet("current")]
-        public async Task<IActionResult> GetCurrentOrders(Guid userId) //TODO: заменить получение id из запроса, на получение из токена
+
+        [HttpGet("{active}")]
+        public async Task<IActionResult> GetAllOrders(bool active,int page, Guid userId, DateTime startDate, DateTime endDate, int? number = null)
         {
             try
             {
-               var orders = await _orderService.GetActiveOrders(userId);
-                return Ok(orders);
-            }
-            catch (Exception ex) 
-            {
-                return Problem("Unexpected exception!", statusCode: 501);
-            }
-        }
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllOrders(int page, Guid userId, DateTime startDate, DateTime endDate, int? number = null)
-        {
-            try
-            {
-               var orders = await _orderService.GetAllOrders(page, userId, startDate, endDate, number);
+               var orders = await _orderService.GetAllOrders(page, userId, startDate, endDate,active, number);
                 return Ok(orders);
             }
             catch(ArgumentOutOfRangeException ex) 
@@ -148,12 +136,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(ex.Message, statusCode: 500);
             }
         }
-        [HttpPut("{id}/courier/take")]
-        public async Task<IActionResult> Put(Guid id, Guid courierId)
+        [HttpPut("{id}/courier/{take}")]
+        public async Task<IActionResult> PutCourier(Guid id, bool take, Guid courierId)
         {
             try
             {
-                await _orderService.TakeOrderCourier(id, courierId);
+                await _orderService.TakeOrderCourier(id,take, courierId);
                 return Ok();
             }
             catch (InvalidOperationException ex)
@@ -183,11 +171,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         {
             try
             {
-                return Ok();
+                var orders = await _orderService.GetRestaurantOrders(page, managerId, startDateOrder, endDateOrder, startDateDelivery, endDateDelivery, number);
+                return Ok(orders);
             }
-            catch
+            catch (ArgumentOutOfRangeException ex)
             {
-                return Problem();
+                return Problem(title: ex.Message, statusCode:404);
             }
         }
     }
