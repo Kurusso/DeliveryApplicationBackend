@@ -1,5 +1,6 @@
 ﻿using DeliveryAgreagatorBackendApplication.Models;
 using DeliveryAgreagatorBackendApplication.Models.DTO;
+using DeliveryAgreagatorBackendApplication.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryAgreagatorBackendApplication.Services
@@ -33,7 +34,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
             {
                 throw new ArgumentException($"There is no dish with this {dishId} id in this {restaurantId} restaurant!");
             }
-            var orderedDish = await _context.DishInCart.FirstOrDefaultAsync(x => x.CustomerId == userId && x.DishId == dishId && x.Active == false);
+            var orderedDish = await _context.DishInCart.Include(c=>c.Order).FirstOrDefaultAsync(x => x.CustomerId == userId && x.DishId == dishId && x.Active == false && x.Order.Status == Status.Delivered);
             if(orderedDish == null)
             {
                 throw new ArgumentNullException($"You have never ordered this {dishId} dish!"); //TODO:Добавить кастомное исключение.

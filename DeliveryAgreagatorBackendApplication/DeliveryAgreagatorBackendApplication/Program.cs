@@ -1,7 +1,10 @@
 using DeliveryAgreagatorBackendApplication;
+using DeliveryAgreagatorBackendApplication.Models.DTO;
 using DeliveryAgreagatorBackendApplication.Schemas;
 using DeliveryAgreagatorBackendApplication.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,12 +19,17 @@ builder.Services.AddSwaggerGen(c =>
 {
 	c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 	c.SchemaFilter<EnumSchemaFilter>();
+    var basePath = AppContext.BaseDirectory;
+
+    var xmlPath = Path.Combine(basePath, "DeliveryAgreagatorBackendApplication.xml");
+    c.IncludeXmlComments(xmlPath);
 
 });
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IDishService, DishService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

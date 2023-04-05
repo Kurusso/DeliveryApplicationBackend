@@ -3,6 +3,7 @@ using System;
 using DeliveryAgreagatorBackendApplication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DeliveryAgreagatorBackendApplication.Migrations
 {
     [DbContext(typeof(BackendDbContext))]
-    partial class BackendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230330093135_isActiveField_for_DishDBModel")]
+    partial class isActiveField_for_DishDBModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,22 +24,6 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("DeliveryAgreagatorBackendApplication.Model.ManagerDbModel", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("RestaurantId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RestaurantId");
-
-                    b.ToTable("Managers");
-                });
 
             modelBuilder.Entity("DeliveryAgreagatorBackendApplication.Models.CookDbModel", b =>
                 {
@@ -190,20 +177,14 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("DeliveryTime")
+                    b.Property<DateTime>("DeliveryTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("OrderTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Price")
                         .HasColumnType("integer");
-
-                    b.Property<Guid>("RestaurantId")
-                        .HasColumnType("uuid");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -215,8 +196,6 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                     b.HasIndex("CourierId");
 
                     b.HasIndex("CustomerId");
-
-                    b.HasIndex("RestaurantId");
 
                     b.ToTable("Orders");
                 });
@@ -277,17 +256,6 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                     b.HasIndex("MenusId");
 
                     b.ToTable("DishDbModelMenuDbModel");
-                });
-
-            modelBuilder.Entity("DeliveryAgreagatorBackendApplication.Model.ManagerDbModel", b =>
-                {
-                    b.HasOne("DeliveryAgreagatorBackendApplication.Models.RestaurantDbModel", "Restaurant")
-                        .WithMany()
-                        .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("DeliveryAgreagatorBackendApplication.Models.CookDbModel", b =>
@@ -364,19 +332,11 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DeliveryAgreagatorBackendApplication.Models.RestaurantDbModel", "Restaurant")
-                        .WithMany()
-                        .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Cook");
 
                     b.Navigation("Courier");
 
                     b.Navigation("Customer");
-
-                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("DeliveryAgreagatorBackendApplication.Models.RatingDbModel", b =>
