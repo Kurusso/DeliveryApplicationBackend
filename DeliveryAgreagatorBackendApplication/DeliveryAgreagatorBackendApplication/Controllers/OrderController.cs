@@ -4,6 +4,7 @@ using DeliveryAgreagatorBackendApplication.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net;
 
 namespace DeliveryAgreagatorBackendApplication.Controllers
 {
@@ -17,7 +18,15 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         {
             _orderService = orderService;
         }
-
+        /// <summary>
+        /// Создать заказ
+        /// </summary>
+        /// <remarks>
+        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="401">Bad Request</response>
         [HttpPost]
         public async Task<IActionResult> Post(Guid userId, OrderPostDTO model) //TODO: заменить получение id из запроса, на получение из токена
         {
@@ -35,6 +44,16 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(title: ex.Message, statusCode: 401);
             }
         }
+        /// <summary>
+        /// Удалить заказ
+        /// </summary>
+        /// <remarks>
+        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="401">Bad Request</response>
+        /// <response code="404">Not Found</response>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Cancel(Guid id, Guid userId) //TODO: заменить получение id из запроса, на получение из токена
         {
@@ -52,8 +71,20 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(title: ex.Message, statusCode: 401);
             }
         }
-
+        /// <summary>
+        /// Получить все свои заказы
+        /// </summary>
+        /// <remarks>
+        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации. 
+        /// Поле "name" может содержать часть номера искомых заказов. 
+        /// Поля startDate и endDate включают в себя крайние границы. 
+        /// Поле active - показывает только актвные в случае active=true и только историю заказав при active=false.
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
         [HttpGet("{active}")]
+        [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllOrders(bool active,int page, Guid userId, DateTime startDate, DateTime endDate, int? number = null)
         {
             try
@@ -66,6 +97,17 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(title: ex.Message, statusCode: 404);
             }
         }
+
+        /// <summary>
+        /// Повторить заказ
+        /// </summary>
+        /// <remarks>
+        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации. 
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="401">Bad Request</response>
+        /// <response code="404">Not Found</response>
         [HttpPost("{id}/repeat")]
         public async Task<IActionResult> RepeatOrder(Guid id, Guid userId) //TODO: заменить получение id из запроса, на получение из токена
         {
@@ -83,6 +125,16 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(title: ex.Message, statusCode: 401);
             }
         }
+
+        /// <summary>
+        /// Получить доступные повару заказы
+        /// </summary>
+        /// <remarks>
+        /// Поле cookId временное, будет убрано после добавления авторизации и аутентификации. 
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet("cook/active")]
         public async Task<IActionResult> Get(int page, Guid cookId, DateSort? sort = null) //TODO: заменить получение id из запроса, на получение из токена
         {
@@ -93,9 +145,19 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch(Exception ex)
             {
-                return Problem(ex.Message, statusCode: 500);
+                return Problem(ex.Message, statusCode: 501);
             }
         }
+        /// <summary>
+        /// Взять/Выполнить заказ поваром
+        /// </summary>
+        /// <remarks>
+        /// Поле cookId временное, будет убрано после добавления авторизации и аутентификации. 
+        /// При значении поля take=true, метод назанчит заказ повару, а при take=false изменит стадию приготовления на следующую.
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
         [HttpPut("{id}/cook/{take}")]
         public async Task<IActionResult> Put(Guid id, bool take, Guid cookId)
         {
@@ -109,8 +171,17 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(title:ex.Message, statusCode: 404);
             }
         }
-
+        /// <summary>
+        /// История заказов повара
+        /// </summary>
+        /// <remarks>
+        /// Поле cookId временное, будет убрано после добавления авторизации и аутентификации. 
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="500">Not Implemented</response>
         [HttpGet("cook/done")]
+        [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(int page, Guid cookId, int? number=null) //TODO: заменить получение id из запроса, на получение из токена
         {
             try

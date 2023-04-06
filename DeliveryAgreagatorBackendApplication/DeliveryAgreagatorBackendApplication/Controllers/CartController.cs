@@ -23,8 +23,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
         /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="501">Не имплементированная ошибка</response>
+        /// <response code="200">Success</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet]
         [ProducesResponseType(typeof(List<DishInCartDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(Guid userId) //TODO: заменить получение id из запроса, на получение из токена
@@ -46,8 +46,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
         /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="404">Не существует блюда dishId</response>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
         [HttpPost("dish/{dishId}")]
         public async Task<IActionResult> PostToCart(Guid dishId,Guid userId) //TODO: заменить получение id из запроса, на получение из токена
         {
@@ -68,8 +68,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
         /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="404">Не существует блюда dishId</response>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
         [HttpDelete("dish/{dishId}")]
         public async Task<IActionResult> DeleteDecrease( Guid dishId, Guid userId, bool deacrease=false) //TODO: заменить получение id из запроса, на получение из токена
         {
