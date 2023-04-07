@@ -194,7 +194,18 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(ex.Message, statusCode: 500);
             }
         }
+        /// <summary>
+        /// Получить заказы достпупные курьеру
+        /// </summary>
+        /// <remarks>
+        /// Поле courierId временное, будет убрано после добавления авторизации и аутентификации. 
+        /// Поле блюд внутри заказа приходит, пустым так как это излишняя информация для курьера.
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="500">Not Implemented</response>
         [HttpGet("courier")]
+        [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(int page, Guid courierId) //TODO: заменить получение id из запроса, на получение из токена
         {
             try
@@ -207,6 +218,16 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(ex.Message, statusCode: 500);
             }
         }
+        /// <summary>
+        /// Взять/Обновить статус заказа
+        /// </summary>
+        /// <remarks>
+        /// Поле courierId временное, будет убрано после добавления авторизации и аутентификации. 
+        /// При значении поля take=true, метод назанчит заказ курьеру, а при take=false изменит стадию доставки на следующую.
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="401">Bad Request</response>
         [HttpPut("{id}/courier/{take}")]
         public async Task<IActionResult> PutCourier(Guid id, bool take, Guid courierId)
         {
@@ -220,6 +241,17 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(title: ex.Message, statusCode: 401);
             }
         }
+        /// <summary>
+        /// Отменить заказ
+        /// </summary>
+        /// <remarks>
+        /// Поле courierId временное, будет убрано после добавления авторизации и аутентификации.
+        /// Курьер может отменить только тот заказ, котороый находиться в статусе "Delivery".
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="401">Bad Request</response>
+        /// <response code="404">Not Found</response>
         [HttpPut("{id}/courier/cancel")]
         public async Task<IActionResult> CancelCourier(Guid id, Guid courierId)
         {
@@ -237,6 +269,17 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(title: ex.Message, statusCode: 404);
             }
         }
+        /// <summary>
+        /// Получить все заказы ресторана
+        /// </summary>
+        /// <remarks>
+        /// Поле managerId временное, будет убрано после добавления авторизации и аутентификации.
+        /// Поле "name" может содержать часть номера искомых заказов. 
+        /// Поля startDateOrder, endDateOrder, startDateDelivery и endDateDelivery включают в себя крайние границы. 
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
         [HttpGet("manager")]
         public async Task<IActionResult> Get(int page, Guid managerId, DateTime startDateOrder, DateTime endDateOrder, DateTime startDateDelivery, DateTime endDateDelivery,  int? number = null)
         {
