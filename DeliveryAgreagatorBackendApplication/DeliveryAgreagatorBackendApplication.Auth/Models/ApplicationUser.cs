@@ -1,0 +1,22 @@
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace DeliveryAgreagatorBackendApplication.Auth.Models
+{
+    public class ApplicationUser: IdentityUser<Guid>
+    {
+
+        public Guid? CustomerId { get; set; }
+        public Customer? Customer { get; set; }
+
+        public Guid? CookId { get; set; }
+        public Cook? Cook { get; set; }
+
+        public Guid? ManagerId { get; set; }
+        public Manager? Manager { get; set; }
+
+        public Guid? CourierId { get; set; }
+        public Courier? Courier { get; set; }
+
+        public RefreshTokenDb RefreshTokenDb { get; set; }
+    }
+}
