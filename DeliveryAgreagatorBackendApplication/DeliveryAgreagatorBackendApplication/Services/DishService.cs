@@ -27,7 +27,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
             }
         }
 
-        public async Task SetRating(Guid restaurantId, Guid dishId, Guid userId, int rating)
+        public async Task SetRating(Guid restaurantId, Guid dishId, Guid userId, int rating) //TODO: перенести сюда пересчёт рейтинга
         {
             var dish = await _context.Dishes.FirstOrDefaultAsync(x => x.Id == dishId && x.RestaurantId == restaurantId);
             if (dish == null)

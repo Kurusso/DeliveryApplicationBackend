@@ -1,9 +1,11 @@
 using DeliveryAgreagatorBackendApplication.Auth;
 using DeliveryAgreagatorBackendApplication.Auth.Models;
+using DeliveryAgreagatorBackendApplication.Auth.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 string connection = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new NullReferenceException("Specify connection string!");
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connection));
 builder.Services.AddControllers();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<ITokenSerivce, TokenSerivce>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options=>
 options.Password.RequiredLength = 10)
     .AddEntityFrameworkStores<AuthDbContext>()
@@ -18,10 +22,14 @@ options.Password.RequiredLength = 10)
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAuthorization();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = ValidatorsPile.ValidateTokenParent
+        };
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -35,6 +43,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RefreshOnly", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("TokenTypeClaim", "Refresh");
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

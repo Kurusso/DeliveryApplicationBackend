@@ -6,6 +6,8 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
 {
     public interface IAuthenticationService
     {
-        public Task<TokenPair> Login (LoginDTO model);
+        public Task<TokenPairDTO> Login (LoginDTO model);
+        public Task<TokenPairDTO> Refresh(ClaimsPrincipal user);
+        public Task<TokenPairDTO> Register(RegisterDTO model);
     }
 }

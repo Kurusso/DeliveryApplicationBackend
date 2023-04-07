@@ -35,7 +35,7 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
                 audience: JwtConfigurations.Audience,
                 notBefore: now,
                 claims: accessClaims,
-                expires: now.AddMinutes(accesslifetime),
+                expires: now.AddMinutes(5000),
                 signingCredentials: new SigningCredentials(JwtConfigurations.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
             var refresh = new JwtSecurityToken(
@@ -45,7 +45,6 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
                 claims: refreshClaims,
                 expires: now.AddMinutes(refreshlifetime),
                 signingCredentials: new SigningCredentials(JwtConfigurations.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-
             var encodedAccessJwt = new JwtSecurityTokenHandler().WriteToken(access);
             var encodedRefreshJwt = new JwtSecurityTokenHandler().WriteToken(refresh);
             return new TokenPair { AccessToken = encodedAccessJwt, RefreshToken= encodedRefreshJwt, RefreshTokenId = refreshTokenId, RefreshExpires = now.AddMinutes(refreshlifetime) };

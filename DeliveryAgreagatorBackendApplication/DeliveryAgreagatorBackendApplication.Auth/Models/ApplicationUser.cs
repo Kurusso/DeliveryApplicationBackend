@@ -17,6 +17,8 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Models
         public Guid? CourierId { get; set; }
         public Courier? Courier { get; set; }
 
-        public RefreshTokenDb RefreshTokenDb { get; set; }
+        public List<RefreshTokenDb> RefreshTokenDb { get; set; }
+
+        public DateTime BirthDate { get; set; }
     }
 }
