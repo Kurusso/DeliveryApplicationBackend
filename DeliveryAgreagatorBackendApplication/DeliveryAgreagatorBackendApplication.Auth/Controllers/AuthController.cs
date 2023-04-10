@@ -29,10 +29,14 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Controllers
                 var tokenPair = await _authenticationService.Register(model);
                 return Ok(tokenPair);
 
+            } 
+            catch(InvalidDataException ex)
+            {
+                return Problem(ex.Message, statusCode: 409);
             }
             catch(Exception ex)
             {
-                return Problem(ex.Message, statusCode: 501);
+                return Problem(ex.Message,statusCode:501);
             }
         }
         [HttpPost("login")]
@@ -47,23 +51,35 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Controllers
                 var tokenPair = await _authenticationService.Login(model);
                 return Ok(tokenPair);
             }
-            catch(Exception ex)
+            catch (ArgumentException ex)
+            {
+                return Problem(ex.Message, statusCode: 400);
+            }
+            catch (Exception ex)
             {
                 return Problem(ex.Message, statusCode: 501);
             }
         }
         [HttpGet("refresh")]
         [Authorize(Policy ="RefreshOnly", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Refresh()
+        public async Task<IActionResult> Refresh() //TODO: перенести проверку верности токена в авторизацию
         {
             try
             {
                var tokenPair = await _authenticationService.Refresh(User);
                 return Ok(tokenPair);
             }
+            catch (ArgumentException ex)
+            {
+                return Problem(ex.Message, statusCode: 401);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(ex.Message, statusCode: 401);
+            }
             catch(Exception ex)
             {
-                return Problem("Not Imlemented", statusCode: 501);
+                return Problem(ex.Message, statusCode: 501);
             }
 
         }
@@ -71,7 +87,7 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Controllers
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> test()
         {
-            return Ok(User.FindFirst("IdClaim").Value);
+            return Ok(User.FindFirst("GetAllOrders").Value);
         }
     }
 }

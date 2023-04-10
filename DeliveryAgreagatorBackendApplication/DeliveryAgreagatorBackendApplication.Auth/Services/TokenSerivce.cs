@@ -1,4 +1,5 @@
 ﻿using DeliveryAgreagatorBackendApplication.Auth.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,25 +9,45 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
 {
     public class TokenSerivce : ITokenSerivce
     {
-        private string GenerateAccessToken(ApplicationUser user, ulong refreshTokenId)
+        private readonly AuthDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        public TokenSerivce(AuthDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<Guid>> roleManager)
         {
-            return "";
+            _roleManager= roleManager;
+            _context = context;
+            _userManager = userManager;
         }
-        private List<Claim> GetClaims(ApplicationUser user, bool isrefresh, Guid refreshTokenId) //TODO: добавить все нужные клэймы
+
+        private async Task<List<Claim>> GetClaims(ApplicationUser user, bool isrefresh, Guid refreshTokenId) //TODO: добавить все нужные клэймы
         {
-            var claims = new List<Claim>
-            {
-                new Claim("IdClaim", user.Id.ToString()),
-                new Claim("RefreshIdClaim", refreshTokenId.ToString()),
-                new Claim("TokenTypeClaim", isrefresh? "Refresh" : "Access")
+            var roles = await _userManager.GetRolesAsync(user);
+            var claims = new List<Claim> {
+            new Claim("IdClaim", user.Id.ToString()),
+            new Claim("RefreshIdClaim", refreshTokenId.ToString()),
+            new Claim("TokenTypeClaim", isrefresh ? "Refresh" : "Access")
             };
+            foreach (var roleName in roles)
+            {
+                var role = await _roleManager.FindByNameAsync(roleName);
+
+                if (role != null)
+                {
+                    var roleClaims = await _roleManager.GetClaimsAsync(role);
+
+                    foreach (var claim in roleClaims)
+                    {
+                        claims.Add(claim);
+                    }
+                }
+            }
             return claims;
         }
         public async Task<TokenPair> GenerateTokenPair(ApplicationUser user)
         {
             Guid refreshTokenId = Guid.NewGuid();  
-            var accessClaims = GetClaims(user, false, refreshTokenId);
-            var refreshClaims = GetClaims(user, true, refreshTokenId);
+            var accessClaims = await GetClaims(user, false, refreshTokenId);
+            var refreshClaims = await GetClaims(user, true, refreshTokenId);
             int refreshlifetime = JwtConfigurations.RefreshLifetime;
             int accesslifetime = JwtConfigurations.Lifetime;
             var now = DateTime.UtcNow;
@@ -35,7 +56,7 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
                 audience: JwtConfigurations.Audience,
                 notBefore: now,
                 claims: accessClaims,
-                expires: now.AddMinutes(5000),
+                expires: now.AddMinutes(accesslifetime),
                 signingCredentials: new SigningCredentials(JwtConfigurations.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
             var refresh = new JwtSecurityToken(

@@ -8,7 +8,6 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
         public static Task ValidateTokenParent(TokenValidatedContext context)
         {
             string refreshTokenId = context.Principal.Claims.FirstOrDefault(c => c.Type == "RefreshIdClaim").Value;
-            Console.WriteLine("fefwefewfwe");
             Guid refreshTokenGuidId;
             Guid.TryParse(refreshTokenId, out refreshTokenGuidId);
             var dbcontext = context.HttpContext.RequestServices.GetService<AuthDbContext>();

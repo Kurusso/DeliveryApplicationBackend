@@ -1,4 +1,5 @@
 ﻿using DeliveryAgreagatorBackendApplication.Auth.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,21 +12,28 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
     {
         private readonly AuthDbContext _context;
         private ITokenSerivce _tokenSerivce;
-        public AuthenticationService(AuthDbContext context, ITokenSerivce tokenSerivce) 
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public AuthenticationService(AuthDbContext context, ITokenSerivce tokenSerivce, UserManager<ApplicationUser> userManager) 
         {
-        _context= context;
-        _tokenSerivce= tokenSerivce;
+            _userManager= userManager;
+            _context= context;
+            _tokenSerivce= tokenSerivce;
         }
 
 
         public async Task<TokenPairDTO> Login(LoginDTO model)
         {
             var pss = BCrypt.Net.BCrypt.HashPassword(model.Password);
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Login); 
-            bool correctPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash);
-            if (user == null || !correctPassword)
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Login);
+            if (user == null)
             {
-                throw new ArgumentException ("Invalid username or password!");
+                throw new ArgumentException("Invalid username or password!");
+            }
+            bool correctPassword = BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash);
+            if (!correctPassword)
+            {
+                throw new ArgumentException("Invalid username or password!");
             }
             try
             {
@@ -58,6 +66,7 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
             {
                 throw new InvalidOperationException("Token is not actual or correct!");
             }
+            
             _context.RefreshTokens.Remove(refreshToken);
             try
             {
@@ -76,10 +85,27 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
         {
             var userId = Guid.NewGuid();
             var customerId = Guid.NewGuid();
+            var isTaken = await _userManager.FindByNameAsync(model.FullName);
+            if (isTaken != null)
+            {
+                throw new InvalidDataException("Name is already taken!");
+            }
+            isTaken = await _userManager.FindByEmailAsync(model.Login);
+            if (isTaken != null)
+            {
+                throw new InvalidDataException("Email is already taken!");
+            }
+            isTaken = await _context.Users.FirstOrDefaultAsync(x => x.PhoneNumber == model.PhoneNumber);
+            if (isTaken != null)
+            {
+                throw new InvalidDataException("PhoneNumber is already taken!");
+            }
             var user = new ApplicationUser { Id = userId, Email=model.Login, EmailConfirmed=true, PasswordHash=BCrypt.Net.BCrypt.HashPassword(model.Password), PhoneNumber=model.PhoneNumber, UserName = model.FullName, BirthDate = model.BirthDate, PhoneNumberConfirmed=true, TwoFactorEnabled=false, AccessFailedCount=0, CustomerId = customerId };
             var customer = new Customer { Id = customerId, Address = model.Address, UserId = userId };
             await _context.Customers.AddAsync(customer);
-            await _context.Users.AddAsync(user);
+            await _userManager.CreateAsync(user);
+            await _userManager.AddToRoleAsync(user, "CUSTOMER");
+            
             try
             {
                 var tokenPair = await _tokenSerivce.GenerateTokenPair(user);

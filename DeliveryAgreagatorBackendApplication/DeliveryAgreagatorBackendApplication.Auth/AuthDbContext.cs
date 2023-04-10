@@ -17,6 +17,7 @@ namespace DeliveryAgreagatorBackendApplication.Auth
         public DbSet<RefreshTokenDb> RefreshTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(u => u.Cook)
                 .WithOne(c => c.User)
@@ -40,10 +41,6 @@ namespace DeliveryAgreagatorBackendApplication.Auth
                 .WithOne(c => c.User)
                 .HasForeignKey<Courier>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<IdentityUserLogin<Guid>>().HasNoKey();
-            modelBuilder.Entity<IdentityUserRole<Guid>>().HasNoKey();
-            modelBuilder.Entity<IdentityUserToken<Guid>>().HasNoKey();
         }
  
     }
