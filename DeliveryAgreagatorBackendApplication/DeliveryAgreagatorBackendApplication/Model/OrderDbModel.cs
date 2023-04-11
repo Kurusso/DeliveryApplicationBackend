@@ -15,10 +15,8 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public Guid RestaurantId { get; set; }
         public RestaurantDbModel Restaurant { get; set; }
         public Guid CustomerId { get; set; }
-        public CustomerDbModel Customer { get; set; }
 
         public Guid? CourierId { get; set; }
-        public CourierDbModel? Courier { get; set; }
 
         public Guid? CookId { get; set; }
         public CookDbModel? Cook { get; set; }
@@ -28,7 +26,8 @@ namespace DeliveryAgreagatorBackendApplication.Models
         {
             var guid = Guid.NewGuid();
             Id = guid;
-            Number= guid.GetHashCode();
+            RestaurantId = model.RestaurantId;
+            Number= Math.Abs(guid.GetHashCode());
             DeliveryTime = model.DeliveryTime;
             OrderTime = DateTime.UtcNow;
             Console.WriteLine(OrderTime);

@@ -18,10 +18,8 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
                 string[] roles = new string[] { "Customer", "Manager", "Cook", "Courier" };
                 List<Claim> customerClaims = new List<Claim> 
                 { 
-                    new Claim("ViewCart", "Allow"), 
                     new Claim("CartOperations", "Allow"), 
                     new Claim("SetRating", "Allow"), 
-                    new Claim("ViewCart", "Allow") ,
                     new Claim("GetOrders", "Customer"),
                     new Claim("OrderOperation", "Customer")
                 };

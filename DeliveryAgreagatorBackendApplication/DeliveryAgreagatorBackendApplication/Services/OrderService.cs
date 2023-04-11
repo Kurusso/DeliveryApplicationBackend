@@ -48,7 +48,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
                 _regexp = number.ToString();
             }
             var orders = _context.Orders.Include(c=>c.DishesInCart).ThenInclude(c => c.Dish).ThenInclude(z => z.Ratings).Where(
-            c => Regex.IsMatch(c.Id.ToString(), _regexp) && c.CustomerId==userId && c.OrderTime<=endDate && c.OrderTime>=startDate && c.DishesInCart.First().Active==active).ToList();
+            c => Regex.IsMatch(c.Id.ToString(), _regexp) && c.CustomerId==userId && c.OrderTime<=endDate && c.OrderTime>=startDate && (active ? (c.Status != Status.Canceled && c.Status != Status.Delivered) : (c.Status==Status.Canceled || c.Status==Status.Delivered))).ToList();
             if ((orders.Count() % _pageSize) == 0)
             {
                 _pageCount = (orders.Count() / _pageSize);

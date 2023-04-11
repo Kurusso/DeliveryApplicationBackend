@@ -13,6 +13,5 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public DishDbModel Dish { get; set; }
 
         public Guid CustomerId { get; set; }
-        public CustomerDbModel Customer { get; set; }
     }
 }

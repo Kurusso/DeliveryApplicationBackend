@@ -8,7 +8,6 @@
         public DishDbModel Dish { get; set; }
 
         public Guid CustomerId { get; set; }
-        public CustomerDbModel Customer { get; set; }
 
         public Guid? OrderId { get; set; }
         public OrderDbModel? Order { get; set; }

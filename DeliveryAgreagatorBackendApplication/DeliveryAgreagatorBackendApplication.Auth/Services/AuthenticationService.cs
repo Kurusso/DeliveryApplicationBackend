@@ -24,8 +24,7 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
 
         public async Task<TokenPairDTO> Login(LoginDTO model)
         {
-            var pss = BCrypt.Net.BCrypt.HashPassword(model.Password);
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == model.Login);
+            var user = await _userManager.FindByEmailAsync(model.Login);
             if (user == null)
             {
                 throw new ArgumentException("Invalid username or password!");
@@ -104,7 +103,7 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
             var customer = new Customer { Id = customerId, Address = model.Address, UserId = userId };
             await _context.Customers.AddAsync(customer);
             await _userManager.CreateAsync(user);
-            await _userManager.AddToRoleAsync(user, "CUSTOMER");
+            await _userManager.AddToRoleAsync(user, "Customer");
             
             try
             {

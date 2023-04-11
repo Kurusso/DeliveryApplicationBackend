@@ -29,7 +29,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
 
         public async Task SetRating(Guid restaurantId, Guid dishId, Guid userId, int rating) //TODO: перенести сюда пересчёт рейтинга
         {
-            var dish = await _context.Dishes.FirstOrDefaultAsync(x => x.Id == dishId && x.RestaurantId == restaurantId);
+            var dish = await _context.Dishes.Include(x=>x.Ratings).FirstOrDefaultAsync(x => x.Id == dishId && x.RestaurantId == restaurantId);
             if (dish == null)
             {
                 throw new ArgumentException($"There is no dish with this {dishId} id in this {restaurantId} restaurant!");
@@ -48,6 +48,8 @@ namespace DeliveryAgreagatorBackendApplication.Services
             {
                var newRating = new RatingDbModel { CustomerId = userId, DishId = dishId, Value = rating, Id = new Guid() };
                await _context.Ratings.AddAsync(newRating);
+               dish.Rating = dish.Ratings.Sum(x => x.Value) / dish.Ratings.Count();
+
             }
 
             await _context.SaveChangesAsync();

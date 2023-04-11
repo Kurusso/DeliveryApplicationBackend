@@ -5,7 +5,9 @@ VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryAgreagatorBackendApplication.BL", "DeliveryAgreagatorBackendApplication\DeliveryAgreagatorBackendApplication.BL.csproj", "{42D2FB6C-C551-4F98-98BE-02038FB585E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorBackendApplication.Auth", "DeliveryAgreagatorBackendApplication.Auth\DeliveryAgreagatorBackendApplication.Auth.csproj", "{69B38F12-A3F6-4F9D-BB73-89D49C18BE18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryAgreagatorBackendApplication.Auth", "DeliveryAgreagatorBackendApplication.Auth\DeliveryAgreagatorBackendApplication.Auth.csproj", "{69B38F12-A3F6-4F9D-BB73-89D49C18BE18}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2AB74115-B1A4-4A9D-B6C9-E23AB9B8F852}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
