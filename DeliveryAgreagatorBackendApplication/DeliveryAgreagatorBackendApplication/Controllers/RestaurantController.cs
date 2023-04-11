@@ -23,7 +23,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// </remarks>
         /// <returns></returns>
         /// /// <response code="200">Success</response>
-        /// <response code="401">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         [HttpGet("{page}")]
         [ProducesResponseType(typeof(List<RestaurantShortDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllOnPage(int page, string? name)
@@ -35,7 +35,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch (ArgumentOutOfRangeException e)
             {
-                return Problem(title: e.Message, statusCode: 401);
+                return Problem(title: e.Message, statusCode: 400);
             }
         }
     }

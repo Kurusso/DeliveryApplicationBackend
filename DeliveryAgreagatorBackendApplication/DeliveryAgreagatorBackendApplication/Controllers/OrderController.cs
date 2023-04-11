@@ -27,7 +27,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="401">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         [HttpPost]
         [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Post(OrderPostDTO model) 
@@ -56,7 +56,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="401">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         /// <response code="404">Not Found</response>
         [HttpDelete("{id}/customer")]
         [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
@@ -116,7 +116,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="401">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         /// <response code="404">Not Found</response>
         [HttpPost("{id}/repeat/customer")]
         [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
@@ -244,7 +244,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="401">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         [HttpPut("{id}/courier/{take}")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> PutCourier(Guid id, bool take, Guid courierId)
@@ -268,7 +268,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="401">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         /// <response code="404">Not Found</response>
         [HttpDelete("{id}/courier/cancel")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
