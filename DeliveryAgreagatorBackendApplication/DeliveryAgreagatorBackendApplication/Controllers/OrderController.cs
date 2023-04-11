@@ -28,6 +28,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="400">Bad Request</response>
+        /// <response code="401">Unauthorized</response>
         [HttpPost]
         [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Post(OrderPostDTO model) 
@@ -58,6 +59,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="200">Success</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Not Found</response>
+        /// <response code="401">Unauthorized</response>
         [HttpDelete("{id}/customer")]
         [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Cancel(Guid id) 
@@ -90,7 +92,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
-
+        /// <response code="401">Unauthorized</response>
         [HttpGet("{active}/customer")]
         [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> GetAllOrders(bool active,int page, DateTime startDate, DateTime endDate, int? number = null)
@@ -118,6 +120,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="200">Success</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Not Found</response>
+        /// <response code="401">Unauthorized</response>
         [HttpPost("{id}/repeat/customer")]
         [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> RepeatOrder(Guid id) 
@@ -148,6 +151,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="501">Not Implemented</response>
+        /// <response code="401">Unauthorized</response>
         [HttpGet("cook/active")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Get(int page, Guid cookId, DateSort? sort = null) //TODO: заменить получение id из запроса, на получение из токена
@@ -172,6 +176,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
+        /// <response code="401">Unauthorized</response>
         [HttpPut("{id}/cook/{take}")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Put(Guid id, bool take, Guid cookId)
@@ -195,6 +200,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="500">Not Implemented</response>
+        /// <response code="401">Unauthorized</response>
         [HttpGet("cook/done")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
@@ -220,6 +226,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="500">Not Implemented</response>
+        /// <response code="401">Unauthorized</response>
         [HttpGet("courier")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
@@ -245,6 +252,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="400">Bad Request</response>
+        /// <response code="401">Unauthorized</response>
         [HttpPut("{id}/courier/{take}")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> PutCourier(Guid id, bool take, Guid courierId)
@@ -270,6 +278,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="200">Success</response>
         /// <response code="400">Bad Request</response>
         /// <response code="404">Not Found</response>
+        /// <response code="401">Unauthorized</response>
         [HttpDelete("{id}/courier/cancel")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> CancelCourier(Guid id, Guid courierId)
@@ -299,6 +308,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
+        /// <response code="401">Unauthorized</response>
         [HttpGet("manager")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Get(int page, Guid managerId, DateTime startDateOrder, DateTime endDateOrder, DateTime startDateDelivery, DateTime endDateDelivery,  int? number = null)
