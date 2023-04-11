@@ -1,6 +1,7 @@
 ﻿using DeliveryAgreagatorBackendApplication.Model.Enums;
 using DeliveryAgreagatorBackendApplication.Models.DTO;
 using DeliveryAgreagatorBackendApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -19,7 +20,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Guid userId, OrderPostDTO model) //TODO: заменить получение id из запроса, на получение из токена
+        [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> Post(OrderPostDTO model) 
         {
             if(!ModelState.IsValid) 
             {
@@ -27,19 +29,24 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             try
             {
-              await  _orderService.PostOrder(model, userId);
+                Guid userId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
+                await  _orderService.PostOrder(model, userId);
                 return Ok();
             }
             catch(InvalidOperationException ex)
             {
-                return Problem(title: ex.Message, statusCode: 401);
+                return Problem(title: ex.Message, statusCode: 400);
             }
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Cancel(Guid id, Guid userId) //TODO: заменить получение id из запроса, на получение из токена
+        [HttpDelete("{id}/customer")]
+        [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> Cancel(Guid id) 
         {
             try
             {
+                Guid userId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
                 await _orderService.CancelOrder(id, userId);
                 return Ok();
             }
@@ -49,16 +56,19 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch(InvalidOperationException ex) 
             {
-                return Problem(title: ex.Message, statusCode: 401);
+                return Problem(title: ex.Message, statusCode: 400);
             }
         }
 
-        [HttpGet("{active}")]
-        public async Task<IActionResult> GetAllOrders(bool active,int page, Guid userId, DateTime startDate, DateTime endDate, int? number = null)
+        [HttpGet("{active}/customer")]
+        [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> GetAllOrders(bool active,int page, DateTime startDate, DateTime endDate, int? number = null)
         {
             try
             {
-               var orders = await _orderService.GetAllOrders(page, userId, startDate, endDate,active, number);
+                Guid userId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
+                var orders = await _orderService.GetAllOrders(page, userId, startDate, endDate,active, number);
                 return Ok(orders);
             }
             catch(ArgumentOutOfRangeException ex) 
@@ -66,11 +76,14 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 return Problem(title: ex.Message, statusCode: 404);
             }
         }
-        [HttpPost("{id}/repeat")]
-        public async Task<IActionResult> RepeatOrder(Guid id, Guid userId) //TODO: заменить получение id из запроса, на получение из токена
+        [HttpPost("{id}/repeat/customer")]
+        [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> RepeatOrder(Guid id) 
         {
             try
             {
+                Guid userId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
                 await _orderService.RepeatOrder(id, userId);
                 return Ok();
             }
@@ -80,10 +93,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch(InvalidOperationException ex)
             {
-                return Problem(title: ex.Message, statusCode: 401);
+                return Problem(title: ex.Message, statusCode: 400);
             }
         }
         [HttpGet("cook/active")]
+        [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Get(int page, Guid cookId, DateSort? sort = null) //TODO: заменить получение id из запроса, на получение из токена
         {
             try
@@ -97,6 +111,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
         [HttpPut("{id}/cook/{take}")]
+        [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Put(Guid id, bool take, Guid cookId)
         {
             try
@@ -111,6 +126,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         }
 
         [HttpGet("cook/done")]
+        [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Get(int page, Guid cookId, int? number=null) //TODO: заменить получение id из запроса, на получение из токена
         {
             try
@@ -124,6 +140,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
         [HttpGet("courier")]
+        [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Get(int page, Guid courierId) //TODO: заменить получение id из запроса, на получение из токена
         {
             try
@@ -137,6 +154,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
         [HttpPut("{id}/courier/{take}")]
+        [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> PutCourier(Guid id, bool take, Guid courierId)
         {
             try
@@ -146,10 +164,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return Problem(title: ex.Message, statusCode: 401);
+                return Problem(title: ex.Message, statusCode: 400);
             }
         }
-        [HttpPut("{id}/courier/cancel")]
+        [HttpDelete("{id}/courier/cancel")]
+        [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> CancelCourier(Guid id, Guid courierId)
         {
             try
@@ -159,7 +178,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return Problem(title: ex.Message, statusCode: 401);
+                return Problem(title: ex.Message, statusCode: 400);
             }
             catch(ArgumentException ex)
             {
@@ -167,6 +186,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
         [HttpGet("manager")]
+        [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Get(int page, Guid managerId, DateTime startDateOrder, DateTime endDateOrder, DateTime startDateDelivery, DateTime endDateDelivery,  int? number = null)
         {
             try

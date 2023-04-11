@@ -1,10 +1,14 @@
 using DeliveryAgreagatorBackendApplication;
+using DeliveryAgreagatorBackendApplication.Auth.Models;
+using DeliveryAgreagatorBackendApplication.Auth.Services;
 using DeliveryAgreagatorBackendApplication.Models.DTO;
 using DeliveryAgreagatorBackendApplication.Schemas;
 using DeliveryAgreagatorBackendApplication.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +34,55 @@ builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IDishService, DishService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = JwtConfigurations.Issuer,
+            ValidateAudience = true,
+            ValidAudience = JwtConfigurations.Audience,
+            ValidateLifetime = true,
+            IssuerSigningKey = JwtConfigurations.GetSymmetricSecurityKey(),
+            ValidateIssuerSigningKey = true,
+
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CartOperations", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("CartOperations", "Allow");
+    });
+    options.AddPolicy("SetRating", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("SetRating", "Allow");
+    });
+    options.AddPolicy("OrderOperationsCustomer", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("OrderOperation", "Customer");
+    });
+    options.AddPolicy("OrderOperationsCook", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("OrderOperation", "Cook");
+    });
+    options.AddPolicy("OrderOperationsCourier", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("OrderOperation", "Courier");
+    });
+    options.AddPolicy("OrderOperationsManager", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("OrderOperation", "Manager");
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
