@@ -3,6 +3,7 @@ using System;
 using DeliveryAgreagatorBackendApplication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DeliveryAgreagatorBackendApplication.Migrations
 {
     [DbContext(typeof(BackendDbContext))]
-    partial class BackendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230411091605_deleteCustomerAndCourier")]
+    partial class deleteCustomerAndCourier
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,9 +85,6 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("Price")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Rating")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("RestaurantId")

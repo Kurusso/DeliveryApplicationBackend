@@ -1,5 +1,6 @@
 ﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
 using DeliveryAgreagatorBackendApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -26,11 +27,14 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="200">Success</response>
         /// <response code="501">Not Implemented</response>
         [HttpGet]
+        [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<DishInCartDTO>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(Guid userId) //TODO: заменить получение id из запроса, на получение из токена
+        public async Task<IActionResult> Get() 
         {
             try
             {
+                Guid userId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
                 var dsihes = await _cartService.GetCart(userId);
                 return Ok(dsihes);
             }
@@ -49,10 +53,13 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
         [HttpPost("dish/{dishId}")]
-        public async Task<IActionResult> PostToCart(Guid dishId,Guid userId) //TODO: заменить получение id из запроса, на получение из токена
+        [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> PostToCart(Guid dishId) 
         {
             try
             {
+                Guid userId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
                 await _cartService.AddDishToCart(dishId, userId);
                 return Ok();
             }
@@ -71,11 +78,14 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
         [HttpDelete("dish/{dishId}")]
-        public async Task<IActionResult> DeleteDecrease( Guid dishId, Guid userId, bool deacrease=false) //TODO: заменить получение id из запроса, на получение из токена
+        [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> DeleteDecrease( Guid dishId, bool deacrease=false) 
         {
             try
             {
-                await _cartService.DeleteOrDecreaseDishInCart( dishId, userId, deacrease);
+                Guid userId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value,out userId);
+                await _cartService.DeleteOrDecreaseDishInCart( dishId, userId , deacrease);
                 return Ok();
             }
             catch (ArgumentException e)

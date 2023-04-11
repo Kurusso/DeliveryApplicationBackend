@@ -48,7 +48,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         ///  <response code="200">Success</response>
         ///  <response code="404">Not Found</response>
-        /// <response code="401">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(List<DishDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenu(Guid restaurantId, Guid id, [FromQuery] List<Category> categories, bool? isVegetarian, DishFilter? filter, int page) {
@@ -58,7 +58,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
 			}
 			catch (ArgumentOutOfRangeException e)
 			{
-				return Problem(title: e.Message, statusCode: 401);
+				return Problem(title: e.Message, statusCode: 400);
 			}
             catch(ArgumentException e) {
                 return Problem(title: e.Message, statusCode: 404);

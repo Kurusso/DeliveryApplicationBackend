@@ -1,5 +1,6 @@
 ﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
 using DeliveryAgreagatorBackendApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -44,16 +45,19 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="401">Bad Request</response>
         /// <response code="404">Not Found</response>
         [HttpPost("{id}/rating")]
-        public async Task<IActionResult> SetRating(Guid restaurantId, Guid Id, Guid userId, int rating)  //TODO: заменить получение userID из запроса, на получение из токена. 
+        [Authorize(Policy = "SetRating", AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> SetRating(Guid restaurantId, Guid Id, int rating)  //TODO: заменить получение userID из запроса, на получение из токена. 
         {
             try
             {
+                Guid userId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
                 await _dishService.SetRating( restaurantId, Id, userId,rating);
                 return Ok();
             }
             catch (ArgumentNullException e)
             {
-                return Problem(title: e.Message, statusCode: 401);
+                return Problem(title: e.Message, statusCode: 400);
             }
             catch (ArgumentException e)
             {

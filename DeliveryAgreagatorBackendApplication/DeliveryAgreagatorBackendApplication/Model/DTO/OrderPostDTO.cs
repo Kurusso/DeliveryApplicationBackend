@@ -5,6 +5,5 @@
     {
         public string Address { get; set; }
         public DateTime OrderTime { get; set; }
-        public int Number { get; set; }
     }
 }
