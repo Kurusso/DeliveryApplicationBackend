@@ -22,8 +22,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Поле "name" может содержать часть искомого имени ресторана 
         /// </remarks>
         /// <returns></returns>
-        /// /// <response code="200">Успешное выполнение</response>
-        /// <response code="401">Неверно введённый номер страницы</response>
+        /// /// <response code="200">Success</response>
+        /// <response code="401">Bad Request</response>
         [HttpGet("{page}")]
         [ProducesResponseType(typeof(List<RestaurantShortDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllOnPage(int page, string? name)

@@ -24,8 +24,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
         /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="501">Не имплементированная ошибка</response>
+        /// <response code="200">Success</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet]
         [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<DishInCartDTO>), (int)HttpStatusCode.OK)]
@@ -50,8 +50,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
         /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="404">Не существует блюда dishId</response>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
         [HttpPost("dish/{dishId}")]
         [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> PostToCart(Guid dishId) 
@@ -75,8 +75,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
         /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="404">Не существует блюда dishId</response>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
         [HttpDelete("dish/{dishId}")]
         [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> DeleteDecrease( Guid dishId, bool deacrease=false) 
