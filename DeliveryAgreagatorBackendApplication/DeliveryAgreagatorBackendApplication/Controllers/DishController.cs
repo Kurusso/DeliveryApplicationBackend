@@ -44,6 +44,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// /// <response code="200">Success</response>
         /// <response code="401">Bad Request</response>
         /// <response code="404">Not Found</response>
+        /// <response code="401">Unauthorized</response>
         [HttpPost("{id}/rating")]
         [Authorize(Policy = "SetRating", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> SetRating(Guid restaurantId, Guid Id, int rating)  //TODO: заменить получение userID из запроса, на получение из токена. 

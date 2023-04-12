@@ -49,6 +49,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         ///  <response code="200">Success</response>
         ///  <response code="404">Not Found</response>
         /// <response code="400">Bad Request</response>
+        /// <response code="403">Forbidden</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(List<DishDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenu(Guid restaurantId, Guid id, [FromQuery] List<Category> categories, bool? isVegetarian, DishFilter? filter, int page) {
