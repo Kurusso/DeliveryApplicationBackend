@@ -1,8 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace DeliveryAgreagatorApplication.Auth.Common.Models
-{
+
     public class JwtConfigurations
     {
         public const string Issuer = "JwtTestIssuer";  
@@ -16,4 +15,4 @@ namespace DeliveryAgreagatorApplication.Auth.Common.Models
         }
 
     }
-}
+

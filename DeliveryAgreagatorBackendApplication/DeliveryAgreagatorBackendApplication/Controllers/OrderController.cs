@@ -97,7 +97,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         [HttpGet("{active}/customer")]
-        [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
+        [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")] 
         public async Task<IActionResult> GetAllOrders(bool active,int page, DateTime startDate, DateTime endDate, int? number = null)
         {
             try
@@ -159,10 +159,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="403">Forbidden</response>
         [HttpGet("cook/active")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Get(int page, Guid cookId, DateSort? sort = null) //TODO: заменить получение id из запроса, на получение из токена
+        public async Task<IActionResult> Get(int page, DateSort? sort = null) //TODO: заменить получение id из запроса, на получение из токена
         {
             try
             {
+                Guid cookId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out cookId);
                 var orders = await _orderService.GetOrdersAvaliableToCook(sort, page, cookId); 
                 return Ok(orders);
             }
@@ -185,10 +187,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="403">Forbidden</response>
         [HttpPut("{id}/cook/{take}")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Put(Guid id, bool take, Guid cookId)
+        public async Task<IActionResult> Put(Guid id, bool take)
         {
             try
             {
+                Guid cookId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out cookId);
                 await _orderService.TakeOrderCook(id, take ,cookId);
                 return Ok();
             }
@@ -211,10 +215,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         [HttpGet("cook/done")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(int page, Guid cookId, int? number=null) //TODO: заменить получение id из запроса, на получение из токена
+        public async Task<IActionResult> Get(int page, int? number=null) //TODO: заменить получение id из запроса, на получение из токена
         {
             try
             {
+                Guid cookId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out cookId);
                 var orders = _orderService.GetCookOrdersStory(number,page,cookId);
                 return Ok(orders);
             }
@@ -238,10 +244,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         [HttpGet("courier")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(int page, Guid courierId) //TODO: заменить получение id из запроса, на получение из токена
+        public async Task<IActionResult> Get(int page) //TODO: заменить получение id из запроса, на получение из токена
         {
             try
             {
+                Guid courierId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out courierId);
                 var orders = await _orderService.GetOrdersAvaliableToCourier(courierId);
                 return Ok(orders);
             }
@@ -254,7 +262,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Взять/Обновить статус заказа
         /// </summary>
         /// <remarks>
-        /// Поле courierId временное, будет убрано после добавления авторизации и аутентификации. 
         /// При значении поля take=true, метод назанчит заказ курьеру, а при take=false изменит стадию доставки на следующую.
         /// </remarks>
         /// <returns></returns>
@@ -264,10 +271,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="403">Forbidden</response>
         [HttpPut("{id}/courier/{take}")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> PutCourier(Guid id, bool take, Guid courierId)
+        public async Task<IActionResult> PutCourier(Guid id, bool take)
         {
             try
             {
+                Guid courierId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out courierId);
                 await _orderService.TakeOrderCourier(id,take, courierId);
                 return Ok();
             }
@@ -291,10 +300,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="403">Forbidden</response>
         [HttpDelete("{id}/courier/cancel")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> CancelCourier(Guid id, Guid courierId)
+        public async Task<IActionResult> CancelCourier(Guid id)
         {
             try
             {
+                Guid courierId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out courierId);
                 await _orderService.CancelOrderCourier(id, courierId);
                 return Ok();
             }
@@ -322,10 +333,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="403">Forbidden</response>
         [HttpGet("manager")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Get(int page, Guid managerId, DateTime startDateOrder, DateTime endDateOrder, DateTime startDateDelivery, DateTime endDateDelivery,  int? number = null)
+        public async Task<IActionResult> Get(int page, DateTime startDateOrder, DateTime endDateOrder, DateTime startDateDelivery, DateTime endDateDelivery,  int? number = null)
         {
             try
             {
+                Guid managerId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out managerId);
                 var orders = await _orderService.GetRestaurantOrders(page, managerId, startDateOrder, endDateOrder, startDateDelivery, endDateDelivery, number);
                 return Ok(orders);
             }

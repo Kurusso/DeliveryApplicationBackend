@@ -32,9 +32,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DeliveryAgreagatorApplication.API.Common\DeliveryAgreagatorApplication.Main.Common.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.Common\DeliveryAgreagatorApplication.Common.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Main.BL\DeliveryAgreagatorApplication.Main.BL.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Main.DAL\DeliveryAgreagatorApplication.Main.DAL.csproj" />
-    <ProjectReference Include="..\DeliveryAgreagatorBackendApplication.Auth\DeliveryAgreagatorApplication.Auth.csproj" />
   </ItemGroup>
 
 </Project>

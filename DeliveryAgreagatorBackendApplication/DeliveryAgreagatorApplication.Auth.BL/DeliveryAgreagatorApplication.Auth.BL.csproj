@@ -24,12 +24,14 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.28.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.28.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.Common\DeliveryAgreagatorApplication.Auth.Common.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.DAL\DeliveryAgreagatorApplication.Auth.DAL.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.Common\DeliveryAgreagatorApplication.Common.csproj" />
   </ItemGroup>
 
 </Project>

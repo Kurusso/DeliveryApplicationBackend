@@ -32,6 +32,7 @@
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.BL\DeliveryAgreagatorApplication.Auth.BL.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.Common\DeliveryAgreagatorApplication.Auth.Common.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.DAL\DeliveryAgreagatorApplication.Auth.DAL.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.Common\DeliveryAgreagatorApplication.Common.csproj" />
   </ItemGroup>
 
 </Project>
