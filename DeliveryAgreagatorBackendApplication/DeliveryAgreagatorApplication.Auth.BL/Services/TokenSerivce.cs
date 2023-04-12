@@ -43,6 +43,7 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
                         claims.Add(claim);
                     }
                 }
+            
             }
             return claims;
         }

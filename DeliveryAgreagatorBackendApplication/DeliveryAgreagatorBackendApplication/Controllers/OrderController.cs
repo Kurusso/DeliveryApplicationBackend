@@ -22,9 +22,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <summary>
         /// Создать заказ
         /// </summary>
-        /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
-        /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="400">Bad Request</response>
@@ -53,9 +50,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <summary>
         /// Удалить заказ
         /// </summary>
-        /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
-        /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="400">Bad Request</response>
@@ -86,7 +80,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Получить все свои заказы
         /// </summary>
         /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации. 
         /// Поле "name" может содержать часть номера искомых заказов. 
         /// Поля startDate и endDate включают в себя крайние границы. 
         /// Поле active - показывает только актвные в случае active=true и только историю заказав при active=false.
@@ -97,7 +90,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         [HttpGet("{active}/customer")]
-        [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")] 
+        [Authorize(Policy = "OrderOperationsCustomer", AuthenticationSchemes = "Bearer")]
+        [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllOrders(bool active,int page, DateTime startDate, DateTime endDate, int? number = null)
         {
             try
@@ -159,7 +153,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="403">Forbidden</response>
         [HttpGet("cook/active")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Get(int page, DateSort? sort = null) //TODO: заменить получение id из запроса, на получение из токена
+        [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get(int page, DateSort? sort = null) 
         {
             try
             {
@@ -177,7 +172,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Взять/Выполнить заказ поваром
         /// </summary>
         /// <remarks>
-        /// Поле cookId временное, будет убрано после добавления авторизации и аутентификации. 
         /// При значении поля take=true, метод назанчит заказ повару, а при take=false изменит стадию приготовления на следующую.
         /// </remarks>
         /// <returns></returns>
@@ -204,9 +198,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <summary>
         /// История заказов повара
         /// </summary>
-        /// <remarks>
-        /// Поле cookId временное, будет убрано после добавления авторизации и аутентификации. 
-        /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="500">Not Implemented</response>
@@ -215,7 +206,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         [HttpGet("cook/done")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(int page, int? number=null) //TODO: заменить получение id из запроса, на получение из токена
+        public async Task<IActionResult> Get(int page, int? number=null) 
         {
             try
             {
@@ -233,7 +224,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Получить заказы достпупные курьеру
         /// </summary>
         /// <remarks>
-        /// Поле courierId временное, будет убрано после добавления авторизации и аутентификации. 
         /// Поле блюд внутри заказа приходит, пустым так как это излишняя информация для курьера.
         /// </remarks>
         /// <returns></returns>
@@ -244,7 +234,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         [HttpGet("courier")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(int page) //TODO: заменить получение id из запроса, на получение из токена
+        public async Task<IActionResult> Get(int page) 
         {
             try
             {
@@ -289,7 +279,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Отменить заказ
         /// </summary>
         /// <remarks>
-        /// Поле courierId временное, будет убрано после добавления авторизации и аутентификации.
         /// Курьер может отменить только тот заказ, котороый находиться в статусе "Delivery".
         /// </remarks>
         /// <returns></returns>
@@ -322,7 +311,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Получить все заказы ресторана
         /// </summary>
         /// <remarks>
-        /// Поле managerId временное, будет убрано после добавления авторизации и аутентификации.
         /// Поле "name" может содержать часть номера искомых заказов. 
         /// Поля startDateOrder, endDateOrder, startDateDelivery и endDateDelivery включают в себя крайние границы. 
         /// </remarks>
@@ -333,6 +321,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="403">Forbidden</response>
         [HttpGet("manager")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
+        [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(int page, DateTime startDateOrder, DateTime endDateOrder, DateTime startDateDelivery, DateTime endDateDelivery,  int? number = null)
         {
             try

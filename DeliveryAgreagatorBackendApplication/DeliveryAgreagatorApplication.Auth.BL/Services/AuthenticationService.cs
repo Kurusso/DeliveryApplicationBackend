@@ -58,10 +58,6 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             Guid userGuidId;
             Guid.TryParse(refreshTokenId, out refreshTokenGuidId);
             Guid.TryParse(userId, out userGuidId);
-            if (refreshTokenId == null || userId==null)
-            {
-                throw new ArgumentException("Incorrect token!");
-            }
             var refreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Id == refreshTokenGuidId && x.Expires>DateTime.UtcNow);
             var userDb = await _context.Users.FirstOrDefaultAsync(x => x.Id == userGuidId);
             if (refreshToken == null || userDb==null)

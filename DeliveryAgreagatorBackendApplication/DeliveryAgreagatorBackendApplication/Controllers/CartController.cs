@@ -20,9 +20,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <summary>
         /// Получить блюда в корзине
         /// </summary>
-        /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
-        /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="501">Not Implemented</response>
@@ -48,9 +45,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <summary>
         /// Добавить блюдо в корзину
         /// </summary>
-        /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
-        /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
@@ -75,9 +69,6 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <summary>
         /// Удалить блюдо из корзины
         /// </summary>
-        /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
-        /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>

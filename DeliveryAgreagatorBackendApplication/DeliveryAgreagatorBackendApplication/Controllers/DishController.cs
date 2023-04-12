@@ -21,7 +21,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Получить информацию о блюде
         /// </summary>
         /// <returns></returns>
-        /// /// <response code="200">Success</response>
+        /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(DishDTO), (int)HttpStatusCode.OK)]
@@ -41,13 +41,13 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Получить информацию о блюде
         /// </summary>
         /// <returns></returns>
-        /// /// <response code="200">Success</response>
+        /// <response code="200">Success</response>
         /// <response code="401">Bad Request</response>
         /// <response code="404">Not Found</response>
         /// <response code="401">Unauthorized</response>
         [HttpPost("{id}/rating")]
         [Authorize(Policy = "SetRating", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> SetRating(Guid restaurantId, Guid Id, int rating)  //TODO: заменить получение userID из запроса, на получение из токена. 
+        public async Task<IActionResult> SetRating(Guid restaurantId, Guid Id, int rating) 
         {
             try
             {
