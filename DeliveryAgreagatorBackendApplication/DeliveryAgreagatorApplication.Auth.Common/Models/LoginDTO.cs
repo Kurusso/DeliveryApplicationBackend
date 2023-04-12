@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DeliveryAgreagatorBackendApplication.Auth.Models
+namespace DeliveryAgreagatorApplication.Auth.Common.Models
 {
     public class LoginDTO
     {

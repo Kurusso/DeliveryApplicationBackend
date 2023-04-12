@@ -1,11 +1,13 @@
-﻿using DeliveryAgreagatorBackendApplication.Auth.Models;
+﻿
+using DeliveryAgreagatorApplication.Auth.DAL;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
 using System.Xml.Linq;
 
-namespace DeliveryAgreagatorBackendApplication.Auth.Services
+namespace DeliveryAgreagatorApplication.Auth.BL.Services
 {
     public class RolesAndClaimsInit
     {

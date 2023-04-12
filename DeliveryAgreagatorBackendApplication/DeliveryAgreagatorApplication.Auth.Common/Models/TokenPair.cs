@@ -1,4 +1,4 @@
-﻿namespace DeliveryAgreagatorBackendApplication.Auth.Models
+﻿namespace DeliveryAgreagatorApplication.Auth.Common.Models
 {
     public class TokenPair
     {

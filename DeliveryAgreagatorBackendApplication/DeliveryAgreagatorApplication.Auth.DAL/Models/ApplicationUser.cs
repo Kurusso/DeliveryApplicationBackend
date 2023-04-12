@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace DeliveryAgreagatorBackendApplication.Auth.Models
+namespace DeliveryAgreagatorApplication.Auth.DAL.Models
 {
     public class ApplicationUser: IdentityUser<Guid>
     {

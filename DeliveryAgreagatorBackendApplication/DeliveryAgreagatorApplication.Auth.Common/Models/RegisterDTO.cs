@@ -1,8 +1,8 @@
-﻿using DeliveryAgreagatorBackendApplication.Auth.Models.Enums;
+﻿using DeliveryAgreagatorApplication.Auth.Common.Models.Enums;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace DeliveryAgreagatorBackendApplication.Auth.Models
+namespace DeliveryAgreagatorApplication.Auth.Common.Models
 {
     public class RegisterDTO
     {

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -24,13 +24,10 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.28.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.28.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.BL\DeliveryAgreagatorApplication.Auth.BL.csproj" />
-    <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.Common\DeliveryAgreagatorApplication.Auth.Common.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.DAL\DeliveryAgreagatorApplication.Auth.DAL.csproj" />
   </ItemGroup>
 

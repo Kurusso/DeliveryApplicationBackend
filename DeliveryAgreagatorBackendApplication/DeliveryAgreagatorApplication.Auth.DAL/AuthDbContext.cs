@@ -1,10 +1,10 @@
-﻿using DeliveryAgreagatorBackendApplication.Auth.Models;
+﻿using DeliveryAgreagatorApplication.Auth.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-namespace DeliveryAgreagatorBackendApplication.Auth
+namespace DeliveryAgreagatorApplication.Auth.DAL
 {
     public class AuthDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {

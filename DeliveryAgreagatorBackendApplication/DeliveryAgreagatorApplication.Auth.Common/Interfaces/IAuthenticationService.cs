@@ -1,8 +1,8 @@
-﻿using DeliveryAgreagatorBackendApplication.Auth.Models;
+﻿using DeliveryAgreagatorApplication.Auth.Common.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using System.Security.Claims;
 
-namespace DeliveryAgreagatorBackendApplication.Auth.Services
+namespace DeliveryAgreagatorApplication.Auth.Common.Interfaces
 {
     public interface IAuthenticationService
     {

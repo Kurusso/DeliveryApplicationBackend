@@ -1,5 +1,5 @@
-﻿using DeliveryAgreagatorBackendApplication.Auth.Models;
-using DeliveryAgreagatorBackendApplication.Auth.Services;
+﻿using DeliveryAgreagatorApplication.Auth.Common.Interfaces;
+using DeliveryAgreagatorApplication.Auth.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -15,6 +15,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorApplicati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorApplication.Main.DAL", "DeliveryAgreagatorApplication.Main.DAL\DeliveryAgreagatorApplication.Main.DAL.csproj", "{5F421FC4-5D07-481A-8480-04517CCFA221}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorApplication.Auth.BL", "DeliveryAgreagatorApplication.Auth.BL\DeliveryAgreagatorApplication.Auth.BL.csproj", "{E4CA4C82-EE68-4FB7-B2CC-47B141903CF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorApplication.Auth.Common", "DeliveryAgreagatorApplication.Auth.Common\DeliveryAgreagatorApplication.Auth.Common.csproj", "{512F270D-556E-406B-BE81-90597F15CEC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorApplication.Auth.DAL", "DeliveryAgreagatorApplication.Auth.DAL\DeliveryAgreagatorApplication.Auth.DAL.csproj", "{51AC0919-53B0-4FCC-B5DC-C5C04506F081}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +47,18 @@ Global
 		{5F421FC4-5D07-481A-8480-04517CCFA221}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F421FC4-5D07-481A-8480-04517CCFA221}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F421FC4-5D07-481A-8480-04517CCFA221}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4CA4C82-EE68-4FB7-B2CC-47B141903CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4CA4C82-EE68-4FB7-B2CC-47B141903CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4CA4C82-EE68-4FB7-B2CC-47B141903CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4CA4C82-EE68-4FB7-B2CC-47B141903CF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{512F270D-556E-406B-BE81-90597F15CEC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{512F270D-556E-406B-BE81-90597F15CEC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{512F270D-556E-406B-BE81-90597F15CEC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{512F270D-556E-406B-BE81-90597F15CEC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51AC0919-53B0-4FCC-B5DC-C5C04506F081}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51AC0919-53B0-4FCC-B5DC-C5C04506F081}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51AC0919-53B0-4FCC-B5DC-C5C04506F081}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51AC0919-53B0-4FCC-B5DC-C5C04506F081}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-﻿namespace DeliveryAgreagatorBackendApplication.Auth.Models.Enums
+﻿namespace DeliveryAgreagatorApplication.Auth.Common.Models.Enums
 {
     public enum Gender
     {

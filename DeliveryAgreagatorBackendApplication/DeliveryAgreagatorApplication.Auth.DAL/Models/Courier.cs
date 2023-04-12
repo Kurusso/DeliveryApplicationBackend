@@ -1,6 +1,6 @@
-﻿namespace DeliveryAgreagatorBackendApplication.Auth.Models
+﻿namespace DeliveryAgreagatorApplication.Auth.DAL.Models
 {
-    public class Manager
+    public class Courier
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

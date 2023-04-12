@@ -1,4 +1,7 @@
-﻿using DeliveryAgreagatorBackendApplication.Auth.Models;
+﻿using DeliveryAgreagatorApplication.Auth.Common.Interfaces;
+using DeliveryAgreagatorApplication.Auth.Common.Models;
+using DeliveryAgreagatorApplication.Auth.DAL;
+using DeliveryAgreagatorApplication.Auth.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -6,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
-namespace DeliveryAgreagatorBackendApplication.Auth.Services
+namespace DeliveryAgreagatorApplication.Auth.BL.Services
 {
     public class AuthenticationService : IAuthenticationService
     {

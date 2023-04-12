@@ -1,7 +1,7 @@
-﻿using DeliveryAgreagatorBackendApplication.Auth.Models;
+﻿using DeliveryAgreagatorApplication.Auth.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace DeliveryAgreagatorBackendApplication.Auth.Services
+namespace DeliveryAgreagatorBackendApplication.Auth.TokenValidators
 {
     public class ValidatorsPile
     {
@@ -12,7 +12,7 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
             Guid.TryParse(refreshTokenId, out refreshTokenGuidId);
             var dbcontext = context.HttpContext.RequestServices.GetService<AuthDbContext>();
 
-            if (dbcontext.RefreshTokens.FirstOrDefault(x=>x.Id==refreshTokenGuidId && x.Expires>DateTime.UtcNow)==null)
+            if (dbcontext.RefreshTokens.FirstOrDefault(x => x.Id == refreshTokenGuidId && x.Expires > DateTime.UtcNow) == null)
                 context.Fail("This token has been revoked!");
 
             return Task.CompletedTask;
@@ -20,3 +20,4 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Services
         }
     }
 }
+
