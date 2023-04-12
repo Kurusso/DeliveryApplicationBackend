@@ -1,6 +1,6 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 
-namespace DeliveryAgreagatorBackendApplication.Services
+namespace DeliveryAgreagatorApplication.Main.Common.Interfaces
 {
     public interface IRestaurantService
     {

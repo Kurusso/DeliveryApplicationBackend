@@ -1,10 +1,12 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
-namespace DeliveryAgreagatorBackendApplication.Services
+namespace DeliveryAgreagatorApplication.Main.BL.Services
 {
     public class OrderService : IOrderService
     {

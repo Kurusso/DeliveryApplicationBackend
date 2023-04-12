@@ -1,8 +1,11 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.DAL;
+using DeliveryAgreagatorBackendApplication;
 using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeliveryAgreagatorBackendApplication.Services
+namespace DeliveryAgreagatorApplication.Main.BL.Services
 {
     public class CartService : ICartService
     {

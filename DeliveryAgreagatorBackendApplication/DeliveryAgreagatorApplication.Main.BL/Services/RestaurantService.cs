@@ -1,8 +1,10 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.DAL;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace DeliveryAgreagatorBackendApplication.Services
+namespace DeliveryAgreagatorApplication.Main.BL.Services
 {
     public class RestaurantService: IRestaurantService
     {

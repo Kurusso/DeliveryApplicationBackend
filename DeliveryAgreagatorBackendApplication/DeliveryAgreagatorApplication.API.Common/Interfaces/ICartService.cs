@@ -1,7 +1,6 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
-using DeliveryAgreagatorBackendApplication.Models;
 
-namespace DeliveryAgreagatorBackendApplication.Services
+namespace DeliveryAgreagatorApplication.Main.Common.Interfaces
 {
     public interface ICartService
     {

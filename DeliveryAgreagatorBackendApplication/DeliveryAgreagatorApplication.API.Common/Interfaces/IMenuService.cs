@@ -1,8 +1,7 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
-using Microsoft.AspNetCore.Mvc;
 
-namespace DeliveryAgreagatorBackendApplication.Services
+namespace DeliveryAgreagatorApplication.Main.Common.Interfaces
 {
     public interface IMenuService
     {

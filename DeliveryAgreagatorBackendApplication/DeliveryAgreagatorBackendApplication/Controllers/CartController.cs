@@ -1,5 +1,5 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
-using DeliveryAgreagatorBackendApplication.Services;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

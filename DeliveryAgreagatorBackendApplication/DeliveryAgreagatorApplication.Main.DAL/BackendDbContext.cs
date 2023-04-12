@@ -2,7 +2,7 @@
 using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeliveryAgreagatorBackendApplication
+namespace DeliveryAgreagatorApplication.Main.DAL
 {
     public class BackendDbContext: DbContext 
     {

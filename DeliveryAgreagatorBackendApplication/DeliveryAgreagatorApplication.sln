@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2AB741
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorApplication.Main.Common", "DeliveryAgreagatorApplication.API.Common\DeliveryAgreagatorApplication.Main.Common.csproj", "{D53D264F-86B2-4B41-B6DC-AE47028A5FD6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorApplication.Main.BL", "DeliveryAgreagatorApplication.Main.BL\DeliveryAgreagatorApplication.Main.BL.csproj", "{73AC8538-A14F-4185-BBC8-BA15A4C29FE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorApplication.Main.DAL", "DeliveryAgreagatorApplication.Main.DAL\DeliveryAgreagatorApplication.Main.DAL.csproj", "{5F421FC4-5D07-481A-8480-04517CCFA221}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +33,14 @@ Global
 		{D53D264F-86B2-4B41-B6DC-AE47028A5FD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D53D264F-86B2-4B41-B6DC-AE47028A5FD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D53D264F-86B2-4B41-B6DC-AE47028A5FD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73AC8538-A14F-4185-BBC8-BA15A4C29FE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73AC8538-A14F-4185-BBC8-BA15A4C29FE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73AC8538-A14F-4185-BBC8-BA15A4C29FE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73AC8538-A14F-4185-BBC8-BA15A4C29FE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F421FC4-5D07-481A-8480-04517CCFA221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F421FC4-5D07-481A-8480-04517CCFA221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F421FC4-5D07-481A-8480-04517CCFA221}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F421FC4-5D07-481A-8480-04517CCFA221}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

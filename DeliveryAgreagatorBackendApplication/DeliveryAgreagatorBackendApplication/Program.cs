@@ -1,8 +1,10 @@
+using DeliveryAgreagatorApplication.Main.BL.Services;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication;
 using DeliveryAgreagatorBackendApplication.Auth.Models;
 using DeliveryAgreagatorBackendApplication.Auth.Services;
 using DeliveryAgreagatorBackendApplication.Schemas;
-using DeliveryAgreagatorBackendApplication.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
