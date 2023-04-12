@@ -1,5 +1,5 @@
-﻿using DeliveryAgreagatorBackendApplication.Model.Enums;
-using DeliveryAgreagatorBackendApplication.Models.DTO;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.API.Common.Models.Enums;
 
 namespace DeliveryAgreagatorBackendApplication.Services
 {

@@ -1,4 +1,4 @@
-﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 
 namespace DeliveryAgreagatorBackendApplication.Services
 {

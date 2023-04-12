@@ -1,4 +1,4 @@
-﻿namespace DeliveryAgreagatorBackendApplication.Models.DTO
+﻿namespace DeliveryAgreagatorApplication.API.Common.Models.DTO
 {
 
     public class OrderPostDTO

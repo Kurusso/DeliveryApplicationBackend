@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliveryAgreagatorBackendApplication.Models
 {
@@ -10,5 +11,16 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public string Picture { get; set; }
         public ICollection<CookDbModel> Cooks { get; set; }
         public ICollection<MenuDbModel> Menus { get; set; }
+
+        public RestaurantShortDTO ConvertToDTO()
+        {
+            var model = new RestaurantShortDTO
+            {
+                Id = Id,
+                Name = Name,
+                Picture = Picture
+            };
+            return model;
+        }
     }
 }

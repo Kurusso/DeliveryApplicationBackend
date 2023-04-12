@@ -1,7 +1,6 @@
 using DeliveryAgreagatorBackendApplication;
 using DeliveryAgreagatorBackendApplication.Auth.Models;
 using DeliveryAgreagatorBackendApplication.Auth.Services;
-using DeliveryAgreagatorBackendApplication.Models.DTO;
 using DeliveryAgreagatorBackendApplication.Schemas;
 using DeliveryAgreagatorBackendApplication.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

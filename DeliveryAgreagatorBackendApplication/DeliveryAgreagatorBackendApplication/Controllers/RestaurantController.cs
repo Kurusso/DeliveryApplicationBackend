@@ -1,4 +1,4 @@
-﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorBackendApplication.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

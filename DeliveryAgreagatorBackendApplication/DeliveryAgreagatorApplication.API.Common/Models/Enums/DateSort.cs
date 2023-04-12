@@ -1,4 +1,4 @@
-﻿namespace DeliveryAgreagatorBackendApplication.Model.Enums
+﻿namespace DeliveryAgreagatorApplication.API.Common.Models.Enums
 {
     public enum DateSort
     {

@@ -1,10 +1,10 @@
-﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace DeliveryAgreagatorBackendApplication.Services
 {
-    public class RestaurantService:IRestaurantService
+    public class RestaurantService: IRestaurantService
     {
         private readonly int _pageSize = 6;
 		private int _pageCount = 6;
@@ -35,7 +35,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
 			c => Regex.IsMatch(c.Name, _regexp))
 			.Skip(_pageSize*(page-1)).Take(_pageSize).ToList();
 
-			var RestaurantsDTO = Restaurants.Select(x => new RestaurantShortDTO(x)).ToList();
+			var RestaurantsDTO = Restaurants.Select(x => x.ConvertToDTO()).ToList();
 			return RestaurantsDTO;
 		}
 

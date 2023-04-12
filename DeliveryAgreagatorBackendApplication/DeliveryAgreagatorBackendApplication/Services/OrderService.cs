@@ -1,8 +1,6 @@
-﻿using DeliveryAgreagatorBackendApplication.Model.Enums;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.API.Common.Models.Enums;
 using DeliveryAgreagatorBackendApplication.Models;
-using DeliveryAgreagatorBackendApplication.Models.DTO;
-using DeliveryAgreagatorBackendApplication.Models.Enums;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
@@ -37,7 +35,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
         public async Task<List<OrderDTO>> GetActiveOrders(Guid userId) //TODO: удалить метод, если не понадобиться
         {
             var orders = _context.Orders.Include(x=>x.DishesInCart).ThenInclude(c=>c.Dish).ThenInclude(z=>z.Ratings).Where(x=>x.Status!=Status.Canceled && x.Status!=Status.Delivered && x.CustomerId==userId).ToList();
-            var ordersDTO = orders.Select(x => new OrderDTO(x)).ToList();
+            var ordersDTO = orders.Select(x => x.ConvertToDTO()).ToList();
             return ordersDTO;
         }
 
@@ -62,7 +60,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
                 throw new ArgumentOutOfRangeException($"{page} is incorrect page number!");
             }
             orders = orders.Skip(_pageSize * (page - 1)).Take(_pageSize).ToList();
-            var ordersDTO = orders.Select(x=>new OrderDTO(x)).ToList();
+            var ordersDTO = orders.Select(x=>x.ConvertToDTO()).ToList();
             return ordersDTO;
         }
 
@@ -152,7 +150,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
                 }
             }
             orders = orders.Skip(_pageSize * (page - 1)).Take(_pageSize).ToList();
-            var ordersDTO = orders.Select(x => new OrderDTO(x)).ToList();
+            var ordersDTO = orders.Select(x => x.ConvertToDTO()).ToList();
             return ordersDTO;
         }
 
@@ -197,14 +195,14 @@ namespace DeliveryAgreagatorBackendApplication.Services
             }
             var orders = _context.Orders.Include(c => c.DishesInCart).ThenInclude(c => c.Dish).Where(
             c => Regex.IsMatch(c.Number.ToString(), _regexp) && c.CookId == cookId && c.Status!=Status.Kitchen && c.Status!=Status.Packaging);
-            var ordersDTO = orders.Select(x => new OrderDTO(x)).ToList();
+            var ordersDTO = orders.Select(x => x.ConvertToDTO()).ToList();
             return ordersDTO;
         }
 
         public async Task<List<OrderDTO>> GetOrdersAvaliableToCourier(Guid coourierId)
         {
             var orders = _context.Orders.Where(x => x.Status == Status.Packed);
-            var ordersDTO = orders.Select(x=>new OrderDTO(x)).ToList() ;
+            var ordersDTO = orders.Select(x=>x.ConvertToDTO()).ToList() ;
             return ordersDTO;
         }
 
@@ -272,7 +270,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
                 throw new ArgumentOutOfRangeException($"{page} is incorrect page number!");
             }
             orders = orders.Skip(_pageSize * (page - 1)).Take(_pageSize);
-            var ordersDTO = orders.Select(x => new OrderDTO(x)).ToList();
+            var ordersDTO = orders.Select(x => x.ConvertToDTO()).ToList();
             return ordersDTO;
         }
     }

@@ -31,7 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DeliveryAgreagatorBackendApplication.Auth\DeliveryAgreagatorBackendApplication.Auth.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.API.Common\DeliveryAgreagatorApplication.Main.Common.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorBackendApplication.Auth\DeliveryAgreagatorApplication.Auth.csproj" />
   </ItemGroup>
 
 </Project>

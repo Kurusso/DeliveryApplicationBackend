@@ -1,4 +1,6 @@
-﻿namespace DeliveryAgreagatorBackendApplication.Models
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+
+namespace DeliveryAgreagatorBackendApplication.Models
 {
     public class DishInCartDbModel
     {
@@ -24,5 +26,15 @@
             Counter = model.Counter;
         }
         public DishInCartDbModel() { }
+
+        public DishInCartDTO ConvertToDTO()
+        {
+            var model = new DishInCartDTO { 
+                Counter = this.Counter, 
+                Id = this.Id,
+                Dish = this.Dish.ConvertToDTO()
+            };
+            return model;
+        }
     }
 }

@@ -1,5 +1,5 @@
-﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
-using DeliveryAgreagatorBackendApplication.Models.Enums;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.API.Common.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
@@ -27,7 +27,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
 			}
             var dishes = menu.Dishes.Where(dish => isVegetarian == true ? dish.IsVegetarian : true).Where(dish => categories.Count == 0 ? true : categories.Any(c => c == dish.Category));
 
-            var dishesDTO = dishes.Select(x => new DishDTO(x));
+            var dishesDTO = dishes.Select(x => x.ConvertToDTO());
 
             if ((dishesDTO.Count() % _pageSize) == 0)
             {
@@ -88,7 +88,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
             }
             else {
                 var menus = active ? restaurant.Menus.Where(c=>c.isActive).ToList() : restaurant.Menus.ToList();
-                var menusDTO = menus.Select(x =>new MenuShortDTO(x)).ToList();
+                var menusDTO = menus.Select(x =>x.ConvertToDTO()).ToList();
                 return menusDTO;
 			}
 		}

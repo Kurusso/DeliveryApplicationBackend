@@ -1,4 +1,4 @@
-﻿namespace DeliveryAgreagatorBackendApplication.Models.Enums
+﻿namespace DeliveryAgreagatorApplication.API.Common.Models.Enums
 {
     public enum Status
     {

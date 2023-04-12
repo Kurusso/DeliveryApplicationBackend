@@ -1,5 +1,5 @@
-﻿using DeliveryAgreagatorBackendApplication.Models;
-using DeliveryAgreagatorBackendApplication.Models.DTO;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryAgreagatorBackendApplication.Services
@@ -67,7 +67,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
         public async Task<List<DishInCartDTO>> GetCart(Guid userId)
         {
             var dishes = _context.DishInCart.Include(x=>x.Dish).ThenInclude(c=>c.Ratings).Where(x=>x.CustomerId==userId && x.Active==true).ToList();
-            var dishesDTO = dishes.Select(x => new DishInCartDTO(x)).ToList();
+            var dishesDTO = dishes.Select(x => x.ConvertToDTO()).ToList();
             return dishesDTO;
         }
     }

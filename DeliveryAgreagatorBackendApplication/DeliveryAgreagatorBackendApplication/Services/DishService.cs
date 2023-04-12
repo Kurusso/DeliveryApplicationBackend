@@ -1,6 +1,6 @@
-﻿using DeliveryAgreagatorBackendApplication.Models;
-using DeliveryAgreagatorBackendApplication.Models.DTO;
-using DeliveryAgreagatorBackendApplication.Models.Enums;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryAgreagatorBackendApplication.Services
@@ -23,7 +23,7 @@ namespace DeliveryAgreagatorBackendApplication.Services
             }
             else
             {
-                return new DishDTO(dish);
+                return dish.ConvertToDTO();
             }
         }
 

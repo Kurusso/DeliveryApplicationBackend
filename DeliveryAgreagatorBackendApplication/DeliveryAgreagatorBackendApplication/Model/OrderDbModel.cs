@@ -1,4 +1,5 @@
-﻿using DeliveryAgreagatorBackendApplication.Models.Enums;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.API.Common.Models.Enums;
 
 namespace DeliveryAgreagatorBackendApplication.Models
 {
@@ -38,5 +39,21 @@ namespace DeliveryAgreagatorBackendApplication.Models
             Price = model.DishesInCart.Sum(x => x.Dish.Price * x.Counter);
         }
         public OrderDbModel() { }
+
+        public OrderDTO ConvertToDTO()
+        {
+            var model = new OrderDTO
+            {
+                Id = Id,
+                Status = Status,
+                DeliveryTime = DeliveryTime,
+                Address = Address,
+                Number = Number,
+                OrderTime = OrderTime,
+                Price = Price,
+                DishesInCart = (this.DishesInCart != null && this.DishesInCart.Any()) ? this.DishesInCart.Select(x => x.ConvertToDTO()).ToList() : null
+            };
+            return model;
+        }
     }
 }
