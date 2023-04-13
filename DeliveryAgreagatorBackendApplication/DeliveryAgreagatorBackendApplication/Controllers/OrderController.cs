@@ -212,7 +212,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             {
                 Guid cookId;
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out cookId);
-                var orders = _orderService.GetCookOrdersStory(number,page,cookId);
+                var orders = await _orderService.GetCookOrdersStory(number,page,cookId);
                 return Ok(orders);
             }
             catch (Exception ex)

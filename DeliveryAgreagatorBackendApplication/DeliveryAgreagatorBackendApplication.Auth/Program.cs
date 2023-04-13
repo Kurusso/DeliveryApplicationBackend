@@ -21,6 +21,7 @@ builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connec
 builder.Services.AddControllers();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ITokenSerivce, TokenSerivce>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options=>
 options.Password.RequiredLength = 10)
     .AddEntityFrameworkStores<AuthDbContext>()

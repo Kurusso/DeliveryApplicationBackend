@@ -15,6 +15,7 @@ namespace DeliveryAgreagatorApplication.Auth.Common.Models
         public string Password { get; set; }
 
         [Required]
+        [MinLength(10)]
         [Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
         public string PasswordConfirm { get; set; }
 
