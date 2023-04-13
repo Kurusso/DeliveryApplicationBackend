@@ -1,5 +1,5 @@
-﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
-using DeliveryAgreagatorBackendApplication.Services;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +20,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <summary>
         /// Получить блюда в корзине
         /// </summary>
-        /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
-        /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="501">Не имплементированная ошибка</response>
+        /// <response code="200">Success</response>
+        /// <response code="501">Not Implemented</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
         [HttpGet]
         [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<DishInCartDTO>), (int)HttpStatusCode.OK)]
@@ -46,12 +45,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <summary>
         /// Добавить блюдо в корзину
         /// </summary>
-        /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
-        /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="404">Не существует блюда dishId</response>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
         [HttpPost("dish/{dishId}")]
         [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> PostToCart(Guid dishId) 
@@ -71,12 +69,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <summary>
         /// Удалить блюдо из корзины
         /// </summary>
-        /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации
-        /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="404">Не существует блюда dishId</response>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
         [HttpDelete("dish/{dishId}")]
         [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> DeleteDecrease( Guid dishId, bool deacrease=false) 

@@ -1,9 +1,9 @@
+using DeliveryAgreagatorApplication.Common.Configurations;
+using DeliveryAgreagatorApplication.Common.Schemas;
+using DeliveryAgreagatorApplication.Main.BL.Services;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication;
-using DeliveryAgreagatorBackendApplication.Auth.Models;
-using DeliveryAgreagatorBackendApplication.Auth.Services;
-using DeliveryAgreagatorBackendApplication.Models.DTO;
-using DeliveryAgreagatorBackendApplication.Schemas;
-using DeliveryAgreagatorBackendApplication.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen(c =>
 	c.SchemaFilter<EnumSchemaFilter>();
     var basePath = AppContext.BaseDirectory;
 
-    var xmlPath = Path.Combine(basePath, "DeliveryAgreagatorBackendApplication.xml");
+    var xmlPath = Path.Combine(basePath, "DeliveryAgreagatorApplication.Main.xml");
     c.IncludeXmlComments(xmlPath);
 
 });

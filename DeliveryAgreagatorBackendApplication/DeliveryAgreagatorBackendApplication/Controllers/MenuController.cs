@@ -1,6 +1,6 @@
-﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
-using DeliveryAgreagatorBackendApplication.Models.Enums;
-using DeliveryAgreagatorBackendApplication.Services;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -25,8 +25,8 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// При значении active = false : метод вернёт все меню, а не только неактивные.
         /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="404">Не существует ресторана restaurantId</response>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
         [HttpGet]
         [ProducesResponseType(typeof(List<MenuShortDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenus(Guid restaurantId, bool active) 
@@ -46,9 +46,10 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// При значении isVegetarian = false : метод вернёт все блюда, а не только не вегетарианские.
         /// </remarks>
         /// <returns></returns>
-        ///  <response code="200">Успешное выполнение</response>
-        ///  <response code="404">Не существует меню id в ресторане restaurantId</response>
-        /// <response code="401">Указан неверный номер страницы</response>
+        ///  <response code="200">Success</response>
+        ///  <response code="404">Not Found</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="403">Forbidden</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(List<DishDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenu(Guid restaurantId, Guid id, [FromQuery] List<Category> categories, bool? isVegetarian, DishFilter? filter, int page) {
@@ -58,7 +59,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
 			}
 			catch (ArgumentOutOfRangeException e)
 			{
-				return Problem(title: e.Message, statusCode: 401);
+				return Problem(title: e.Message, statusCode: 400);
 			}
             catch(ArgumentException e) {
                 return Problem(title: e.Message, statusCode: 404);
