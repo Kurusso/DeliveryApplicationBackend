@@ -15,7 +15,7 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public OrderDbModel? Order { get; set; }
         public bool Active { get; set; }
         public int Counter { get; set; }
-
+        public int? PriceWhenOpdered { get; set; }
         public DishInCartDbModel(DishInCartDbModel model, Guid orderId) 
         {
             Id = Guid.NewGuid();
@@ -32,6 +32,7 @@ namespace DeliveryAgreagatorBackendApplication.Models
             var model = new DishInCartDTO { 
                 Counter = this.Counter, 
                 Id = this.Id,
+                PriceWhenOpdered= this.PriceWhenOpdered,
                 Dish = this.Dish.ConvertToDTO()
             };
             return model;

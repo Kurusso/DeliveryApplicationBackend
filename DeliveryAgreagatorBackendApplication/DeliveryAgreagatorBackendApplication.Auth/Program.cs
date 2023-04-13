@@ -1,17 +1,15 @@
 using DeliveryAgreagatorApplication.Auth.BL.Services;
 using DeliveryAgreagatorApplication.Auth.Common.Interfaces;
-using DeliveryAgreagatorApplication.Auth.Common.Models;
 using DeliveryAgreagatorApplication.Auth.DAL;
 using DeliveryAgreagatorApplication.Auth.DAL.Models;
 using DeliveryAgreagatorApplication.Common.Schemas;
-using DeliveryAgreagatorBackendApplication.Auth;
 using DeliveryAgreagatorBackendApplication.Auth.TokenValidators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +63,10 @@ builder.Services.AddAuthorization(options =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("TokenTypeClaim", "Refresh");
+        options.DefaultPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .RequireClaim("TokenTypeClaim", "Access")
+            .Build();
     });
 });
 var app = builder.Build();

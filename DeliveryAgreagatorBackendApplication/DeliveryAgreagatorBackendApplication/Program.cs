@@ -5,11 +5,13 @@ using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,32 +58,42 @@ builder.Services.AddAuthorization(options =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("CartOperations", "Allow");
+        policy.RequireClaim("TokenTypeClaim", "Access");
     });
     options.AddPolicy("SetRating", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("SetRating", "Allow");
+        policy.RequireClaim("TokenTypeClaim", "Access");
     });
     options.AddPolicy("OrderOperationsCustomer", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Customer");
+        policy.RequireClaim("TokenTypeClaim", "Access");
     });
     options.AddPolicy("OrderOperationsCook", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Cook");
+        policy.RequireClaim("TokenTypeClaim", "Access");
     });
     options.AddPolicy("OrderOperationsCourier", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Courier");
+        policy.RequireClaim("TokenTypeClaim", "Access");
     });
     options.AddPolicy("OrderOperationsManager", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Manager");
+        policy.RequireClaim("TokenTypeClaim", "Access");
     });
+    options.DefaultPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .RequireClaim("TokenTypeClaim", "Access")
+        .Build();
 });
 var app = builder.Build();
 

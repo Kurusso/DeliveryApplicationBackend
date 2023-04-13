@@ -92,6 +92,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             foreach (var dish in dishesInCart)
             {
                 dish.Active = false;
+                dish.PriceWhenOpdered = dish.Dish.Price;
             }
             await _context.AddAsync(order);
             await _context.SaveChangesAsync();
