@@ -1,4 +1,6 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.Common.Exceptions;
+using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication;
@@ -21,7 +23,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             var dish = await _context.Dishes.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.Id == dishId);
             if (dish == null)
             {
-                throw new ArgumentException($"There is no dish with this {dishId} id !");
+                throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId);
             }
             var dishInCart = await _context.DishInCart.FirstOrDefaultAsync(x => x.DishId == dishId && x.CustomerId == userId && x.Active);
             if (dishInCart != null)
@@ -48,12 +50,12 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             var dish = await _context.Dishes.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.Id == dishId);
             if (dish == null)
             {
-                throw new ArgumentException($"There is no dish with this {dishId} id!");
+                throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId);
             }
             var dishInCart = await _context.DishInCart.FirstOrDefaultAsync(x => x.DishId == dishId && x.CustomerId == userId && x.Active);
             if (dishInCart == null) 
             {
-                throw new ArgumentException($"There is no dish with this {dishId} id in your cart!");
+                throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId, "in your cart");
             }
             if (!deacrease)
             {

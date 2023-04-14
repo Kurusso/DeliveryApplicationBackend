@@ -22,8 +22,9 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// Поле "name" может содержать часть искомого имени ресторана 
         /// </remarks>
         /// <returns></returns>
-        /// /// <response code="200">Success</response>
+        /// <response code="200">Success</response>
         /// <response code="400">Bad Request</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet("{page}")]
         [ProducesResponseType(typeof(List<RestaurantShortDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllOnPage(int page, string? name)
@@ -35,7 +36,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch (ArgumentOutOfRangeException e)
             {
-                return Problem(title: e.Message, statusCode: 400);
+                return Problem(title: e.Message, statusCode: 404);
             }
         }
     }

@@ -2,6 +2,8 @@
 using DeliveryAgreagatorApplication.Auth.Common.Models;
 using DeliveryAgreagatorApplication.Auth.DAL;
 using DeliveryAgreagatorApplication.Auth.DAL.Models;
+using DeliveryAgreagatorApplication.Common.Exceptions;
+using DeliveryAgreagatorApplication.Common.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -62,7 +64,7 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             var userDb = await _context.Users.FirstOrDefaultAsync(x => x.Id == userGuidId);
             if (refreshToken == null || userDb==null)
             {
-                throw new InvalidOperationException("Token is not actual or correct!");
+                throw new TokenException();
             }
             
             _context.RefreshTokens.Remove(refreshToken);
@@ -86,17 +88,17 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             var isTaken = await _userManager.FindByNameAsync(model.FullName);
             if (isTaken != null)
             {
-                throw new InvalidDataException("Name is already taken!");
+                throw new ConflictException(ConflictExceptionSubjects.UserName, model.FullName);
             }
             isTaken = await _userManager.FindByEmailAsync(model.Login);
             if (isTaken != null)
             {
-                throw new InvalidDataException("Email is already taken!");
+                throw new ConflictException(ConflictExceptionSubjects.Email, model.Login);
             }
             isTaken = await _context.Users.FirstOrDefaultAsync(x => x.PhoneNumber == model.PhoneNumber);
             if (isTaken != null)
             {
-                throw new InvalidDataException("PhoneNumber is already taken!");
+                throw new ConflictException(ConflictExceptionSubjects.PhoneNumber, model.PhoneNumber);
             }
             var user = new ApplicationUser { Id = userId, Email=model.Login, EmailConfirmed=true, PasswordHash=BCrypt.Net.BCrypt.HashPassword(model.Password), PhoneNumber=model.PhoneNumber, UserName = model.FullName, BirthDate = model.BirthDate, PhoneNumberConfirmed=true, TwoFactorEnabled=false, AccessFailedCount=0, CustomerId = customerId };
             var customer = new Customer { Id = customerId, Address = model.Address, UserId = userId };
