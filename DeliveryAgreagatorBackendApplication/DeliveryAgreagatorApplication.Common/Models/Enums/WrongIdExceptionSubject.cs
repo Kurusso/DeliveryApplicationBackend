@@ -10,6 +10,7 @@ namespace DeliveryAgreagatorApplication.Common.Models.Enums
     {
         Restaurant,
         Dish,
-        Menu
+        Menu,
+        Order
     }
 }

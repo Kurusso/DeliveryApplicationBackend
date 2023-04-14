@@ -1,5 +1,6 @@
 using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -46,6 +47,10 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             {
                 return Problem(title: ex.Message, statusCode: 400);
             }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
+            }
         }
         /// <summary>
         /// Удалить заказ
@@ -67,13 +72,17 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 await _orderService.CancelOrder(id, userId);
                 return Ok();
             }
-            catch(ArgumentException ex)
+            catch(WrongIdException ex)
             {
-                return Problem(title: ex.Message, statusCode: 404);
+                return Problem(ex.Message, statusCode: ex.StatusCode);
             }
             catch(InvalidOperationException ex) 
             {
-                return Problem(title: ex.Message, statusCode: 400);
+                return Problem(ex.Message, statusCode: 400);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
         /// <summary>
@@ -103,7 +112,12 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch(ArgumentOutOfRangeException ex) 
             {
-                return Problem(title: ex.Message, statusCode: 404);
+                return Problem(ex.Message, statusCode: 404);
+
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
 
@@ -130,13 +144,17 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 await _orderService.RepeatOrder(id, userId);
                 return Ok();
             }
-            catch(ArgumentException ex)
+            catch(WrongIdException ex)
             {
-                return Problem(title: ex.Message, statusCode: 404);
+                return Problem(ex.Message, statusCode: ex.StatusCode);
             }
             catch(InvalidOperationException ex)
             {
                 return Problem(title: ex.Message, statusCode: 400);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
 
@@ -163,7 +181,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 var orders = await _orderService.GetOrdersAvaliableToCook(sort, page, cookId); 
                 return Ok(orders);
             }
-            catch(Exception ex)
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return Problem(ex.Message, statusCode: 404);
+            }
+            catch (Exception ex)
             {
                 return Problem(ex.Message, statusCode: 501);
             }
@@ -179,6 +201,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="404">Not Found</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
+        /// <response code="501">Not Implemented</response>
         [HttpPut("{id}/cook/{take}")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Put(Guid id, bool take)
@@ -190,9 +213,13 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 await _orderService.TakeOrderCook(id, take ,cookId);
                 return Ok();
             }
-            catch(ArgumentException ex)
+            catch(InvalidOperationException ex)
             {
-                return Problem(title:ex.Message, statusCode: 404);
+                return Problem(title:ex.Message, statusCode: 400);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
         /// <summary>
@@ -200,7 +227,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="500">Not Implemented</response>
+        /// <response code="501">Not Implemented</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         [HttpGet("cook/done")]
@@ -217,7 +244,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message, statusCode: 500);
+                return Problem(ex.Message, statusCode: 501);
             }
         }
         /// <summary>
@@ -228,7 +255,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="500">Not Implemented</response>
+        /// <response code="501">Not Implemented</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         [HttpGet("courier")]
@@ -245,7 +272,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch (Exception ex)
             {
-                return Problem(ex.Message, statusCode: 500);
+                return Problem(ex.Message, statusCode: 501);
             }
         }
         /// <summary>
@@ -259,6 +286,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="400">Bad Request</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
+        /// <response code="501">Not Implemented</response>
         [HttpPut("{id}/courier/{take}")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> PutCourier(Guid id, bool take)
@@ -272,7 +300,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return Problem(title: ex.Message, statusCode: 400);
+                return Problem(ex.Message, statusCode: 400);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
         /// <summary>
@@ -287,6 +319,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="404">Not Found</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
+        /// <response code="501">Not Implemented</response>
         [HttpDelete("{id}/courier/cancel")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> CancelCourier(Guid id)
@@ -300,11 +333,15 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return Problem(title: ex.Message, statusCode: 400);
+                return Problem(ex.Message, statusCode: 400);
             }
-            catch(ArgumentException ex)
+            catch(WrongIdException ex)
             {
-                return Problem(title: ex.Message, statusCode: 404);
+                return Problem(ex.Message, statusCode: ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
         /// <summary>
@@ -319,6 +356,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="404">Not Found</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet("manager")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
@@ -333,7 +371,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
             catch (ArgumentOutOfRangeException ex)
             {
-                return Problem(title: ex.Message, statusCode:404);
+                return Problem(ex.Message, statusCode:404);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
     }

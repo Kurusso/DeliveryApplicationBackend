@@ -28,6 +28,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet]
         [ProducesResponseType(typeof(List<MenuShortDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenus(Guid restaurantId, bool active) 
@@ -55,6 +56,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         ///  <response code="404">Not Found</response>
         /// <response code="400">Bad Request</response>
         /// <response code="403">Forbidden</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(List<DishDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenu(Guid restaurantId, Guid id, [FromQuery] List<Category> categories, bool? isVegetarian, DishFilter? filter, int page) {

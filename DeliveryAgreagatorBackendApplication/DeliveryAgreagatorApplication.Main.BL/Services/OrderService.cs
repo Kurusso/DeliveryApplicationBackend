@@ -1,5 +1,7 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Common.Exceptions;
+using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication.Models;
@@ -24,11 +26,11 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             var order = await _context.Orders.FirstOrDefaultAsync(x=>x.Id==orderId && x.CustomerId==userId);
             if (order == null)
             {
-                throw new ArgumentException($"You haven't got order with this {orderId} Id!");
+                throw new WrongIdException(WrongIdExceptionSubject.Order, orderId,"on your account");
             }
             if(order.Status!=Status.Created)
             {
-                throw new InvalidOperationException($"You cant cancel order with this {order.Status.ToString()}");
+                throw new InvalidOperationException($"You cant cancel order with this {order.Status}");
             }
             order.Status = Status.Canceled;
             await _context.SaveChangesAsync();
@@ -75,7 +77,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 throw new InvalidOperationException("Your cart is empty!");
             }
             if (dishesInCart.Any(x => x.Dish.RestaurantId != dishesInCart[0].Dish.RestaurantId)){
-                throw new InvalidOperationException("You nant order dishes from different restaurants at the same time!"); //TODO: добавить кастомный эксепшн
+                throw new InvalidOperationException("You can't order dishes from different restaurants at the same time!"); 
             }
             var order = new OrderDbModel
             {
@@ -103,7 +105,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             var order = await _context.Orders.Include(x=>x.DishesInCart).ThenInclude(c=>c.Dish).ThenInclude(z=>z.Ratings).FirstOrDefaultAsync(x=>x.Id==orderId && x.CustomerId==userId);
             if(order == null)
             {
-                throw new ArgumentException($"You haven't got order with this {orderId} id!");
+                throw new WrongIdException(WrongIdExceptionSubject.Order, orderId, "on your account");
             }
             var unavalibleDish = order.DishesInCart.FirstOrDefault(x=>!x.Dish.IsActive);
             if(unavalibleDish != null)
@@ -165,7 +167,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 var order = await _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).FirstOrDefaultAsync(c => c.Id == orderId && c.RestaurantId == cook.RestaurantId);
                 if (order == null)
                 {
-                    throw new ArgumentException($"You cannot take order with this ${orderId} id!");
+                    throw new InvalidOperationException($"You cannot take order with this ${orderId} id!");
                 }
                 order.Status = Status.Kitchen;
                 order.CookId = cookId;
@@ -239,7 +241,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.CourierId == courierId);
             if (order == null)
             {
-                throw new ArgumentException($"You haven't got order with this {orderId} Id!");
+                throw new WrongIdException(WrongIdExceptionSubject.Order,orderId, "in proccess");
             }
             if (order.Status != Status.Delivery)
             {

@@ -93,6 +93,7 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
         /// <response code="501">Not Implemented</response>
         [HttpGet("refresh")]
         [Authorize(Policy ="RefreshOnly", AuthenticationSchemes = "Bearer")]

@@ -24,6 +24,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="404">Not Found</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(DishDTO), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(Guid restaurantId, Guid Id)
@@ -47,9 +48,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="401">Bad Request</response>
+        /// <response code="400">Bad Request</response>
         /// <response code="404">Not Found</response>
+        /// <response code="403">Forbidden</response>
         /// <response code="401">Unauthorized</response>
+        /// <response code="501">Not Implemented</response>
         [HttpPost("{id}/rating")]
         [Authorize(Policy = "SetRating", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> SetRating(Guid restaurantId, Guid Id, int rating) 
