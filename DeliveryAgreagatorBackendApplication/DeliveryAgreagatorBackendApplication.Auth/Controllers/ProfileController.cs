@@ -1,43 +1,42 @@
-﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+﻿using DeliveryAgreagatorApplication.Auth.Common.Interfaces;
+using DeliveryAgreagatorApplication.Auth.Common.Models;
 using DeliveryAgreagatorApplication.Common.Exceptions;
-using DeliveryAgreagatorApplication.Common.Models.Enums;
-using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace DeliveryAgreagatorBackendApplication.Controllers
+namespace DeliveryAgreagatorApplication.Auth.Controllers
 {
-    [Route("api/backend/cart/")]
+    [Route("api/profile/")]
     [ApiController]
-    public class CartController : ControllerBase
+    public class ProfileController : ControllerBase
     {
-        private readonly ICartService _cartService;
+        private IProfileService _profileService;
 
-        public CartController(ICartService cartService)
+        public ProfileController(IProfileService profileService)
         {
-            _cartService = cartService;
+            _profileService = profileService;
         }
         /// <summary>
-        /// Получить блюда в корзине
+        /// Получение профиля польхователя
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="501">Not Implemented</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet]
-        [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(List<DishInCartDTO>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get() 
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [ProducesResponseType(typeof(ProfileDTO), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Get()
         {
             try
             {
                 Guid userId;
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
-                var dsihes = await _cartService.GetCart(userId);
-                return Ok(dsihes);
+                var profile = await _profileService.GetProfile(userId);
+                return Ok(profile);
             }
             catch(Exception ex)
             {
@@ -45,26 +44,31 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
         /// <summary>
-        /// Добавить блюдо в корзину
+        /// Изменить профиль польхователя
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="404">Not Found</response>
+        /// <response code="400">Bad Request</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
+        /// <response code="409">Conflict</response>
         /// <response code="501">Not Implemented</response>
-        [HttpPost("dish/{dishId}")]
-        [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> PostToCart(Guid dishId) 
+        [HttpPut]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> Put([FromBody]ProfileDTO model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 Guid userId;
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
-                await _cartService.AddDishToCart(dishId, userId);
+                await _profileService.ChangeProfile(userId, model);
                 return Ok();
             }
-            catch (WrongIdException ex)
+            catch (ConflictException ex)
             {
                 return Problem(ex.Message, statusCode: ex.StatusCode);
             }
@@ -74,28 +78,32 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
         /// <summary>
-        /// Удалить блюдо из корзины
+        /// Изменить пароль пользователя
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Success</response>
-        /// <response code="404">Not Found</response>
+        /// <response code="400">Bad Request</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         /// <response code="501">Not Implemented</response>
-        [HttpDelete("dish/{dishId}")]
-        [Authorize(Policy = "CartOperations", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> DeleteDecrease( Guid dishId, bool deacrease=false) 
+        [HttpPut("password")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> PutPassword([FromBody]PasswordUpdateDTO model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 Guid userId;
-                Guid.TryParse(User.FindFirst("IdClaim").Value,out userId);
-                await _cartService.DeleteOrDecreaseDishInCart( dishId, userId , deacrease);
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
+                await _profileService.UpdatePassword(userId, model);
                 return Ok();
             }
-            catch (WrongIdException ex)
+            catch (ArgumentException ex)
             {
-                return Problem(ex.Message, statusCode: ex.StatusCode);
+                return Problem(ex.Message, statusCode: 400);
             }
             catch (Exception ex)
             {
@@ -103,4 +111,5 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
     }
+
 }

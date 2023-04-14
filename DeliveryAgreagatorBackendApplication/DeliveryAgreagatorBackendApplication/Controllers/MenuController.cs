@@ -1,6 +1,7 @@
-﻿using DeliveryAgreagatorBackendApplication.Models.DTO;
-using DeliveryAgreagatorBackendApplication.Models.Enums;
-using DeliveryAgreagatorBackendApplication.Services;
+﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Common.Exceptions;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -25,8 +26,9 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// При значении active = false : метод вернёт все меню, а не только неактивные.
         /// </remarks>
         /// <returns></returns>
-        /// <response code="200">Успешное выполнение</response>
-        /// <response code="404">Не существует ресторана restaurantId</response>
+        /// <response code="200">Success</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet]
         [ProducesResponseType(typeof(List<MenuShortDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenus(Guid restaurantId, bool active) 
@@ -35,9 +37,13 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                var menus = await _menuService.GetRestaurantMenus(restaurantId, active);
                 return Ok(menus);
             }
-            catch(ArgumentException e) {
-                return Problem(title:e.Message, statusCode:404);
+            catch(WrongIdException ex) {
+                return Problem(ex.Message, statusCode:ex.StatusCode);
 			}
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
+            }
         }
         /// <summary>
         /// Получить блюда в меню
@@ -46,9 +52,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// При значении isVegetarian = false : метод вернёт все блюда, а не только не вегетарианские.
         /// </remarks>
         /// <returns></returns>
-        ///  <response code="200">Успешное выполнение</response>
-        ///  <response code="404">Не существует меню id в ресторане restaurantId</response>
-        /// <response code="401">Указан неверный номер страницы</response>
+        ///  <response code="200">Success</response>
+        ///  <response code="404">Not Found</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="403">Forbidden</response>
+        /// <response code="501">Not Implemented</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(List<DishDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMenu(Guid restaurantId, Guid id, [FromQuery] List<Category> categories, bool? isVegetarian, DishFilter? filter, int page) {
@@ -56,14 +64,18 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 var dishes = await _menuService.GetMenuDishes(restaurantId, id, categories, isVegetarian, filter, page);
                 return Ok(dishes);
 			}
-			catch (ArgumentOutOfRangeException e)
+			catch (ArgumentOutOfRangeException ex)
 			{
-				return Problem(title: e.Message, statusCode: 401);
+				return Problem(title: ex.Message, statusCode: 400);
 			}
-            catch(ArgumentException e) {
-                return Problem(title: e.Message, statusCode: 404);
+            catch(WrongIdException ex) {
+                return Problem(ex.Message, statusCode: ex.StatusCode);
             }
-		}
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
+            }
+        }
 
     }
 }
