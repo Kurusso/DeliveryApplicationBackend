@@ -1,4 +1,6 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.Common.Exceptions;
+using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -37,9 +39,9 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 var dsihes = await _cartService.GetCart(userId);
                 return Ok(dsihes);
             }
-            catch(Exception e)
+            catch(Exception ex)
             {
-                return Problem("Not implemented", statusCode: 501);
+                return Problem(ex.Message, statusCode: 501);
             }
         }
         /// <summary>
@@ -61,9 +63,13 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 await _cartService.AddDishToCart(dishId, userId);
                 return Ok();
             }
-            catch (ArgumentException e)
+            catch (WrongIdException ex)
             {
-                return Problem(title:e.Message, statusCode: 404);
+                return Problem(ex.Message, statusCode: ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
         /// <summary>
@@ -85,9 +91,13 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 await _cartService.DeleteOrDecreaseDishInCart( dishId, userId , deacrease);
                 return Ok();
             }
-            catch (ArgumentException e)
+            catch (WrongIdException ex)
             {
-                return Problem(title: e.Message, statusCode: 404);
+                return Problem(ex.Message, statusCode: ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
     }

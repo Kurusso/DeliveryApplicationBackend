@@ -1,5 +1,6 @@
 ﻿using DeliveryAgreagatorApplication.Auth.Common.Interfaces;
 using DeliveryAgreagatorApplication.Auth.Common.Models;
+using DeliveryAgreagatorApplication.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,10 @@ namespace DeliveryAgreagatorApplication.Auth.Controllers
                 await _profileService.ChangeProfile(userId, model);
                 return Ok();
             }
+            catch (ConflictException ex)
+            {
+                return Problem(ex.Message, statusCode: ex.StatusCode);
+            }
             catch (Exception ex)
             {
                 return Problem(ex.Message, statusCode: 501);
@@ -67,6 +72,10 @@ namespace DeliveryAgreagatorApplication.Auth.Controllers
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
                 await _profileService.UpdatePassword(userId, model);
                 return Ok();
+            }
+            catch (ArgumentException ex)
+            {
+                return Problem(ex.Message, statusCode: 400);
             }
             catch (Exception ex)
             {

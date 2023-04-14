@@ -1,5 +1,7 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Common.Exceptions;
+using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication;
@@ -22,7 +24,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             var dish = await _context.Dishes.Include(x=>x.Ratings).FirstOrDefaultAsync(x=>x.Id==dishId && x.RestaurantId==restaurantId);
             if (dish == null)
             {
-                throw new ArgumentException($"There is no dish with this {dishId} id in this {restaurantId} restaurant!");
+                throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId, $"in this {restaurantId} restaurant");
             }
             else
             {
@@ -30,17 +32,17 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             }
         }
 
-        public async Task SetRating(Guid restaurantId, Guid dishId, Guid userId, int rating) //TODO: перенести сюда пересчёт рейтинга
+        public async Task SetRating(Guid restaurantId, Guid dishId, Guid userId, int rating) 
         {
             var dish = await _context.Dishes.Include(x=>x.Ratings).FirstOrDefaultAsync(x => x.Id == dishId && x.RestaurantId == restaurantId);
             if (dish == null)
             {
-                throw new ArgumentException($"There is no dish with this {dishId} id in this {restaurantId} restaurant!");
+                throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId, $"in this {restaurantId} restaurant");
             }
             var orderedDish = await _context.DishInCart.Include(c=>c.Order).FirstOrDefaultAsync(x => x.CustomerId == userId && x.DishId == dishId && x.Active == false && x.Order.Status == Status.Delivered);
             if(orderedDish == null)
             {
-                throw new ArgumentNullException($"You have never ordered this {dishId} dish!"); //TODO:Добавить кастомное исключение.
+                throw new InvalidOperationException($"You have never ordered this {dishId} dish!"); 
             }
             var ratingFromDb = await _context.Ratings.FirstOrDefaultAsync(x => x.DishId == dishId && x.CustomerId == userId);
             if (ratingFromDb != null)

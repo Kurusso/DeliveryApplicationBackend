@@ -1,5 +1,6 @@
 ﻿using DeliveryAgreagatorApplication.Auth.Common.Interfaces;
 using DeliveryAgreagatorApplication.Auth.Common.Models;
+using DeliveryAgreagatorApplication.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,9 +43,9 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Controllers
                 return Ok(tokenPair);
 
             } 
-            catch(InvalidDataException ex)
+            catch(ConflictException ex)
             {
-                return Problem(ex.Message, statusCode: 409);
+                return Problem(ex.Message, statusCode: ex.StatusCode);
             }
             catch(Exception ex)
             {
@@ -103,9 +104,9 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Controllers
                var tokenPair = await _authenticationService.Refresh(User);
                 return Ok(tokenPair);
             }
-            catch (InvalidOperationException ex)
+            catch (TokenException ex)
             {
-                return Problem(ex.Message, statusCode: 401);
+                return Problem(ex.Message, statusCode:ex.StatusCode);
             }
             catch(Exception ex)
             {

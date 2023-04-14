@@ -1,4 +1,5 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,9 +33,13 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 var dish = await _dishService.GetDish(restaurantId, Id);
                 return Ok(dish);
             }
-            catch (ArgumentException e)
+            catch (WrongIdException ex)
             {
-                return Problem(title: e.Message, statusCode: 404);
+                return Problem(ex.Message, statusCode: ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
         /// <summary>
@@ -56,13 +61,17 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
                 await _dishService.SetRating( restaurantId, Id, userId,rating);
                 return Ok();
             }
-            catch (ArgumentNullException e)
+            catch (InvalidOperationException ex)
             {
-                return Problem(title: e.Message, statusCode: 400);
+                return Problem(ex.Message, statusCode: 400);
             }
-            catch (ArgumentException e)
+            catch (WrongIdException ex)
             {
-                return Problem(title: e.Message, statusCode: 404);
+                return Problem(ex.Message, statusCode: ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
             }
         }
     }

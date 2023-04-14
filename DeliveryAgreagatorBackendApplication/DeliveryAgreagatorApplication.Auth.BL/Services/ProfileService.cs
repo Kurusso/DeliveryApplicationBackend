@@ -2,6 +2,8 @@
 using DeliveryAgreagatorApplication.Auth.Common.Models;
 using DeliveryAgreagatorApplication.Auth.DAL;
 using DeliveryAgreagatorApplication.Auth.DAL.Models;
+using DeliveryAgreagatorApplication.Common.Exceptions;
+using DeliveryAgreagatorApplication.Common.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,7 +31,18 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             var occupied = await _context.Users.FirstOrDefaultAsync(x => x.Id != userId && (x.UserName == model.UserName || x.PhoneNumber == model.Phone || x.Email == model.Email));
             if (occupied != null)
             {
-                throw new InvalidOperationException("Something is already taken!"); //TODO: create normal exception
+                if(occupied.UserName == model.UserName) 
+                {
+                    throw new ConflictException(ConflictExceptionSubjects.UserName, model.UserName);
+                }     
+                if(occupied.Email== model.Email)
+                {
+                    throw new ConflictException(ConflictExceptionSubjects.Email, model.Email);
+                }
+                if(occupied.PhoneNumber == model.Phone)
+                {
+                    throw new ConflictException(ConflictExceptionSubjects.PhoneNumber, model.Phone);
+                }
             }
             if (user.CustomerId != null)
             {
@@ -68,7 +81,7 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             var correctOldPass = BCrypt.Net.BCrypt.Verify(model.OldPassword, user.PasswordHash);
             if(!correctOldPass)
             {
-                throw new Exception("Wrong password!");
+                throw new ArgumentException("Wrong password!");
             }
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
             await _context.SaveChangesAsync();
