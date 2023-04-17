@@ -35,9 +35,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
             }
             try
             {
-                Guid userId;
-                Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
-                await _orderService.PostOrder(model, userId);
+                await _orderService.PostOrder(model, User);
                 return Ok();
             }
             catch (InvalidOperationException ex)

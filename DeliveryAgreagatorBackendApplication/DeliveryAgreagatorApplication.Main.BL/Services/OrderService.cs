@@ -6,6 +6,7 @@ using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace DeliveryAgreagatorApplication.Main.BL.Services
@@ -68,9 +69,16 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             return ordersDTO;
         }
 
-        public async Task PostOrder(OrderPostDTO model, Guid userId)
+        public async Task PostOrder(OrderPostDTO model, ClaimsPrincipal userPrincipal)
         {
+            Guid userId;
+            Guid.TryParse(userPrincipal.FindFirst("IdClaim").Value, out userId);
             var guid = Guid.NewGuid();
+            var address = model.Address==null ? userPrincipal.FindFirst("Address").Value : model.Address;
+            if (address == null)
+            {
+                throw new InvalidOperationException("You should choose address!");
+            }
             var dishesInCart = _context.DishInCart.Include(x=>x.Dish).Where(x => x.CustomerId == userId && x.Active).ToList();
             if (dishesInCart.Count == 0 )
             {
@@ -86,8 +94,8 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 CustomerId = userId,
                 DishesInCart = dishesInCart,
                 Number = guid.GetHashCode(),     
-                OrderTime = model.OrderTime,
-                Address = model.Address,
+                OrderTime = DateTime.UtcNow,
+                Address = address,
                 Status = Status.Created,
                 Price = dishesInCart.Sum(x=>x.Dish.Price*x.Counter)
             };

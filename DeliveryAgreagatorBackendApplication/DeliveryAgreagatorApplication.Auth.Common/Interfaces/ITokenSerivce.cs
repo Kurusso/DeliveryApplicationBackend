@@ -1,6 +1,5 @@
 ﻿
 using DeliveryAgreagatorApplication.Auth.Common.Models;
-using DeliveryAgreagatorApplication.Auth.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace DeliveryAgreagatorApplication.Auth.Common.Interfaces
