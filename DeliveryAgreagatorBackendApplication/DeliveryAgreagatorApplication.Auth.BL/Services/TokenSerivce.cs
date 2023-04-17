@@ -3,6 +3,7 @@ using DeliveryAgreagatorApplication.Auth.Common.Models;
 using DeliveryAgreagatorApplication.Auth.DAL;
 using DeliveryAgreagatorApplication.Auth.DAL.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -30,6 +31,11 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             new Claim("RefreshIdClaim", refreshTokenId.ToString()),
             new Claim("TokenTypeClaim", isrefresh ? "Refresh" : "Access")
             };
+            if (roles.Any(x => x == "Customer"))
+            {
+               var customer = await _context.Customers.FirstOrDefaultAsync(x => x.UserId == user.Id);
+               claims.Add(new Claim("Address", customer.Address));
+            }
             foreach (var roleName in roles)
             {
                 var role = await _roleManager.FindByNameAsync(roleName);
@@ -47,11 +53,11 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             }
             return claims;
         }
-        public async Task<TokenPair> GenerateTokenPair(ApplicationUser user)
+        public async Task<TokenPair> GenerateTokenPair(IdentityUser<Guid> user)
         {
             Guid refreshTokenId = Guid.NewGuid();  
-            var accessClaims = await GetClaims(user, false, refreshTokenId);
-            var refreshClaims = await GetClaims(user, true, refreshTokenId);
+            var accessClaims = await GetClaims((ApplicationUser)user, false, refreshTokenId);
+            var refreshClaims = await GetClaims((ApplicationUser)user, true, refreshTokenId);
             int refreshlifetime = JwtConfigurations.RefreshLifetime;
             int accesslifetime = JwtConfigurations.Lifetime;
             var now = DateTime.UtcNow;
