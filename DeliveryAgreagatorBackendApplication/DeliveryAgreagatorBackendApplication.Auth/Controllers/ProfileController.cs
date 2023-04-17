@@ -44,7 +44,7 @@ namespace DeliveryAgreagatorApplication.Auth.Controllers
             }
         }
         /// <summary>
-        /// Изменить профиль польхователя
+        /// Изменить профиль пользователя
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Success</response>

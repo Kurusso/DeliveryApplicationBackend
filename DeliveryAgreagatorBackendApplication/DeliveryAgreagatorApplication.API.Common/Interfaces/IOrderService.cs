@@ -1,11 +1,12 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using System.Security.Claims;
 
 namespace DeliveryAgreagatorApplication.Main.Common.Interfaces
 {
     public interface IOrderService
     {
-        public Task PostOrder(OrderPostDTO model, Guid userId);
+        public Task PostOrder(OrderPostDTO model, ClaimsPrincipal userPrincipal);
         public Task CancelOrder(Guid orderId, Guid userId);
         public Task<List<OrderDTO>> GetActiveOrders(Guid userId);
         public Task<List<OrderDTO>> GetAllOrders(int page, Guid userId, DateTime startDate, DateTime endDate,bool active, int? number);
