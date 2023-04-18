@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace DeliveryAgreagatorApplication.Common.Models
 {
-    internal class NotificationConfiguration
+    public class NotificationConfiguration
     {
+        public const string HostName = "localhost";
+        public const string QueName = "MyQueue";
     }
 }

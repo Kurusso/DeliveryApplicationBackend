@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using DeliveryAgreagatorApplication.Common.Models.Notification;
 using DeliveryAgreagatorApplication.Notifications.Models;
 using Microsoft.AspNetCore.SignalR;
+using DeliveryAgreagatorApplication.Common.Models;
 
 namespace DeliveryAgreagatorApplication.Notifications.Services
 {
@@ -20,10 +21,10 @@ namespace DeliveryAgreagatorApplication.Notifications.Services
             // Не забудьте вынести значения "localhost" и "MyQueue"
             // в файл конфигурации
             _hubContext = hubContext;
-            var factory = new ConnectionFactory { HostName = "localhost" };
+            var factory = new ConnectionFactory { HostName = NotificationConfiguration.HostName };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: "MyQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            _channel.QueueDeclare(queue: NotificationConfiguration.QueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -40,7 +41,7 @@ namespace DeliveryAgreagatorApplication.Notifications.Services
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 
-            _channel.BasicConsume("MyQueue", false, consumer);
+            _channel.BasicConsume(NotificationConfiguration.QueName, false, consumer);
 
             return Task.CompletedTask;
         }

@@ -1,4 +1,5 @@
-﻿using DeliveryAgreagatorApplication.Common.Models.Notification;
+﻿using DeliveryAgreagatorApplication.Common.Models;
+using DeliveryAgreagatorApplication.Common.Models.Notification;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using RabbitMQ.Client;
 using System;
@@ -18,11 +19,11 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
         {
             // Не забудьте вынести значения "localhost" и "MyQueue"
             // в файл конфигурации
-            var factory = new ConnectionFactory() { HostName = "localhost" };
+            var factory = new ConnectionFactory() { HostName = NotificationConfiguration.HostName };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "MyQueue",
+                channel.QueueDeclare(queue: NotificationConfiguration.QueName,
                                durable: false,
                                exclusive: false,
                                autoDelete: false,
@@ -31,7 +32,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
 
                 channel.BasicPublish(exchange: "",
-                               routingKey: "MyQueue",
+                               routingKey: NotificationConfiguration.QueName,
                                basicProperties: null,
                                body: body);
             }

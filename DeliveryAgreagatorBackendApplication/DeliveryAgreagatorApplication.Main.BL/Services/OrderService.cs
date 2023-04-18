@@ -2,6 +2,7 @@
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Common.Models.Notification;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication.Models;
@@ -17,9 +18,11 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
         private int _pageCount = 6;
         private string _regexp = "";
         private readonly BackendDbContext _context;
-        public OrderService(BackendDbContext context)
+        private readonly IRabbitMqService _rabbitMqService;
+        public OrderService(BackendDbContext context, IRabbitMqService rabbitMqService)
         {
             _context = context;
+            _rabbitMqService = rabbitMqService;
         }
 
         public async Task CancelOrder(Guid orderId, Guid userId)
@@ -179,6 +182,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 }
                 order.Status = Status.Kitchen;
                 order.CookId = cookId;
+                await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text ="time" }); //TODO: нормальный текст
             }
             else
             {
@@ -195,6 +199,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 {
                     order.Status = Status.Packed;
                 }
+                await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text="time" }); //TODO: нормальный текст
             }
             await _context.SaveChangesAsync();
 
@@ -231,6 +236,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 order.DeliveryTime = DateTime.UtcNow.AddHours(1);
                 order.Status = Status.Delivery;
                 order.CourierId = courierId;
+                await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text = "time" }); //TODO: нормальный текст
             }
             else
             {
@@ -240,6 +246,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                     throw new InvalidOperationException($"You can't modify order with this {orderId} id!"); //TODO: сделать более точные исключения
                 }
                 order.Status = Status.Delivered;
+                await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text = "time" }); //TODO: нормальный текст
             }
             await _context.SaveChangesAsync(); 
         }
@@ -256,6 +263,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 throw new InvalidOperationException($"You cant cancel order with this {order.Status.ToString()}");
             }
             order.Status = Status.Canceled;
+            await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text = "time" }); //TODO: нормальный текст
             await _context.SaveChangesAsync();
         }
 
