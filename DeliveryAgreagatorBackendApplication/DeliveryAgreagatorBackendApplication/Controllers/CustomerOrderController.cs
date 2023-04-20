@@ -84,7 +84,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// Получить все свои заказы
         /// </summary>
         /// <remarks>
-        /// Поле "name" может содержать часть номера искомых заказов. 
+        /// Поле "number" может содержать часть номера искомых заказов. 
         /// Поля startDate и endDate включают в себя крайние границы. 
         /// Поле active - показывает только актвные в случае active=true и только историю заказав при active=false.
         /// </remarks>
@@ -120,7 +120,6 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// Повторить заказ
         /// </summary>
         /// <remarks>
-        /// Поле userId временное, будет убрано после добавления авторизации и аутентификации. 
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>

@@ -20,7 +20,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// Получить все заказы ресторана
         /// </summary>
         /// <remarks>
-        /// Поле "name" может содержать часть номера искомых заказов. 
+        /// Поле "number" может содержать часть номера искомых заказов. 
         /// Поля startDateOrder, endDateOrder, startDateDelivery и endDateDelivery включают в себя крайние границы. 
         /// </remarks>
         /// <returns></returns>
