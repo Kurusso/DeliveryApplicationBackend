@@ -189,7 +189,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 var order = await _context.Orders.FirstOrDefaultAsync(x=>x.Id== orderId && x.CookId==cookId && (x.Status==Status.Kitchen || x.Status == Status.Packaging));
                 if (order == null)
                 {
-                    throw new ArgumentException($"You haven't got order in progress with this ${orderId} id!");
+                    throw new InvalidOperationException($"You haven't got order in progress with this ${orderId} id!");
                 }
                 if (order.Status == Status.Kitchen)
                 {
