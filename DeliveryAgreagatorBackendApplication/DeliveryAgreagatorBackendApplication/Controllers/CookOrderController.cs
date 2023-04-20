@@ -22,7 +22,6 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// Получить доступные повару заказы
         /// </summary>
         /// <remarks>
-        /// Поле cookId временное, будет убрано после добавления авторизации и аутентификации. 
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
