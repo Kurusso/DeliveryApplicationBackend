@@ -29,7 +29,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         /// <response code="501">Not Implemented</response>
-        [HttpGet("manager")]
+        [HttpGet]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(int page, DateTime startDateOrder, DateTime endDateOrder, DateTime startDateDelivery, DateTime endDateDelivery, int? number = null)

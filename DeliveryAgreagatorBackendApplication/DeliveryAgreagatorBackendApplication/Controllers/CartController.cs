@@ -9,7 +9,7 @@ using System.Net;
 
 namespace DeliveryAgreagatorBackendApplication.Controllers
 {
-    [Route("api/backend/cart/")]
+    [Route("api/cart/")]
     [ApiController]
     public class CartController : ControllerBase
     {

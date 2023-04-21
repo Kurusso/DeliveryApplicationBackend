@@ -8,7 +8,7 @@ using System.Net;
 
 namespace DeliveryAgreagatorBackendApplication.Controllers
 {
-    [Route("api/backend/restaurant/{restaurantId}/dish/")]
+    [Route("api/restaurant/{restaurantId}/dish/")]
     [ApiController]
     public class DishController : ControllerBase
     {

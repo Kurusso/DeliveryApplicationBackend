@@ -8,7 +8,7 @@ using System.Net;
 
 namespace DeliveryAgreagatorApplication.Main.Controllers
 {
-    [Route("api/courier/order")]
+    [Route("api/courier/order/")]
     [ApiController]
     public class CourierOrderController : ControllerBase
     {
@@ -57,7 +57,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         /// <response code="501">Not Implemented</response>
-        [HttpPut("/{id}/courier/{take}")]
+        [HttpPut("{id}/{take}")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> PutCourier(Guid id, bool take)
         {
@@ -90,7 +90,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         /// <response code="501">Not Implemented</response>
-        [HttpDelete("/{id}/courier/cancel")]
+        [HttpDelete("{id}/cancel")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> CancelCourier(Guid id)
         {
