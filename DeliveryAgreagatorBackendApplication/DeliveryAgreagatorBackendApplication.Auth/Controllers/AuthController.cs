@@ -56,7 +56,6 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Controllers
         /// Логин
         /// </summary>
         /// <remarks>
-        /// Поля login, fullName и phoneNumber должны быть уникальными.
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
@@ -88,7 +87,6 @@ namespace DeliveryAgreagatorBackendApplication.Auth.Controllers
         /// Обновление access токена
         /// </summary>
         /// <remarks>
-        /// Поля login, fullName и phoneNumber должны быть уникальными.
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
