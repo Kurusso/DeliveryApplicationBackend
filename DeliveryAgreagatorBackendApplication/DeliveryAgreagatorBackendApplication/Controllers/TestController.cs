@@ -1,4 +1,5 @@
-﻿using DeliveryAgreagatorApplication.Common.Models.Notification;
+﻿using DeliveryAgreagatorApplication.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Common.Models.Notification;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,9 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
             _mqService = mqService;
         }
         [HttpGet]
-        public async Task<IActionResult> SendMessage(string message)
+        public async Task<IActionResult> SendMessage(OrderStatus message)
         {
-           await _mqService.SendMessage(new Notification {Text = message, OrderId = new Guid(), UserId = new Guid(), Status= 0 });
+           await _mqService.SendMessage(new Notification(new Guid(), 8787, message));
 
             return Ok("Сообщение отправлено");
         }

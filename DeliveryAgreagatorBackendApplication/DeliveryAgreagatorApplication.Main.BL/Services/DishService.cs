@@ -39,7 +39,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             {
                 throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId, $"in this {restaurantId} restaurant");
             }
-            var orderedDish = await _context.DishInCart.Include(c=>c.Order).FirstOrDefaultAsync(x => x.CustomerId == userId && x.DishId == dishId && x.Active == false && x.Order.Status == Status.Delivered);
+            var orderedDish = await _context.DishInCart.Include(c=>c.Order).FirstOrDefaultAsync(x => x.CustomerId == userId && x.DishId == dishId && x.Active == false && x.Order.Status == OrderStatus.Delivered);
             if(orderedDish == null)
             {
                 throw new InvalidOperationException($"You have never ordered this {dishId} dish!"); 

@@ -1,7 +1,7 @@
 using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
-using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Common.Models.Notification;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using DeliveryAgreagatorApplication.Main.Common.Models.DTO;
@@ -33,11 +33,11 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             {
                 throw new WrongIdException(WrongIdExceptionSubject.Order, orderId,"on your account");
             }
-            if(order.Status!=Status.Created)
+            if(order.Status!=OrderStatus.Created)
             {
                 throw new InvalidOperationException($"You cant cancel order with this {order.Status}");
             }
-            order.Status = Status.Canceled;
+            order.Status = OrderStatus.Canceled;
             await _context.SaveChangesAsync();
         }
 
@@ -49,7 +49,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 _regexp = number.ToString();
             }
             var orders = _context.Orders.Include(c=>c.DishesInCart).ThenInclude(c => c.Dish).ThenInclude(z => z.Ratings).Where(
-            c => Regex.IsMatch(c.Id.ToString(), _regexp) && c.CustomerId==userId && c.OrderTime<=endDate && c.OrderTime>=startDate && (active ? (c.Status != Status.Canceled && c.Status != Status.Delivered) : (c.Status==Status.Canceled || c.Status==Status.Delivered))).ToList();
+            c => Regex.IsMatch(c.Id.ToString(), _regexp) && c.CustomerId==userId && c.OrderTime<=endDate && c.OrderTime>=startDate && (active ? (c.Status != OrderStatus.Canceled && c.Status != OrderStatus.Delivered) : (c.Status==OrderStatus.Canceled || c.Status==OrderStatus.Delivered))).ToList();
             if ((orders.Count() % _pageSize) == 0)
             {
                 _pageCount = (orders.Count() / _pageSize);
@@ -94,7 +94,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 Number = guid.GetHashCode(),     
                 OrderTime = DateTime.UtcNow,
                 Address = address,
-                Status = Status.Created,
+                Status = OrderStatus.Created,
                 Price = dishesInCart.Sum(x=>x.Dish.Price*x.Counter)
             };
             foreach (var dish in dishesInCart)
@@ -126,7 +126,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
         public async Task<List<OrderDTO>> GetOrdersAvaliableToCook(bool active, DateSort? sort, int page, Guid cookId)
         {
             var cook = await _context.Cooks.FindAsync(cookId);
-            var orders = _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).Where(c => c.RestaurantId == cook.RestaurantId && ( active ? (c.Status==Status.Created || (c.Status<Status.Packed && c.CookId==cookId)) : (c.Status>=Status.Packed && c.CookId == cookId))).ToList(); 
+            var orders = _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).Where(c => c.RestaurantId == cook.RestaurantId && ( active ? (c.Status==OrderStatus.Created || (c.Status<OrderStatus.Packed && c.CookId==cookId)) : (c.Status>=OrderStatus.Packed && c.CookId == cookId))).ToList(); 
 
             if ((orders.Count() % _pageSize) == 0)
             {
@@ -167,7 +167,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
 
         public async Task TakeOrderCook(Guid orderId, Guid cookId, StatusDTO status)
         {
-            if (status.Status==Status.Kitchen)
+            if (status.Status==OrderStatus.Kitchen)
             {
                 var cook = await _context.Cooks.FindAsync(cookId);
                 var order = await _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).FirstOrDefaultAsync(c => c.Id == orderId && c.RestaurantId == cook.RestaurantId);
@@ -175,17 +175,17 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 {
                     throw new InvalidOperationException($"You cannot take order with this ${orderId} id!");
                 }
-                if (order.Status != Status.Created)
+                if (order.Status != OrderStatus.Created)
                 {
                     throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
                 }
                 order.Status = status.Status;
                 order.CookId = cookId;
-                await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text ="time" }); //TODO: нормальный текст
+                await _rabbitMqService.SendMessage(new Notification(order.CustomerId, order.Number, status.Status));
             }
-            else if(status.Status==Status.Packaging || status.Status==Status.Packed)
+            else if(status.Status==OrderStatus.Packaging || status.Status==OrderStatus.Packed)
             {
-                var order = await _context.Orders.FirstOrDefaultAsync(x=>x.Id== orderId && x.CookId==cookId && (x.Status==Status.Kitchen || x.Status == Status.Packaging));
+                var order = await _context.Orders.FirstOrDefaultAsync(x=>x.Id== orderId && x.CookId==cookId && (x.Status==OrderStatus.Kitchen || x.Status == OrderStatus.Packaging));
                 if (order == null)
                 {
                     throw new InvalidOperationException($"You haven't got order in progress with this ${orderId} id!");
@@ -198,7 +198,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 {
                     throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
                 }
-                await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text="time" }); //TODO: нормальный текст
+                await _rabbitMqService.SendMessage(new Notification(order.CustomerId, order.Number, status.Status));
             }
             else
             {
@@ -211,38 +211,38 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
 
         public async Task<List<OrderDTO>> GetOrdersAvaliableToCourier(Guid coourierId)
         {
-            var orders = _context.Orders.Where(x => x.Status == Status.Packed);
+            var orders = _context.Orders.Where(x => x.Status == OrderStatus.Packed);
             var ordersDTO = orders.Select(x=>x.ConvertToDTO()).ToList() ;
             return ordersDTO;
         }
 
         public async Task TakeOrderCourier(Guid orderId, Guid courierId, StatusDTO status)
         {
-            if (status.Status == Status.Delivery)
+            if (status.Status == OrderStatus.Delivery)
             {
-                var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == Status.Packed);
+                var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == OrderStatus.Packed);
                 if (order == null)
                 {
                     throw new InvalidOperationException($"You can't take order with this {orderId} id!"); //TODO: сделать более точные исключения
                 }
-                if (order.Status != Status.Packed)
+                if (order.Status != OrderStatus.Packed)
                 {
                     throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
                 }
                 order.DeliveryTime = DateTime.UtcNow.AddHours(1);
                 order.Status = status.Status;
                 order.CourierId = courierId;
-                await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text = "time" }); //TODO: нормальный текст
+                await _rabbitMqService.SendMessage(new Notification(order.CustomerId, order.Number, status.Status));
             }
-            else if (status.Status == Status.Delivered)
+            else if (status.Status == OrderStatus.Delivered)
             {
-                var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == Status.Delivery && x.CourierId==courierId);
+                var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == OrderStatus.Delivery && x.CourierId==courierId);
                 if (order == null)
                 {
                     throw new InvalidOperationException($"You can't modify order with this {orderId} id!"); //TODO: сделать более точные исключения
                 }
                 order.Status = status.Status;
-                await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text = "time" }); //TODO: нормальный текст
+                await _rabbitMqService.SendMessage(new Notification(order.CustomerId, order.Number, status.Status));
             }
             else
             {
@@ -258,12 +258,12 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             {
                 throw new WrongIdException(WrongIdExceptionSubject.Order,orderId, "in proccess");
             }
-            if (order.Status != Status.Delivery)
+            if (order.Status != OrderStatus.Delivery)
             {
                 throw new InvalidOperationException($"You cant cancel order with this {order.Status.ToString()}");
             }
-            order.Status = Status.Canceled;
-            await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text = "time" }); //TODO: нормальный текст
+            order.Status = OrderStatus.Canceled;
+            await _rabbitMqService.SendMessage(new Notification(order.CustomerId, order.Number, OrderStatus.Canceled));
             await _context.SaveChangesAsync();
         }
 

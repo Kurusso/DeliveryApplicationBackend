@@ -5,11 +5,12 @@ using System.Text;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using DeliveryAgreagatorApplication.Common.Models.Notification;
-using DeliveryAgreagatorApplication.Notifications.Models;
+using DeliveryAgreagatorApplication.Notifications.Common.Models;
 using Microsoft.AspNetCore.SignalR;
 using DeliveryAgreagatorApplication.Common.Models;
+using Microsoft.Extensions.Hosting;
 
-namespace DeliveryAgreagatorApplication.Notifications.Services
+namespace DeliveryAgreagatorApplication.Notifications.Common.Services
 {
     public class RabbitMqListener : BackgroundService
     {

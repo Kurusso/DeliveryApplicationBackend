@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace DeliveryAgreagatorApplication.Notifications.Services
+namespace DeliveryAgreagatorApplication.Notifications.Common.Services
 {
     public class UserIdProvider : IUserIdProvider
     {

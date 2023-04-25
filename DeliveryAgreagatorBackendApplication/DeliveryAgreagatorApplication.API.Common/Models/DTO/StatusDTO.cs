@@ -1,4 +1,4 @@
-﻿using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+﻿using DeliveryAgreagatorApplication.Common.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,6 +11,6 @@ namespace DeliveryAgreagatorApplication.Main.Common.Models.DTO
     public class StatusDTO
     {
         [Required]
-        public Status Status { get; set; }
+        public OrderStatus Status { get; set; }
     }
 }

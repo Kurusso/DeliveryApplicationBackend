@@ -1,4 +1,3 @@
-using DeliveryAgreagatorApplication.Notifications.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
@@ -6,7 +5,8 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using DeliveryAgreagatorApplication.Notifications.Models;
+using DeliveryAgreagatorApplication.Notifications.Common.Models;
+using DeliveryAgreagatorApplication.Notifications.Common.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

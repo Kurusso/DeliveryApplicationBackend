@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryAgreagatorApplication.Common.Models.Notification.Enums
 {
-    public enum Status
+    public enum NotificationStatus
     {
         New,
         Sent
