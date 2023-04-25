@@ -1,6 +1,7 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.Common.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using System.Net;
 
 namespace DeliveryAgreagatorApplication.Main.Controllers
 {
-    [Route("api/courier/order")]
+    [Route("api/courier/order/")]
     [ApiController]
     public class CourierOrderController : ControllerBase
     {
@@ -57,15 +58,19 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         /// <response code="501">Not Implemented</response>
-        [HttpPut("/{id}/courier/{take}")]
+        [HttpPut("{id}")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> PutCourier(Guid id, bool take)
+        public async Task<IActionResult> PutCourier(Guid id, StatusDTO model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 Guid courierId;
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out courierId);
-                await _orderService.TakeOrderCourier(id, take, courierId);
+                await _orderService.TakeOrderCourier(id, courierId, model);
                 return Ok();
             }
             catch (InvalidOperationException ex)
@@ -90,7 +95,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         /// <response code="501">Not Implemented</response>
-        [HttpDelete("/{id}/courier/cancel")]
+        [HttpDelete("{id}/cancel")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> CancelCourier(Guid id)
         {

@@ -1,9 +1,10 @@
-﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Common.Models.Notification;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.Common.Models.DTO;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
@@ -40,12 +41,6 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<OrderDTO>> GetActiveOrders(Guid userId) //TODO: удалить метод, если не понадобиться
-        {
-            var orders = _context.Orders.Include(x=>x.DishesInCart).ThenInclude(c=>c.Dish).ThenInclude(z=>z.Ratings).Where(x=>x.Status!=Status.Canceled && x.Status!=Status.Delivered && x.CustomerId==userId).ToList();
-            var ordersDTO = orders.Select(x => x.ConvertToDTO()).ToList();
-            return ordersDTO;
-        }
 
         public async Task<List<OrderDTO>> GetAllOrders(int page, Guid userId, DateTime startDate, DateTime endDate,bool active, int? number)
         {
@@ -128,10 +123,10 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<OrderDTO>> GetOrdersAvaliableToCook(DateSort? sort, int page, Guid cookId)
+        public async Task<List<OrderDTO>> GetOrdersAvaliableToCook(bool active, DateSort? sort, int page, Guid cookId)
         {
             var cook = await _context.Cooks.FindAsync(cookId);
-            var orders = _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).Where(c => c.Status == Status.Created && c.RestaurantId == cook.RestaurantId).ToList(); 
+            var orders = _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).Where(c => c.RestaurantId == cook.RestaurantId && ( active ? (c.Status==Status.Created || (c.Status<Status.Packed && c.CookId==cookId)) : (c.Status>=Status.Packed && c.CookId == cookId))).ToList(); 
 
             if ((orders.Count() % _pageSize) == 0)
             {
@@ -170,9 +165,9 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             return ordersDTO;
         }
 
-        public async Task TakeOrderCook(Guid orderId, bool take, Guid cookId)
+        public async Task TakeOrderCook(Guid orderId, Guid cookId, StatusDTO status)
         {
-            if (take)
+            if (status.Status==Status.Kitchen)
             {
                 var cook = await _context.Cooks.FindAsync(cookId);
                 var order = await _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).FirstOrDefaultAsync(c => c.Id == orderId && c.RestaurantId == cook.RestaurantId);
@@ -180,42 +175,39 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 {
                     throw new InvalidOperationException($"You cannot take order with this ${orderId} id!");
                 }
-                order.Status = Status.Kitchen;
+                if (order.Status != Status.Created)
+                {
+                    throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
+                }
+                order.Status = status.Status;
                 order.CookId = cookId;
                 await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text ="time" }); //TODO: нормальный текст
             }
-            else
+            else if(status.Status==Status.Packaging || status.Status==Status.Packed)
             {
                 var order = await _context.Orders.FirstOrDefaultAsync(x=>x.Id== orderId && x.CookId==cookId && (x.Status==Status.Kitchen || x.Status == Status.Packaging));
                 if (order == null)
                 {
                     throw new InvalidOperationException($"You haven't got order in progress with this ${orderId} id!");
                 }
-                if (order.Status == Status.Kitchen)
+                if (order.Status == status.Status-1)
                 {
-                    order.Status = Status.Packaging;
+                    order.Status = status.Status;
                 }
                 else
                 {
-                    order.Status = Status.Packed;
+                    throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
                 }
                 await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text="time" }); //TODO: нормальный текст
+            }
+            else
+            {
+                throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
             }
             await _context.SaveChangesAsync();
 
         }
 
-        public async Task<List<OrderDTO>> GetCookOrdersStory(int? number, int page, Guid cookId)
-        {
-            if (number != null)
-            {
-                _regexp = number.ToString();
-            }
-            var orders = _context.Orders.Include(c => c.DishesInCart).ThenInclude(c => c.Dish).Where(
-            c => Regex.IsMatch(c.Number.ToString(), _regexp) && c.CookId == cookId && c.Status!=Status.Kitchen && c.Status!=Status.Packaging);
-            var ordersDTO = orders.Select(x => x.ConvertToDTO()).ToList();
-            return ordersDTO;
-        }
 
         public async Task<List<OrderDTO>> GetOrdersAvaliableToCourier(Guid coourierId)
         {
@@ -224,29 +216,37 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             return ordersDTO;
         }
 
-        public async Task TakeOrderCourier(Guid orderId, bool take, Guid courierId)
+        public async Task TakeOrderCourier(Guid orderId, Guid courierId, StatusDTO status)
         {
-            if (take)
+            if (status.Status == Status.Delivery)
             {
                 var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == Status.Packed);
                 if (order == null)
                 {
                     throw new InvalidOperationException($"You can't take order with this {orderId} id!"); //TODO: сделать более точные исключения
                 }
+                if (order.Status != Status.Packed)
+                {
+                    throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
+                }
                 order.DeliveryTime = DateTime.UtcNow.AddHours(1);
-                order.Status = Status.Delivery;
+                order.Status = status.Status;
                 order.CourierId = courierId;
                 await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text = "time" }); //TODO: нормальный текст
             }
-            else
+            else if (status.Status == Status.Delivered)
             {
                 var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == Status.Delivery && x.CourierId==courierId);
                 if (order == null)
                 {
                     throw new InvalidOperationException($"You can't modify order with this {orderId} id!"); //TODO: сделать более точные исключения
                 }
-                order.Status = Status.Delivered;
+                order.Status = status.Status;
                 await _rabbitMqService.SendMessage(new Notification { OrderId = order.Id, Status = 0, UserId = order.CustomerId, Text = "time" }); //TODO: нормальный текст
+            }
+            else
+            {
+                throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
             }
             await _context.SaveChangesAsync(); 
         }

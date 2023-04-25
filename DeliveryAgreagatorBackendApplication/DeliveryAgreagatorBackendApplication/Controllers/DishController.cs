@@ -8,7 +8,7 @@ using System.Net;
 
 namespace DeliveryAgreagatorBackendApplication.Controllers
 {
-    [Route("api/backend/restaurant/{restaurantId}/dish/")]
+    [Route("api/restaurant/{restaurantId}/dish/")]
     [ApiController]
     public class DishController : ControllerBase
     {
@@ -27,11 +27,11 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="501">Not Implemented</response>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(DishDTO), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(Guid restaurantId, Guid Id)
+        public async Task<IActionResult> Get(Guid restaurantId, Guid id)
         {
             try
             {
-                var dish = await _dishService.GetDish(restaurantId, Id);
+                var dish = await _dishService.GetDish(restaurantId, id);
                 return Ok(dish);
             }
             catch (WrongIdException ex)
@@ -55,13 +55,13 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
         /// <response code="501">Not Implemented</response>
         [HttpPost("{id}/rating")]
         [Authorize(Policy = "SetRating", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> SetRating(Guid restaurantId, Guid Id, int rating) 
+        public async Task<IActionResult> SetRating(Guid restaurantId, Guid id, int rating) 
         {
             try
             {
                 Guid userId;
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out userId);
-                await _dishService.SetRating( restaurantId, Id, userId,rating);
+                await _dishService.SetRating( restaurantId, id, userId,rating);
                 return Ok();
             }
             catch (InvalidOperationException ex)

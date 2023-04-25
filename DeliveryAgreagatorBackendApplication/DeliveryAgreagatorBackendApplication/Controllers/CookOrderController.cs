@@ -1,6 +1,7 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.Common.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,26 +20,26 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         }
 
         /// <summary>
-        /// Получить доступные повару заказы
+        /// Получить заказы повора
         /// </summary>
         /// <remarks>
-        /// Поле cookId временное, будет убрано после добавления авторизации и аутентификации. 
+        /// Поле active - показывает актвные и возможные в случае active=true и только историю заказав при active=false.
         /// </remarks>
         /// <returns></returns>
         /// <response code="200">Success</response>
         /// <response code="501">Not Implemented</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
-        [HttpGet("active")]
+        [HttpGet("{active}")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(int page, DateSort? sort = null)
+        public async Task<IActionResult> Get(bool active, int page, DateSort? sort = null)
         {
             try
             {
                 Guid cookId;
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out cookId);
-                var orders = await _orderService.GetOrdersAvaliableToCook(sort, page, cookId);
+                var orders = await _orderService.GetOrdersAvaliableToCook(active, sort, page, cookId);
                 return Ok(orders);
             }
             catch (ArgumentOutOfRangeException ex)
@@ -62,50 +63,34 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
         /// <response code="501">Not Implemented</response>
-        [HttpPut("{id}/{take}")]
+        [HttpPut("{id}")]
         [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Put(Guid id, bool take)
+        public async Task<IActionResult> Put(Guid id, StatusDTO model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             try
             {
                 Guid cookId;
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out cookId);
-                await _orderService.TakeOrderCook(id, take, cookId);
+                await _orderService.TakeOrderCook(id, cookId, model);
                 return Ok();
             }
             catch (InvalidOperationException ex)
             {
-                return Problem(title: ex.Message, statusCode: 400);
+                return Problem(ex.Message, statusCode: 400);
+            }
+            catch (ArgumentException ex)
+            {
+                return Problem(ex.Message, statusCode: 404);
             }
             catch (Exception ex)
             {
                 return Problem(ex.Message, statusCode: 501);
             }
         }
-        /// <summary>
-        /// История заказов повара
-        /// </summary>
-        /// <returns></returns>
-        /// <response code="200">Success</response>
-        /// <response code="501">Not Implemented</response>
-        /// <response code="401">Unauthorized</response>
-        /// <response code="403">Forbidden</response>
-        [HttpGet("done")]
-        [Authorize(Policy = "OrderOperationsCook", AuthenticationSchemes = "Bearer")]
-        [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Get(int page, int? number = null)
-        {
-            try
-            {
-                Guid cookId;
-                Guid.TryParse(User.FindFirst("IdClaim").Value, out cookId);
-                var orders = await _orderService.GetCookOrdersStory(number, page, cookId);
-                return Ok(orders);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message, statusCode: 501);
-            }
-        }
+
     }
 }
