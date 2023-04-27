@@ -82,6 +82,10 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             if (dishesInCart.Any(x => x.Dish.RestaurantId != dishesInCart[0].Dish.RestaurantId)){
                 throw new InvalidOperationException("You can't order dishes from different restaurants at the same time!"); 
             }
+            if (dishesInCart.Any(x => !x.Dish.IsActive))
+            {
+                throw new InvalidOperationException("You can't unavaliable dishes!");
+            }
             var order = new OrderDbModel
             {
                 Id = guid,

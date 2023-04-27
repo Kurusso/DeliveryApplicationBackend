@@ -1,5 +1,6 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Main.Common.Models.DTO;
 
 namespace DeliveryAgreagatorBackendApplication.Models
 {
@@ -19,6 +20,16 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public ICollection<MenuDbModel> Menus { get; set; }
         public ICollection<RatingDbModel> Ratings { get; set; }
 
+        public DishDbModel() { }
+        public DishDbModel(DishPostDTO model)
+        {
+            Id = new Guid();
+            Name = model.Name;
+            Description = model.Description;
+            Price = model.Price;
+            IsVegetarian = model.IsVegetarian;
+            PhotoUrl = model.PhotoUrl;
+        }
         public DishDTO ConvertToDTO()
         {
             var model = new DishDTO

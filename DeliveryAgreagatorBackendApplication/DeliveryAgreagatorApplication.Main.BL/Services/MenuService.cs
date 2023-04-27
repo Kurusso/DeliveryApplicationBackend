@@ -3,7 +3,9 @@ using DeliveryAgreagatorApplication.API.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.Common.Models.DTO;
 using DeliveryAgreagatorApplication.Main.DAL;
+using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
@@ -29,7 +31,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             if (menu == null) {
                 throw new WrongIdException(WrongIdExceptionSubject.Menu, menuId);
             }
-            var dishes = menu.Dishes.Where(dish => isVegetarian == true ? dish.IsVegetarian : true).Where(dish => categories.Count == 0 ? true : categories.Any(c => c == dish.Category));
+            var dishes = menu.Dishes.Where(dish => isVegetarian == true ? dish.IsVegetarian : true).Where(dish => categories.Count == 0 ? true : categories.Any(c => c == dish.Category)).Where(x=>x.IsActive);
 
             var dishesDTO = dishes.Select(x => x.ConvertToDTO());
 
@@ -96,5 +98,28 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 return menusDTO;
 			}
 		}
+
+        public async Task AddMenu(MenuDTO menu, Guid managerId)
+        {
+            var manager = await _context.Managers.FirstOrDefaultAsync(x=>x.Id== managerId);
+            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(x=>x.Id== manager.RestaurantId);
+
+            await _context.Menus.AddAsync(new MenuDbModel(menu, restaurant.Id));
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task EditMenu(Guid menuId, MenuDTO menu, Guid managerId)
+        {
+            var manager = await _context.Managers.FirstOrDefaultAsync(x => x.Id == managerId);
+            var restaurant = await _context.Restaurants.Include(x=>x.Menus).FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
+            var menuToChange = restaurant.Menus.FirstOrDefault(x => x.Id == menuId);
+            if (menuToChange == null)
+            {
+                throw new ArgumentException($"You haven't got access to menu with this {menuId} id!"); //TODO: разбить на несколько эксепшенов
+            }
+            menuToChange.isActive = menu.IsActive;
+            menuToChange.Name = menu.Name;
+            await _context.SaveChangesAsync();
+        }
     }
 }
