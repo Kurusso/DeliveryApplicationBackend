@@ -1,7 +1,15 @@
+using DeliveryAgreagatorApplication.AdminPanel.Services;
+using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
+using DeliveryAgreagatorApplication.Main.DAL;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+string connection = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new NullReferenceException("Specify connection string!");
+builder.Services.AddDbContext<BackendDbContext>(options => options.UseNpgsql(connection));
+builder.Services.AddControllers();
+builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 var app = builder.Build();
@@ -20,7 +28,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Restaurant}/{action=Index}");
 app.MapRazorPages();
 
 app.Run();

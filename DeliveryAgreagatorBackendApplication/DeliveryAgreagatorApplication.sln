@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryAgreagatorApplicati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryAgreagatorApplication.Common", "DeliveryAgreagatorApplication.Common\DeliveryAgreagatorApplication.Common.csproj", "{62F9A486-EF37-4CA7-886D-6781E9D4172D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeliveryAgreagatorApplication.AdminPanel", "DeliveryAgreagatorApplication.AdminPanel\DeliveryAgreagatorApplication.AdminPanel.csproj", "{4B764440-F6B4-487F-A518-65E96FA08448}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeliveryAgreagatorApplication.AdminPanel", "DeliveryAgreagatorApplication.AdminPanel\DeliveryAgreagatorApplication.AdminPanel.csproj", "{4B764440-F6B4-487F-A518-65E96FA08448}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

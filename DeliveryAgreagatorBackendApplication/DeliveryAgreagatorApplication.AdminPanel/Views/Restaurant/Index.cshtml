@@ -1,0 +1,41 @@
+﻿@model DeliveryAgreagatorApplication.AdminPanel.Models.DTO.RestaurantViewModel
+@{
+	
+};
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, AuthoringTagHelpers
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>Head</title>
+</head>
+<body>
+    @foreach (var restaurant in Model.Get)
+    {
+        <div>
+            <table>
+                <tr>
+                <td>@restaurant.Name</td>
+                <td>@restaurant.Picture</td>
+                <td><a href="~/Home/Buy/@restaurant.Id">Купить</a></td>
+                </tr>
+            </table>
+        </div>      
+    }
+    <form asp-action = "Post" asp-controller ="Restaurant" asp-antiforgery="true">
+            <table>
+                <tr>
+                    <td>Название:</td>
+                <td><input type="text" asp-for="Post.Name" /> </td>
+                </tr>
+                <tr>
+                    <td>Изображение:</td>
+                    <td><input type="text" asp-for="Post.Picture" /></td>
+                </tr>
+                <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
+            </table>
+        </form>
+
+</body>
+</html>
