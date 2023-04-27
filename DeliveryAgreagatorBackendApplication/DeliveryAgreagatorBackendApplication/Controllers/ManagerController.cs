@@ -103,7 +103,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
             }
         }
 
-        [HttpPost("menu/{menuId}")]
+        [HttpPost("menu/{menuId}/dish")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> CreateDish(Guid menuId, DishPostDTO model)
         {

@@ -21,7 +21,7 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public ICollection<RatingDbModel> Ratings { get; set; }
 
         public DishDbModel() { }
-        public DishDbModel(DishPostDTO model)
+        public DishDbModel(DishPostDTO model, Guid restaurantId)
         {
             Id = new Guid();
             Name = model.Name;
@@ -29,6 +29,7 @@ namespace DeliveryAgreagatorBackendApplication.Models
             Price = model.Price;
             IsVegetarian = model.IsVegetarian;
             PhotoUrl = model.PhotoUrl;
+            RestaurantId = restaurantId;
         }
         public DishDTO ConvertToDTO()
         {

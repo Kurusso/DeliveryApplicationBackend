@@ -23,7 +23,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
         public async Task AddDishToMenu(Guid managerId, Guid menuId, Guid dishId)
         {
             var manager = await _context.Managers.FirstOrDefaultAsync(x => x.Id == managerId);
-            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
+            var restaurant = await _context.Restaurants.Include(x => x.Menus).ThenInclude(x=>x.Dishes).FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
             var menu = restaurant.Menus.FirstOrDefault(x => x.Id == menuId);
             if (menu == null)
             {
@@ -45,13 +45,14 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
         public async Task CreateDish(Guid managerId, Guid menuId, DishPostDTO dishPost)
         {
             var manager = await _context.Managers.FirstOrDefaultAsync(x=>x.Id==managerId);
-            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
+            var restaurant = await _context.Restaurants.Include(x=>x.Menus).ThenInclude(c=>c.Dishes).FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
             var menu = restaurant.Menus.FirstOrDefault(x => x.Id == menuId);
             if (menu == null)
             {
                 throw new ArgumentException($"You haven't got access to menu with this {menuId} id!"); //TODO: разбить на несколько эксепшенов
             }
-            menu.Dishes.Add(new DishDbModel(dishPost));
+            var newDish = new DishDbModel(dishPost, restaurant.Id);
+            menu.Dishes.Add(newDish);
             await _context.SaveChangesAsync();
         }
 
