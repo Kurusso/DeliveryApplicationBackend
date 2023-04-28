@@ -6,7 +6,7 @@ namespace DeliveryAgreagatorApplication.Auth.Common.Interfaces
 {
     public interface ITokenSerivce
     {
-        public Task<TokenPair> GenerateTokenPair(IdentityUser<Guid> user); //TODO: не импорить DAL в Common
-
+        public Task<TokenPair> GenerateTokenPair(IdentityUser<Guid> user); 
+        public Task<string> GenerateAccessToken(IdentityUser<Guid> user, Guid refreshTokenId);
     }
 }

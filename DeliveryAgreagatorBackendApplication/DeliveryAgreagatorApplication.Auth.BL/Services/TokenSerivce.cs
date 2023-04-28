@@ -80,5 +80,21 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             var encodedRefreshJwt = new JwtSecurityTokenHandler().WriteToken(refresh);
             return new TokenPair { AccessToken = encodedAccessJwt, RefreshToken= encodedRefreshJwt, RefreshTokenId = refreshTokenId, RefreshExpires = now.AddMinutes(refreshlifetime) };
         }
+
+        public async Task<string> GenerateAccessToken(IdentityUser<Guid> user, Guid refreshTokenId)
+        {
+            var accessClaims = await GetClaims((ApplicationUser)user, false, refreshTokenId);
+            int accesslifetime = JwtConfigurations.Lifetime;
+            var now = DateTime.UtcNow;
+            var access = new JwtSecurityToken(
+                issuer: JwtConfigurations.Issuer,
+                audience: JwtConfigurations.Audience,
+                notBefore: now,
+                claims: accessClaims,
+                expires: now.AddMinutes(accesslifetime),
+                signingCredentials: new SigningCredentials(JwtConfigurations.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedAccessJwt = new JwtSecurityTokenHandler().WriteToken(access);
+            return encodedAccessJwt;
+        }
     }
 }

@@ -52,7 +52,7 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             }          
         }
 
-        public async Task<TokenPairDTO> Refresh(ClaimsPrincipal user)
+        public async Task<string> Refresh(ClaimsPrincipal user)
         {
             var refreshTokenId = user.Claims.FirstOrDefault(c => c.Type == "RefreshIdClaim").Value;
             var userId = user.Claims.FirstOrDefault(c => c.Type == "IdClaim").Value;
@@ -67,13 +67,10 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
                 throw new TokenException();
             }
             
-            _context.RefreshTokens.Remove(refreshToken);
             try
             {
-               var tokenPair = await _tokenSerivce.GenerateTokenPair(userDb);
-               await _context.RefreshTokens.AddAsync(new RefreshTokenDb { Id = tokenPair.RefreshTokenId, Token = tokenPair.RefreshToken, Expires = tokenPair.RefreshExpires, UserId=userGuidId });
-               await _context.SaveChangesAsync();
-               return new TokenPairDTO { AccessToken= tokenPair.AccessToken, RefreshToken= tokenPair.RefreshToken };
+                var token = await _tokenSerivce.GenerateAccessToken(userDb, refreshTokenGuidId);
+                return token; 
             }
             catch
             {
