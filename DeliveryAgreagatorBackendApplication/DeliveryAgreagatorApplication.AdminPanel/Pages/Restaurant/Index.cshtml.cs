@@ -29,6 +29,7 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurant
 
             if (!ModelState.IsValid)
             {
+                Restaurant.Get = await _restaurantService.GetRestaurants();
                 return Page();
             }
             try
