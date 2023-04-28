@@ -3,7 +3,6 @@
 
     public class OrderPostDTO
     {
-        public string Address { get; set; }
-        public DateTime OrderTime { get; set; }
+        public string? Address { get; set; }
     }
 }

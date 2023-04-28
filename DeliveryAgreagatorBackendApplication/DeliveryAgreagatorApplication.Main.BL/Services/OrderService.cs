@@ -3,9 +3,11 @@ using DeliveryAgreagatorApplication.API.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
+using DeliveryAgreagatorApplication.Main.Common.Models.DTO;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace DeliveryAgreagatorApplication.Main.BL.Services
@@ -36,12 +38,6 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<OrderDTO>> GetActiveOrders(Guid userId) //TODO: удалить метод, если не понадобиться
-        {
-            var orders = _context.Orders.Include(x=>x.DishesInCart).ThenInclude(c=>c.Dish).ThenInclude(z=>z.Ratings).Where(x=>x.Status!=Status.Canceled && x.Status!=Status.Delivered && x.CustomerId==userId).ToList();
-            var ordersDTO = orders.Select(x => x.ConvertToDTO()).ToList();
-            return ordersDTO;
-        }
 
         public async Task<List<OrderDTO>> GetAllOrders(int page, Guid userId, DateTime startDate, DateTime endDate,bool active, int? number)
         {
@@ -68,9 +64,16 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             return ordersDTO;
         }
 
-        public async Task PostOrder(OrderPostDTO model, Guid userId)
+        public async Task PostOrder(OrderPostDTO model, ClaimsPrincipal userPrincipal)
         {
+            Guid userId;
+            Guid.TryParse(userPrincipal.FindFirst("IdClaim").Value, out userId);
             var guid = Guid.NewGuid();
+            var address = model.Address==null ? userPrincipal.FindFirst("Address").Value : model.Address;
+            if (address == null)
+            {
+                throw new InvalidOperationException("You should choose address!");
+            }
             var dishesInCart = _context.DishInCart.Include(x=>x.Dish).Where(x => x.CustomerId == userId && x.Active).ToList();
             if (dishesInCart.Count == 0 )
             {
@@ -79,6 +82,10 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             if (dishesInCart.Any(x => x.Dish.RestaurantId != dishesInCart[0].Dish.RestaurantId)){
                 throw new InvalidOperationException("You can't order dishes from different restaurants at the same time!"); 
             }
+            if (dishesInCart.Any(x => !x.Dish.IsActive))
+            {
+                throw new InvalidOperationException("You can't unavaliable dishes!");
+            }
             var order = new OrderDbModel
             {
                 Id = guid,
@@ -86,8 +93,8 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 CustomerId = userId,
                 DishesInCart = dishesInCart,
                 Number = guid.GetHashCode(),     
-                OrderTime = model.OrderTime,
-                Address = model.Address,
+                OrderTime = DateTime.UtcNow,
+                Address = address,
                 Status = Status.Created,
                 Price = dishesInCart.Sum(x=>x.Dish.Price*x.Counter)
             };
@@ -117,10 +124,10 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<OrderDTO>> GetOrdersAvaliableToCook(DateSort? sort, int page, Guid cookId)
+        public async Task<List<OrderDTO>> GetOrdersAvaliableToCook(bool active, DateSort? sort, int page, Guid cookId)
         {
             var cook = await _context.Cooks.FindAsync(cookId);
-            var orders = _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).Where(c => c.Status == Status.Created && c.RestaurantId == cook.RestaurantId).ToList(); 
+            var orders = _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).Where(c => c.RestaurantId == cook.RestaurantId && ( active ? (c.Status==Status.Created || (c.Status<Status.Packed && c.CookId==cookId)) : (c.Status>=Status.Packed && c.CookId == cookId))).ToList(); 
 
             if ((orders.Count() % _pageSize) == 0)
             {
@@ -159,9 +166,9 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             return ordersDTO;
         }
 
-        public async Task TakeOrderCook(Guid orderId, bool take, Guid cookId)
+        public async Task TakeOrderCook(Guid orderId, Guid cookId, StatusDTO status)
         {
-            if (take)
+            if (status.Status==Status.Kitchen)
             {
                 var cook = await _context.Cooks.FindAsync(cookId);
                 var order = await _context.Orders.Include(x => x.DishesInCart).ThenInclude(x => x.Dish).FirstOrDefaultAsync(c => c.Id == orderId && c.RestaurantId == cook.RestaurantId);
@@ -169,40 +176,37 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 {
                     throw new InvalidOperationException($"You cannot take order with this ${orderId} id!");
                 }
-                order.Status = Status.Kitchen;
+                if (order.Status != Status.Created)
+                {
+                    throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
+                }
+                order.Status = status.Status;
                 order.CookId = cookId;
             }
-            else
+            else if(status.Status==Status.Packaging || status.Status==Status.Packed)
             {
                 var order = await _context.Orders.FirstOrDefaultAsync(x=>x.Id== orderId && x.CookId==cookId && (x.Status==Status.Kitchen || x.Status == Status.Packaging));
                 if (order == null)
                 {
                     throw new ArgumentException($"You haven't got order in progress with this ${orderId} id!");
                 }
-                if (order.Status == Status.Kitchen)
+                if (order.Status == status.Status-1)
                 {
-                    order.Status = Status.Packaging;
+                    order.Status = status.Status;
                 }
                 else
                 {
-                    order.Status = Status.Packed;
+                    throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
                 }
+            }
+            else
+            {
+                throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
             }
             await _context.SaveChangesAsync();
 
         }
 
-        public async Task<List<OrderDTO>> GetCookOrdersStory(int? number, int page, Guid cookId)
-        {
-            if (number != null)
-            {
-                _regexp = number.ToString();
-            }
-            var orders = _context.Orders.Include(c => c.DishesInCart).ThenInclude(c => c.Dish).Where(
-            c => Regex.IsMatch(c.Number.ToString(), _regexp) && c.CookId == cookId && c.Status!=Status.Kitchen && c.Status!=Status.Packaging);
-            var ordersDTO = orders.Select(x => x.ConvertToDTO()).ToList();
-            return ordersDTO;
-        }
 
         public async Task<List<OrderDTO>> GetOrdersAvaliableToCourier(Guid coourierId)
         {
@@ -211,27 +215,35 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             return ordersDTO;
         }
 
-        public async Task TakeOrderCourier(Guid orderId, bool take, Guid courierId)
+        public async Task TakeOrderCourier(Guid orderId, Guid courierId, StatusDTO status)
         {
-            if (take)
+            if (status.Status == Status.Delivery)
             {
                 var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == Status.Packed);
                 if (order == null)
                 {
                     throw new InvalidOperationException($"You can't take order with this {orderId} id!"); //TODO: сделать более точные исключения
                 }
+                if (order.Status != Status.Packed)
+                {
+                    throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
+                }
                 order.DeliveryTime = DateTime.UtcNow.AddHours(1);
-                order.Status = Status.Delivery;
+                order.Status = status.Status;
                 order.CourierId = courierId;
             }
-            else
+            else if (status.Status == Status.Delivered)
             {
                 var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == Status.Delivery && x.CourierId==courierId);
                 if (order == null)
                 {
                     throw new InvalidOperationException($"You can't modify order with this {orderId} id!"); //TODO: сделать более точные исключения
                 }
-                order.Status = Status.Delivered;
+                order.Status = status.Status;
+            }
+            else
+            {
+                throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
             }
             await _context.SaveChangesAsync(); 
         }

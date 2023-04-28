@@ -87,7 +87,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("OrderOperationsManager", policy =>
     {
         policy.RequireAuthenticatedUser();
-        policy.RequireClaim("OrderOperation", "Manager");
+        policy.RequireClaim("GetOrders", "Manager");
         policy.RequireClaim("TokenTypeClaim", "Access");
     });
     options.DefaultPolicy = new AuthorizationPolicyBuilder()

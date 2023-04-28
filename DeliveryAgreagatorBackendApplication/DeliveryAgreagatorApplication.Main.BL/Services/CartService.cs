@@ -20,7 +20,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
 
         public async Task AddDishToCart( Guid dishId, Guid userId)
         {
-            var dish = await _context.Dishes.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.Id == dishId);
+            var dish = await _context.Dishes.Include(x => x.Ratings).FirstOrDefaultAsync(x => x.Id == dishId && x.IsActive);
             if (dish == null)
             {
                 throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId);
