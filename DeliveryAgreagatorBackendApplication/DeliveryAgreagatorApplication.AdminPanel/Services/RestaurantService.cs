@@ -1,6 +1,8 @@
-﻿using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
+﻿using DeliveryAgreagatorApplication.AdminPanel.Models.DTO;
+using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
 using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.Main.DAL;
+using DeliveryAgreagatorBackendApplication.Models;
 
 namespace DeliveryAgreagatorApplication.AdminPanel.Services
 {
@@ -15,6 +17,18 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
         {
             var restaurants = _context.Restaurants.ToList();
             return restaurants.Select(x=>x.ConvertToDTO()).ToList();
+        }
+
+        public async Task PostRestaurant(RestaurantPostDTO restaurant)
+        {
+            var restaurantDb = new RestaurantDbModel
+            {
+                Id = new Guid(),
+                Name = restaurant.Name,
+                Picture = restaurant.Picture
+            };
+            await _context.Restaurants.AddAsync(restaurantDb);
+            await _context.SaveChangesAsync();
         }
     }
 }

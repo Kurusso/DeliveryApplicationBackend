@@ -1,6 +1,7 @@
 ﻿using DeliveryAgreagatorApplication.AdminPanel.Models.DTO;
 using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
 using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeliveryAgreagatorApplication.AdminPanel.Controllers
@@ -28,8 +29,18 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(RestaurantViewModel model)
         {
-            Console.WriteLine("fwfw");
-            return Ok();
+            if (!ModelState.IsValid)  
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                await _restaurantService.PostRestaurant(model.Post);
+                return RedirectToAction("Index");
+            }
+            catch(Exception ex){
+                return Problem(ex.Message, statusCode:501);
+            }
         }
     }
 }
