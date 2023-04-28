@@ -28,9 +28,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Restaurant}/{action=Index}");
 app.MapRazorPages();
 
 app.Run();

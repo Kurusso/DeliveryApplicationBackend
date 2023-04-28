@@ -7,5 +7,6 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces
     {
         public Task<List<RestaurantShortDTO>> GetRestaurants();
         public Task PostRestaurant(RestaurantPostDTO restaurant);
+        public Task DeleteRestaurant(Guid restaurantId);
     }
 }

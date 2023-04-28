@@ -13,6 +13,14 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
         {
             _context = context;
         }
+
+        public async Task DeleteRestaurant(Guid restaurantId)
+        {
+            var restaurant = await _context.Restaurants.FindAsync(restaurantId);
+             _context.Restaurants.Remove(restaurant);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<List<RestaurantShortDTO>> GetRestaurants()
         {
             var restaurants = _context.Restaurants.ToList();
