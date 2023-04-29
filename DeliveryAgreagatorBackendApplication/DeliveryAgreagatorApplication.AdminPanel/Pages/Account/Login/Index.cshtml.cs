@@ -1,4 +1,5 @@
 using DeliveryAgreagatorApplication.AdminPanel.Models.DTO;
+using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
 using DeliveryAgreagatorApplication.Auth.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,12 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Login
     public class IndexModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager; 
-        public IndexModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        private readonly ILoginService _loginService;
+        public IndexModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ILoginService loginService)
         {
+            _loginService= loginService;
             _signInManager = signInManager;
-            _userManager = userManager;
+
         }
 
         [BindProperty]
@@ -40,20 +42,18 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Login
 
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email);
+                var userVerified = await _loginService.VerifyLogin(Input);
 
-                var passwordVerified = BCrypt.Net.BCrypt.Verify(Input.Password, user.PasswordHash);
-
-                if (passwordVerified)
+                if (userVerified.IsLogedIn)
                 {
                     // Sign in the user and create a cookie
-                    await _signInManager.SignInAsync(user, Input.RememberMe);
+                   await _signInManager.SignInAsync(userVerified.User, Input.RememberMe);
 
                     return LocalRedirect(returnUrl);
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, userVerified.DenyReason);
                     return Page();
                 }
             }

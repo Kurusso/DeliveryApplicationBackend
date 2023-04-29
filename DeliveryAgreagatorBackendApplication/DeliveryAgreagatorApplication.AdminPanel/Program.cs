@@ -15,6 +15,7 @@ builder.Services.AddDbContext<BackendDbContext>(options => options.UseNpgsql(con
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connection2));
 builder.Services.AddControllers();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()

@@ -15,6 +15,7 @@ namespace DeliveryAgreagatorApplication.Auth.DAL
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Courier> Couriers { get; set; }
         public DbSet<RefreshTokenDb> RefreshTokens { get; set; }
+        public DbSet<Admin> Admins { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
