@@ -1,10 +1,11 @@
 ﻿using DeliveryAgreagatorApplication.AdminPanel.Models.DTO;
+using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
 using DeliveryAgreagatorApplication.Auth.DAL;
 using DeliveryAgreagatorApplication.Auth.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces
+namespace DeliveryAgreagatorApplication.AdminPanel.Services
 {
     public class LoginService : ILoginService
     {
@@ -13,7 +14,7 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces
         private readonly AuthDbContext _context;
         public LoginService(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, AuthDbContext context)
         {
-            _context= context;
+            _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
         }
@@ -21,9 +22,9 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces
         {
             var status = new LoginStatusDTO { IsLogedIn = true };
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
-            if(user == null)
+            if (user == null)
             {
-                status.IsLogedIn= false;
+                status.IsLogedIn = false;
                 status.DenyReason = "Incorrect Email!";
             }
             if (user != null)
@@ -43,7 +44,7 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces
                         status.DenyReason = "It is not Admin account!";
                     }
                 }
-            }          
+            }
             if (status.IsLogedIn)
             {
                 status.User = user;

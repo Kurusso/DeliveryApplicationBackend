@@ -1,0 +1,49 @@
+﻿@page
+@model DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurants.IndexModel
+@{
+
+};
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, AuthoringTagHelpers
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Head</title>
+</head>
+<body>
+    <form method="post">
+    @foreach (var restaurant in Model.Restaurant.Get)
+    {
+        <div>
+            <table>
+                <tr>
+                    <td>@restaurant.Name</td>
+                    <td>@restaurant.Picture</td>
+                    <td><button type="submit" asp-page-handler="delete" asp-route-id="@restaurant.Id">Удалить</button></td>
+                </tr>
+            </table>
+        </div>
+    }
+
+        <table>
+            <tr>
+                <td>Название:</td>
+                <td>
+                    <input type="text" asp-for="Restaurant.Post.Name" /> 
+                    <span asp-validation-for="Restaurant.Post.Name" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Изображение:</td>
+                <td>
+                    <input type="text" asp-for="Restaurant.Post.Picture" />
+                    <span asp-validation-for="Restaurant.Post.Picture" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
+        </table>
+    </form>
+
+</body>
+</html>

@@ -1,8 +1,11 @@
 ﻿using DeliveryAgreagatorApplication.AdminPanel.Models.DTO;
 using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
 using DeliveryAgreagatorApplication.API.Common.Models.DTO;
+using DeliveryAgreagatorApplication.Common.Exceptions;
+using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryAgreagatorApplication.AdminPanel.Services
 {
@@ -19,6 +22,16 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
             var restaurant = await _context.Restaurants.FindAsync(restaurantId);
              _context.Restaurants.Remove(restaurant);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<RestaurantShortDTO> GetRestaurantById(Guid restaurantId)
+        {
+            var restaurant = await _context.Restaurants.FirstOrDefaultAsync(x=>x.Id== restaurantId);
+            if(restaurant == null)
+            {
+                throw new WrongIdException(WrongIdExceptionSubject.Restaurant, restaurantId);
+            }
+            return restaurant.ConvertToDTO();
         }
 
         public async Task<List<RestaurantShortDTO>> GetRestaurants()
