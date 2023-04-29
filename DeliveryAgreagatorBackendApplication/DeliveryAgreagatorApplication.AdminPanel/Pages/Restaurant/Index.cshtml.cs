@@ -1,10 +1,12 @@
 using DeliveryAgreagatorApplication.AdminPanel.Models.DTO;
 using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurant
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IRestaurantService _restaurantService;

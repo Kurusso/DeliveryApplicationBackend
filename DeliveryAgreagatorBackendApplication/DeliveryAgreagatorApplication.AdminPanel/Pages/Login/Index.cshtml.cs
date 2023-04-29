@@ -24,9 +24,14 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Login
         public string ReturnUrl { get; set; }
 
 
-        public void OnGet(string returnUrl = null)
+        public async Task<IActionResult> OnGet(string returnUrl = null)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Redirect("/Index");
+            }
             ReturnUrl = returnUrl;
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -37,7 +42,7 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Login
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);
 
-                var passwordVerified = BCrypt.Net.BCrypt.HashPassword(Input.Password)==user.PasswordHash;
+                var passwordVerified = BCrypt.Net.BCrypt.Verify(Input.Password, user.PasswordHash);
 
                 if (passwordVerified)
                 {
