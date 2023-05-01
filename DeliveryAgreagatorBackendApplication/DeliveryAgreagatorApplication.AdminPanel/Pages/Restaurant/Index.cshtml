@@ -8,6 +8,28 @@
     </head>
 
     <body>
-    <div>@Model.Restaurant.Name</div>
-</body>
+        <form method="post">
+            <img src="@Model.Restaurant.Picture"></img>
+            <div>@Model.Restaurant.Name</div>
+            <div asp-validation-summary="All" class="text-danger"></div>
+                    <table>
+                        <tr>
+                            <input type="hidden" asp-for="Restaurant.Id" placeholder="@Model.Restaurant.Name">  
+                            <td>Название:</td>
+                            <td>
+                                <input type="text" asp-for="Restaurant.Name" placeholder="@Model.Restaurant.Name">
+                                <span asp-validation-for="Restaurant.Name" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Изображение:</td>
+                            <td>
+                                <input type="text" asp-for="Restaurant.Picture" placeholder="@Model.Restaurant.Picture"/>
+                                <span asp-validation-for="Restaurant.Picture" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
+                    </table>
+        </form>
+    </body>
 </html>

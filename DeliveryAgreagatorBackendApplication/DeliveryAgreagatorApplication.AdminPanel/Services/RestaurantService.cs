@@ -1,4 +1,5 @@
 ﻿using DeliveryAgreagatorApplication.AdminPanel.Models.DTO;
+using DeliveryAgreagatorApplication.AdminPanel.Models.Enums;
 using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
 using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 using DeliveryAgreagatorApplication.Common.Exceptions;
@@ -40,6 +41,7 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
             return restaurants.Select(x=>x.ConvertToDTO()).ToList();
         }
 
+
         public async Task PostRestaurant(RestaurantPostDTO restaurant)
         {
             var restaurantDb = new RestaurantDbModel
@@ -49,6 +51,18 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
                 Picture = restaurant.Picture
             };
             await _context.Restaurants.AddAsync(restaurantDb);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task PutRestaurant(RestaurantShortDTO restaurant)
+        {
+            var restaurantDb = await _context.Restaurants.FirstOrDefaultAsync(x=>x.Id==restaurant.Id);
+            if (restaurantDb == null)
+            {
+                throw new WrongIdException(WrongIdExceptionSubject.Restaurant, restaurant.Id);
+            }
+            restaurantDb.Name = restaurant.Name;
+            restaurantDb.Picture = restaurant.Picture;
             await _context.SaveChangesAsync();
         }
     }

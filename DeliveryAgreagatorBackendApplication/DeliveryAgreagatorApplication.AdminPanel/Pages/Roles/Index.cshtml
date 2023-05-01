@@ -1,0 +1,69 @@
+﻿@page
+@using DeliveryAgreagatorApplication.AdminPanel.Models.Enums;
+@model DeliveryAgreagatorApplication.AdminPanel.Pages.Roles.IndexModel
+@{
+	<html>
+		<head>
+			<title>Head</title>
+		</head>
+
+		<body>
+        <form method="post">
+             <table>
+                 <tr>
+                <td>Email:</td>
+                  <td>
+                        <input type="text" asp-for="RoleModel.Email" />
+                        <span asp-validation-for="RoleModel.Email" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Дествие:</td>
+                    <td>
+                        <select asp-for="RoleModel.Action" asp-items="Html.GetEnumSelectList<RoleAction>()"></select>
+                        <span asp-validation-for="RoleModel.Action" class="text-danger"></span>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>Роль:</td>
+                    <td>
+                        <select id="selected-role" asp-for="RoleModel.Role" asp-items="Html.GetEnumSelectList<Role>()"></select>
+                        <span asp-validation-for="RoleModel.Role" class="text-danger"></span>
+
+                    </td>
+                </tr>
+                <tr id="id-field" style="visibility: visible">
+                    <td>RestaurantId:</td>
+                    <td>
+                        <input type="text" asp-for="RoleModel.RestaurantId" />
+                        <span asp-validation-for="RoleModel.RestaurantId" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
+            </table>
+        </form>
+
+		</body>
+	</html>
+    @section Scripts{
+        <script asp-append-version="true">
+            const selectField = document.getElementById('selected-role');
+
+
+            selectField.addEventListener('change', function () {
+
+                const selectedValue = selectField.value;
+
+
+                if (selectedValue == 0 || selectedValue == 1) {
+                    document.getElementById('id-field').style.visibility = "visible";
+                }
+                else {
+                    document.getElementById('id-field').style.visibility = "hidden";
+                }
+            });
+        </script>
+    }
+
+}

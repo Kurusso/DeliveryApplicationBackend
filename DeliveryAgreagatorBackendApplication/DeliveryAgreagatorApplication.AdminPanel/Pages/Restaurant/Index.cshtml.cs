@@ -40,5 +40,27 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurant
                 return NotFound();
             }
         }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if(!ModelState.IsValid)
+            {
+                return Page();
+            }
+            try
+            {
+                await _restaurantService.PutRestaurant(Restaurant);
+                return RedirectToPage();
+            }
+            catch (WrongIdException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
+        }
     }
 }

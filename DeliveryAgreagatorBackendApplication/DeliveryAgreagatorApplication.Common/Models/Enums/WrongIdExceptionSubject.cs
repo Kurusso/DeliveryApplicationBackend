@@ -11,6 +11,8 @@ namespace DeliveryAgreagatorApplication.Common.Models.Enums
         Restaurant,
         Dish,
         Menu,
-        Order
+        Order,
+        User,
+        Role
     }
 }
