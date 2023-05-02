@@ -20,3 +20,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+table, th, td {
+    border: 1px solid;
+    border-collapse: collapse;
+    margin-bottom: 5px;
+}

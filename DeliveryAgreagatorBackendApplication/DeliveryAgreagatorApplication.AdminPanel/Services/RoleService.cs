@@ -77,7 +77,7 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
                 case Role.Courier:
                     var courierId = Guid.NewGuid();
                     await _authDbContext.Couriers.AddAsync(new Courier { Id = courierId, UserId = userAuth.Id });
-                    userAuth.CookId = courierId;
+                    userAuth.CourierId = courierId;
                     break;
             }
         }
@@ -94,17 +94,20 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
                     var managerAuth = await _authDbContext.Managers.FirstOrDefaultAsync(x => x.UserId == userAuth.Id);
                     var managerBackend = await _backendDbContext.Managers.FirstOrDefaultAsync(x => x.Id == userAuth.Id);
                     _authDbContext.Managers.Remove(managerAuth);
+                    userAuth.ManagerId = null;
                     _backendDbContext.Managers.Remove(managerBackend);
                     break;
                 case Role.Cook:
                     var cookAuth = await _authDbContext.Cooks.FirstOrDefaultAsync(x => x.UserId == userAuth.Id);
                     var cookBackend = await _backendDbContext.Cooks.FirstOrDefaultAsync(x => x.Id == userAuth.Id);
                     _authDbContext.Cooks.Remove(cookAuth);
+                    userAuth.CookId = null;
                     _backendDbContext.Cooks.Remove(cookBackend);
                     break;
                 case Role.Courier:
                     var courier = await _authDbContext.Couriers.FirstOrDefaultAsync(x => x.UserId == userAuth.Id);
                     _authDbContext.Couriers.Remove(courier);
+                    userAuth.CourierId = null;
                     break;
             }
         }
@@ -128,7 +131,7 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
                     throw;
                 }
             }
-            else
+            if(model.Action == RoleAction.Retrive)
             {
                 try
                 {
@@ -139,6 +142,12 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
                     throw;
                 }
             }
+            if(model.Action == RoleAction.Ban)
+            {
+                userAuth.Baned = true;
+            }
+           var refreshes = await _authDbContext.RefreshTokens.Where(x=>x.Expires<DateTime.UtcNow).ToListAsync();
+           _authDbContext.RefreshTokens.RemoveRange(refreshes);
            await _authDbContext.SaveChangesAsync();
            await _backendDbContext.SaveChangesAsync();
 

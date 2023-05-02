@@ -1,8 +1,7 @@
-﻿@page
+﻿@page 
 @model DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurants.IndexModel
 @{
-
-};
+}
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, AuthoringTagHelpers
 <!DOCTYPE html>
@@ -13,19 +12,19 @@
 </head>
 <body>
     <form method="post">
+        <table>
     @foreach (var restaurant in Model.Restaurant.Get)
     {
-        <div>
-            <table>
+
+                
                 <tr>
+                    <td><a asp-page="/Restaurant/Index" asp-route-id="@restaurant.Id">@restaurant.Id</a></td>
                     <td>@restaurant.Name</td>
                     <td>@restaurant.Picture</td>
                     <td><button type="submit" asp-page-handler="delete" asp-route-id="@restaurant.Id">Удалить</button></td>
                 </tr>
-            </table>
-        </div>
     }
-
+        </table>
         <table>
             <tr>
                 <td>Название:</td>
@@ -40,9 +39,9 @@
                     <input type="text" asp-for="Restaurant.Post.Picture" />
                     <span asp-validation-for="Restaurant.Post.Picture" class="text-danger"></span>
                 </td>
-            </tr>
-            <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
+            </tr>           
         </table>
+        <input type="submit" value="Отправить" />
     </form>
 
 </body>

@@ -10,7 +10,8 @@
     <body>
         <form method="post">
             <img src="@Model.Restaurant.Picture"></img>
-            <div>@Model.Restaurant.Name</div>
+            <div>Название: @Model.Restaurant.Name</div>
+            <div>ID: @Model.Restaurant.Id</div>
             <div asp-validation-summary="All" class="text-danger"></div>
                     <table>
                         <tr>
@@ -28,8 +29,8 @@
                                 <span asp-validation-for="Restaurant.Picture" class="text-danger"></span>
                             </td>
                         </tr>
-                        <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
                     </table>
+                    <input type="submit" value="Отправить" />
         </form>
     </body>
 </html>

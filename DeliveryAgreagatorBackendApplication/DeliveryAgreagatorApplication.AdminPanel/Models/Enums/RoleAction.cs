@@ -8,6 +8,8 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Models.Enums
         [Display(name: "Выдать")]
         Give,
         [Display(name: "Забрать")]
-        Retrive
+        Retrive,
+        [Display(name: "Забанить")]
+        Ban
     }
 }

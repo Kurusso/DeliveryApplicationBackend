@@ -20,12 +20,12 @@
                 <tr>
                     <td>Дествие:</td>
                     <td>
-                        <select asp-for="RoleModel.Action" asp-items="Html.GetEnumSelectList<RoleAction>()"></select>
+                        <select asp-for="RoleModel.Action" id="selected-action" asp-items="Html.GetEnumSelectList<RoleAction>()"></select>
                         <span asp-validation-for="RoleModel.Action" class="text-danger"></span>
 
                     </td>
                 </tr>
-                <tr>
+                <tr id="id-field-2" style="display:">
                     <td>Роль:</td>
                     <td>
                         <select id="selected-role" asp-for="RoleModel.Role" asp-items="Html.GetEnumSelectList<Role>()"></select>
@@ -33,37 +33,21 @@
 
                     </td>
                 </tr>
-                <tr id="id-field" style="visibility: visible">
+                <tr id="id-field" style="display:">
                     <td>RestaurantId:</td>
                     <td>
                         <input type="text" asp-for="RoleModel.RestaurantId" />
                         <span asp-validation-for="RoleModel.RestaurantId" class="text-danger"></span>
                     </td>
                 </tr>
-                <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
             </table>
+            <input type="submit" value="Отправить" />
         </form>
 
 		</body>
 	</html>
     @section Scripts{
-        <script asp-append-version="true">
-            const selectField = document.getElementById('selected-role');
-
-
-            selectField.addEventListener('change', function () {
-
-                const selectedValue = selectField.value;
-
-
-                if (selectedValue == 0 || selectedValue == 1) {
-                    document.getElementById('id-field').style.visibility = "visible";
-                }
-                else {
-                    document.getElementById('id-field').style.visibility = "hidden";
-                }
-            });
-        </script>
+        <script src="~/js/RolesField.js" asp-append-version="true"></script>
     }
 
 }
