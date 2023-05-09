@@ -42,6 +42,14 @@
                 </tr>
             </table>
             <input type="submit" value="Отправить" />
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+            @if (TempData["SomethingWrongMessage"] != null)
+            {
+                <div class="alert alert-danger">@TempData["SomethingWrongMessage"]</div>
+            }
         </form>
 
 		</body>

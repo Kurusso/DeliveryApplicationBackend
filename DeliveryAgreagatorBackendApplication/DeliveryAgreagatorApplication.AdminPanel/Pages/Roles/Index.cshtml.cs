@@ -27,11 +27,13 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Roles
             try
             {
                 await _roleService.EditUserRoles(RoleModel);
-                return Page();
+                TempData["SuccessMessage"] = "Изменения выполнены!";
+                return RedirectToPage();
             }
             catch(Exception ex)
             {
-                return Page(); //TODO: изменить
+                TempData["SomethingWrongMessage"] = ex.Message;
+                return RedirectToPage(); //TODO: изменить
             }
         }
     }

@@ -11,6 +11,7 @@ using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Net;
 
 namespace DeliveryAgreagatorApplication.AdminPanel.Services
 {
@@ -80,6 +81,7 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
                     userAuth.CourierId = courierId;
                     break;
             }
+
         }
         private async Task RemoveUserRole(SetRoleDTO model, IList<string> roles, ApplicationUser userAuth, RestaurantDbModel restaurant)
         {
@@ -146,11 +148,37 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
             {
                 userAuth.Baned = true;
             }
+            if(model.Action == RoleAction.Unban)
+            {
+                userAuth.Baned = false;
+            }
            var refreshes = await _authDbContext.RefreshTokens.Where(x=>x.Expires<DateTime.UtcNow).ToListAsync();
            _authDbContext.RefreshTokens.RemoveRange(refreshes);
            await _authDbContext.SaveChangesAsync();
            await _backendDbContext.SaveChangesAsync();
 
+        }
+
+        public async Task<List<UserDTO>> GetUsersWithRole(Guid? restaurantId, Role role)
+        {
+            if (restaurantId != null)
+            {
+                
+                switch (role) {
+                    case Role.Courier:
+                        throw new InvalidOperationException("There is no need of restaurantId to get couriers!");
+                    case Role.Cook:
+                        var cooksId = await _backendDbContext.Cooks.Where(x=>x.RestaurantId == restaurantId).Select(x => x.Id).ToListAsync();
+                        var cooks =  await _authDbContext.Users.Where(x=>cooksId.Contains(x.Id)).ToListAsync(); 
+                        return cooks.Select(x => new UserDTO { Id = x.Id, Email = x.Email, Name = x.UserName }).ToList();                        
+                    case Role.Manager:
+                        var managersId = await _backendDbContext.Managers.Where(x => x.RestaurantId == restaurantId).Select(x=>x.Id).ToListAsync();
+                        var managers = await _authDbContext.Users.Where(x => managersId.Contains(x.Id)).ToListAsync();
+                        return managers.Select(x => new UserDTO { Id = x.Id, Email = x.Email, Name = x.UserName }).ToList();                      
+                }                             
+            }
+            var users = await _userManager.GetUsersInRoleAsync(role.ToString());
+            return users.Select(x => new UserDTO { Id = x.Id, Email = x.Email, Name = x.UserName }).ToList();
         }
     }
 }

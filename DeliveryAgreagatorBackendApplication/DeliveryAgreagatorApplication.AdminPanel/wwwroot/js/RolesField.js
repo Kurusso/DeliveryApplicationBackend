@@ -10,7 +10,7 @@ selectField.addEventListener('change', function () {
         document.getElementById('id-field').style.display = "";
         document.getElementById('id-field-2').style.display = "";
     }
-    else if (selectedValue2 == 2) {
+    else if (selectedValue2 == 2 || selectedValue2 == 3) {
         document.getElementById('id-field').style.display = "none";
         document.getElementById('id-field-2').style.display = "none";
     }
@@ -28,7 +28,7 @@ selectField2.addEventListener('change', function () {
         document.getElementById('id-field').style.display = "";
         document.getElementById('id-field-2').style.display = "";
     }
-    else if (selectedValue2 == 2) {
+    else if (selectedValue2 == 2 || selectedValue2 == 3) {
         document.getElementById('id-field').style.display = "none";
         document.getElementById('id-field-2').style.display = "none";
     }

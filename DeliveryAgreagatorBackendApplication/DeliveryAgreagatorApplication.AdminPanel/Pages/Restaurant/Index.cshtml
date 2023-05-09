@@ -7,12 +7,15 @@
         <title>Head</title>
     </head>
 
-    <body>
+<body>
         <form method="post">
-            <img src="@Model.Restaurant.Picture"></img>
+        <table style="border: 0px; border-collapse: separate; border-spacing: 50px 0">
+            <td style="border: 0px; vertical-align:top">
+            <img src="@Model.Restaurant.Picture">
             <div>Название: @Model.Restaurant.Name</div>
             <div>ID: @Model.Restaurant.Id</div>
             <div asp-validation-summary="All" class="text-danger"></div>
+
                     <table>
                         <tr>
                             <input type="hidden" asp-for="Restaurant.Id" placeholder="@Model.Restaurant.Name">  
@@ -31,6 +34,53 @@
                         </tr>
                     </table>
                     <input type="submit" value="Отправить" />
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                    }
+
+                    @if (TempData["SomethingWrongMessage"] != null)
+                    {
+                        <div class="alert alert-danger">@TempData["SomethingWrongMessage"]</div>
+                    }
+
+                </td>
+
+            <td style="border: 0px; vertical-align:top">
+                    <h5>Повара</h5>
+                    <table>
+
+                        @foreach(var cook in Model.Cooks)
+                        {
+                            <tr>
+                                <td>@cook.Id</td>
+                                <td>@cook.Name</td>
+                                <td>@cook.Email</td>
+                            </tr>
+        
+                        }
+                    </table> 
+                </td>
+
+            <td style="border: 0px; vertical-align:top">
+                <h5>Менеджеры</h5>
+                <table>
+                    @foreach (var cook in Model.Managers)
+                    {
+                        <tr>
+                            <td>@cook.Id</td>
+                            <td>@cook.Name</td>
+                            <td>@cook.Email</td>
+                        </tr>
+
+                    }
+                </table>
+            </td>
+
+            </table>
+                    
         </form>
-    </body>
+
+</body>
 </html>

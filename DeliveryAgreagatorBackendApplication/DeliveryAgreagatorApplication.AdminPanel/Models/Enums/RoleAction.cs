@@ -10,6 +10,8 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Models.Enums
         [Display(name: "Забрать")]
         Retrive,
         [Display(name: "Забанить")]
-        Ban
+        Ban,
+        [Display(name: "Разбанить")]
+        Unban
     }
 }
