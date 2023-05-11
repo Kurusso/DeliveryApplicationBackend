@@ -7,13 +7,15 @@ using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Main.DAL;
 using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace DeliveryAgreagatorApplication.AdminPanel.Services
 {
-    public class RestaurantService : IRestaurantService
+    public class RestaurantAdminService : IRestaurantAdminService
     {
+        private string _regexp = "";
         private readonly BackendDbContext _context;
-        public RestaurantService(BackendDbContext context)
+        public RestaurantAdminService(BackendDbContext context)
         {
             _context = context;
         }
@@ -35,10 +37,14 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
             return restaurant.ConvertToDTO();
         }
 
-        public async Task<List<RestaurantShortDTO>> GetRestaurants()
+        public async Task<int> GetRestaurantsCount(string? name)
         {
-            var restaurants = _context.Restaurants.ToList();
-            return restaurants.Select(x=>x.ConvertToDTO()).ToList();
+            if (name != null)
+            {
+                _regexp = name;
+            }
+            var restaurants = _context.Restaurants.Where(x=> Regex.IsMatch(x.Name, _regexp)).Count();
+            return restaurants;
         }
 
 

@@ -11,20 +11,26 @@
     <title>Head</title>
 </head>
 <body>
+    <form method="get">
+
+    <input type="text" name="RestaurantName" asp-for="RestaurantName" value="@Model.RestaurantName">
+
+    <button type="submit" asp-page-handler="get">Поиск</button>
+    </form>
     <form method="post">
         <table>
     @foreach (var restaurant in Model.Restaurant.Get)
     {
-
-                
+            
                 <tr>
                     <td><a asp-page="/Restaurant/Index" asp-route-id="@restaurant.Id">@restaurant.Id</a></td>
                     <td>@restaurant.Name</td>
                     <td>@restaurant.Picture</td>
-                    <td><button type="submit" asp-page-handler="delete" asp-route-id="@restaurant.Id">Удалить</button></td>
+                    <td><button type="submit" asp-page-handler="delete" asp-route-id="@restaurant.Id" asp-route-p="@Model.PageNo" asp-route-s="@Model.PageSize" asp-route-name=@Model.RestaurantName>Удалить</button></td>
                 </tr>
     }
         </table>
+        <paging total-records="Model.TotalRecords" page-no="Model.PageNo" page-size="Model.PageSize"></paging>
         <table>
             <tr>
                 <td>Название:</td>
@@ -41,7 +47,12 @@
                 </td>
             </tr>           
         </table>
-        <input type="submit" value="Отправить" />
+
+        <button type="submit" asp-page-handler="post" asp-route-p="@Model.PageNo" asp-route-s="@Model.PageSize" asp-route-name=@Model.RestaurantName>Изменить</button>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
     </form>
 
 </body>

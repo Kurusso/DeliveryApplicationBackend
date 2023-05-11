@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="LazZiya.TagHelpers" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.5" />
   </ItemGroup>
 
@@ -19,6 +20,7 @@
     <ProjectReference Include="..\DeliveryAgreagatorApplication.API.Common\DeliveryAgreagatorApplication.Main.Common.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.DAL\DeliveryAgreagatorApplication.Auth.DAL.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Common\DeliveryAgreagatorApplication.Common.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.Main.BL\DeliveryAgreagatorApplication.Main.BL.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Main.DAL\DeliveryAgreagatorApplication.Main.DAL.csproj" />
   </ItemGroup>
 

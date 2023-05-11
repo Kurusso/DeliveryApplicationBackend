@@ -2,6 +2,8 @@ using DeliveryAgreagatorApplication.AdminPanel.Services;
 using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
 using DeliveryAgreagatorApplication.Auth.DAL;
 using DeliveryAgreagatorApplication.Auth.DAL.Models;
+using DeliveryAgreagatorApplication.Main.BL.Services;
+using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using DeliveryAgreagatorApplication.Main.DAL;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +16,7 @@ string connection2 = builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddDbContext<BackendDbContext>(options => options.UseNpgsql(connection));
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connection2));
 builder.Services.AddControllers();
+builder.Services.AddScoped<IRestaurantAdminService, RestaurantAdminService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<IRoleService, RoleService>();

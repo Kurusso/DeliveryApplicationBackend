@@ -12,9 +12,9 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurant
     [Authorize]
     public class IndexModel : PageModel
     {
-        private readonly IRestaurantService _restaurantService;
+        private readonly IRestaurantAdminService _restaurantService;
         private readonly IRoleService _roleService;
-        public IndexModel(IRestaurantService restaurantService, IRoleService roleService)
+        public IndexModel(IRestaurantAdminService restaurantService, IRoleService roleService)
         {
             _restaurantService = restaurantService;
             _roleService = roleService;

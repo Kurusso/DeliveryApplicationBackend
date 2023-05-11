@@ -4,9 +4,9 @@ using DeliveryAgreagatorApplication.API.Common.Models.DTO;
 
 namespace DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces
 {
-    public interface IRestaurantService
+    public interface IRestaurantAdminService
     {
-        public Task<List<RestaurantShortDTO>> GetRestaurants();
+        public Task<int> GetRestaurantsCount(string name);
         public Task PostRestaurant(RestaurantPostDTO restaurant);
         public Task DeleteRestaurant(Guid restaurantId);
         public Task<RestaurantShortDTO> GetRestaurantById(Guid restaurantId);
