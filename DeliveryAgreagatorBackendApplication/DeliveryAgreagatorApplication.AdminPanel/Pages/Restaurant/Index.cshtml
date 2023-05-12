@@ -16,7 +16,7 @@
             <div>ID: @Model.Restaurant.Id</div>
             <div asp-validation-summary="All" class="text-danger"></div>
 
-                    <table>
+                <table>
                         <tr>
                             <input type="hidden" asp-for="Restaurant.Id" placeholder="@Model.Restaurant.Name">  
                             <td>Название:</td>
@@ -32,7 +32,7 @@
                                 <span asp-validation-for="Restaurant.Picture" class="text-danger"></span>
                             </td>
                         </tr>
-                    </table>
+                </table>
                     <input type="submit" value="Отправить" />
 
                     @if (TempData["SuccessMessage"] != null)
@@ -45,12 +45,19 @@
                         <div class="alert alert-danger">@TempData["SomethingWrongMessage"]</div>
                     }
 
-                </td>
+            </td>
 
             <td style="border: 0px; vertical-align:top">
                     <h5>Повара</h5>
-                    <table>
-
+                <table id="table1">
+                    <thead>
+                        <tr>
+                            <th>Guid</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>                        
+                    <tbody>
                         @foreach(var cook in Model.Cooks)
                         {
                             <tr>
@@ -60,12 +67,21 @@
                             </tr>
         
                         }
-                    </table> 
-                </td>
+                    </tbody>
+                </table> 
+            </td>
 
             <td style="border: 0px; vertical-align:top">
                 <h5>Менеджеры</h5>
-                <table>
+                <table id="table2">
+                    <thead>
+                        <tr>
+                            <th>Guid</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead> 
+                    <tbody>
                     @foreach (var cook in Model.Managers)
                     {
                         <tr>
@@ -75,6 +91,7 @@
                         </tr>
 
                     }
+                    </tbody>
                 </table>
             </td>
 
@@ -84,3 +101,11 @@
 
 </body>
 </html>
+@section Scripts{
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <link href="~/lib/datatables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+        <script src="~/lib/datatables/DataTables/js/jquery.dataTables.min.js"></script>
+        <script src="~/lib/datatables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+        <script src="~/js/StaffPagination.js" asp-append-version="true"></script>    
+    }
