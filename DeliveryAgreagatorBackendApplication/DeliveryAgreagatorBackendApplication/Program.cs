@@ -7,11 +7,13 @@ using DeliveryAgreagatorBackendApplication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,7 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 
 });
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtConfigurations>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IDishService, DishService>();
@@ -42,13 +45,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = JwtConfigurations.Issuer,
+            ValidIssuer = jwtSettings.Issuer,
             ValidateAudience = true,
-            ValidAudience = JwtConfigurations.Audience,
+            ValidAudience = jwtSettings.Audience,
             ValidateLifetime = true,
-            IssuerSigningKey = JwtConfigurations.GetSymmetricSecurityKey(),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Key)),
             ValidateIssuerSigningKey = true,
-
         };
     });
 
@@ -60,47 +62,47 @@ builder.Services.AddAuthorization(options =>
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("CartOperations", "Allow");
         policy.RequireClaim("TokenTypeClaim", "Access");
-        policy.RequireClaim("Ban", "false");
+        policy.RequireClaim("Ban", "False");
     });
     options.AddPolicy("SetRating", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("SetRating", "Allow");
         policy.RequireClaim("TokenTypeClaim", "Access");
-        policy.RequireClaim("Ban", "false");
+        policy.RequireClaim("Ban", "False");
     });
     options.AddPolicy("OrderOperationsCustomer", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Customer");
         policy.RequireClaim("TokenTypeClaim", "Access");
-        policy.RequireClaim("Ban", "false");
+        policy.RequireClaim("Ban", "False");
     });
     options.AddPolicy("OrderOperationsCook", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Cook");
         policy.RequireClaim("TokenTypeClaim", "Access");
-        policy.RequireClaim("Ban", "false");
+        policy.RequireClaim("Ban", "False");
     });
     options.AddPolicy("OrderOperationsCourier", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Courier");
         policy.RequireClaim("TokenTypeClaim", "Access");
-        policy.RequireClaim("Ban", "false");
+        policy.RequireClaim("Ban", "False");
     });
     options.AddPolicy("OrderOperationsManager", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("GetOrders", "Manager");
         policy.RequireClaim("TokenTypeClaim", "Access");
-        policy.RequireClaim("Ban", "false");
+        policy.RequireClaim("Ban", "False");
     });
     options.DefaultPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .RequireClaim("TokenTypeClaim", "Access")
-        .RequireClaim("Ban", "false")
+        .RequireClaim("Ban", "False")
         .Build();
 });
 var app = builder.Build();

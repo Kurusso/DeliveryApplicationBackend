@@ -4,15 +4,10 @@ using System.Text;
 
     public class JwtConfigurations
     {
-        public const string Issuer = "JwtTestIssuer";  
-        public const string Audience = "JwtTestClient"; 
-        private const string Key = "SuperSecretKeyBazingaLolKek!*228322";   
-        public const int Lifetime = 10;
-        public const int RefreshLifetime = 300;
-        public static SymmetricSecurityKey GetSymmetricSecurityKey()
-        {
-            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Key));
-        }
-
+        public string Issuer { get; set; }
+        public string Audience { get; set; }
+        public string Key { get; set; }   
+        public int Lifetime { get; set; }
+        public int RefreshLifetime { get; set; }
     }
 
