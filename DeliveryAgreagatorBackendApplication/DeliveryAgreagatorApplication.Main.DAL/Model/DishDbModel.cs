@@ -14,8 +14,8 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public bool IsActive { get; set; }
         public int Rating { get; set; }
         public string PhotoUrl { get; set; }
-        public Guid RestaurantId { get; set; }
-        public RestaurantDbModel Restaurant { get; set; }
+        public Guid? RestaurantId { get; set; }
+        public RestaurantDbModel? Restaurant { get; set; }
         public Category Category { get; set; }
         public ICollection<MenuDbModel> Menus { get; set; }
         public ICollection<RatingDbModel> Ratings { get; set; }

@@ -3,6 +3,7 @@ using System;
 using DeliveryAgreagatorApplication.Main.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DeliveryAgreagatorBackendApplication.Migrations
 {
     [DbContext(typeof(BackendDbContext))]
-    partial class BackendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230514091337_OnDeleteCookSetNullForOrder")]
+    partial class OnDeleteCookSetNullForOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,8 +284,7 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                 {
                     b.HasOne("DeliveryAgreagatorBackendApplication.Models.RestaurantDbModel", "Restaurant")
                         .WithMany()
-                        .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("RestaurantId");
 
                     b.Navigation("Restaurant");
                 });
@@ -319,13 +321,11 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                 {
                     b.HasOne("DeliveryAgreagatorBackendApplication.Models.CookDbModel", "Cook")
                         .WithMany()
-                        .HasForeignKey("CookId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CookId");
 
                     b.HasOne("DeliveryAgreagatorBackendApplication.Models.RestaurantDbModel", "Restaurant")
                         .WithMany()
-                        .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("RestaurantId");
 
                     b.Navigation("Cook");
 

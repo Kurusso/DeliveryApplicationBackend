@@ -13,8 +13,8 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public string Address { get; set; }
         public Status Status { get; set; }
 
-        public Guid RestaurantId { get; set; }
-        public RestaurantDbModel Restaurant { get; set; }
+        public Guid? RestaurantId { get; set; }
+        public RestaurantDbModel? Restaurant { get; set; }
         public Guid CustomerId { get; set; }
 
         public Guid? CourierId { get; set; }
