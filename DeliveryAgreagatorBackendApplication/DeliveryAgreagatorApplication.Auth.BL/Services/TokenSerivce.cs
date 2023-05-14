@@ -29,7 +29,8 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             var claims = new List<Claim> {
             new Claim("IdClaim", user.Id.ToString()),
             new Claim("RefreshIdClaim", refreshTokenId.ToString()),
-            new Claim("TokenTypeClaim", isrefresh ? "Refresh" : "Access")
+            new Claim("TokenTypeClaim", isrefresh ? "Refresh" : "Access"),
+            new Claim("Ban", user.Baned.ToString())
             };
             if (roles.Any(x => x == "Customer"))
             {

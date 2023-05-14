@@ -4,6 +4,6 @@ namespace DeliveryAgreagatorApplication.Main.Common.Interfaces
 {
     public interface IRestaurantService
     {
-        public Task<List<RestaurantShortDTO>> GetRestaurants(int page,string? name);
+        public Task<List<RestaurantShortDTO>> GetRestaurants(int page,string? name, int? pageSize = null);
     }
 }

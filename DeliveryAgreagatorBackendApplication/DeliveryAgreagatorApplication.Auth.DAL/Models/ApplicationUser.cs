@@ -2,7 +2,7 @@
 
 namespace DeliveryAgreagatorApplication.Auth.DAL.Models
 {
-    public class ApplicationUser: IdentityUser<Guid>
+    public class ApplicationUser : IdentityUser<Guid>
     {
 
         public Guid? CustomerId { get; set; }
@@ -20,5 +20,6 @@ namespace DeliveryAgreagatorApplication.Auth.DAL.Models
         public List<RefreshTokenDb> RefreshTokenDb { get; set; }
 
         public DateTime BirthDate { get; set; }
+        public bool Baned { get; set; } = false;
     }
 }

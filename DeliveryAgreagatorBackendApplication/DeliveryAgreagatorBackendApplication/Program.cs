@@ -54,45 +54,53 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization(options =>
 {
+    
     options.AddPolicy("CartOperations", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("CartOperations", "Allow");
         policy.RequireClaim("TokenTypeClaim", "Access");
+        policy.RequireClaim("Ban", "false");
     });
     options.AddPolicy("SetRating", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("SetRating", "Allow");
         policy.RequireClaim("TokenTypeClaim", "Access");
+        policy.RequireClaim("Ban", "false");
     });
     options.AddPolicy("OrderOperationsCustomer", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Customer");
         policy.RequireClaim("TokenTypeClaim", "Access");
+        policy.RequireClaim("Ban", "false");
     });
     options.AddPolicy("OrderOperationsCook", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Cook");
         policy.RequireClaim("TokenTypeClaim", "Access");
+        policy.RequireClaim("Ban", "false");
     });
     options.AddPolicy("OrderOperationsCourier", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("OrderOperation", "Courier");
         policy.RequireClaim("TokenTypeClaim", "Access");
+        policy.RequireClaim("Ban", "false");
     });
     options.AddPolicy("OrderOperationsManager", policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim("GetOrders", "Manager");
         policy.RequireClaim("TokenTypeClaim", "Access");
+        policy.RequireClaim("Ban", "false");
     });
     options.DefaultPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .RequireClaim("TokenTypeClaim", "Access")
+        .RequireClaim("Ban", "false")
         .Build();
 });
 var app = builder.Build();
