@@ -10,6 +10,7 @@ using DeliveryAgreagatorApplication.Notifications.Common.Services;
 using DeliveryAgreagatorApplication.Notifications.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using DeliveryAgreagatorApplication.Notifications.BL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<RabbitMqListener>();
-
+builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -75,7 +76,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseRouting();
 
-app.MapHub<NotificationsHub>("/notifications");
+app.MapHub<NotificationsHub>("/notifications").RequireAuthorization(); ;
 
 app.UseHttpsRedirection();
 

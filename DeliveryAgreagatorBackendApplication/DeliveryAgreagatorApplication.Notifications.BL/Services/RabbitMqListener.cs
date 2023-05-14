@@ -44,19 +44,7 @@ namespace DeliveryAgreagatorApplication.Notifications.Common.Services
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var message = JsonConvert.DeserializeObject<Notification>(content);
                 var client = _hubContext.Clients.User(message.UserId.ToString());
-                if (client != null)
-                {
-                    await _hubContext.Clients.User(message.UserId.ToString()).SendAsync("notification", message);
-                }
-                else
-                {
-                    using(var scope = _provider.CreateScope())
-                    {
-                        var context = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
-                        await context.Notifications.AddAsync(new NotificationDbModel(message));
-                        await context.SaveChangesAsync();
-                    }
-                }
+                await _hubContext.Clients.User(message.UserId.ToString()).SendAsync("notification", message);
                 Debug.WriteLine($"Получено сообщение: {message.Text}");
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
