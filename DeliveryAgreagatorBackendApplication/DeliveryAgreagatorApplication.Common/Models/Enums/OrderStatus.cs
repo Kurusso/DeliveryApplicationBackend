@@ -1,6 +1,6 @@
-﻿namespace DeliveryAgreagatorApplication.API.Common.Models.Enums
+﻿namespace DeliveryAgreagatorApplication.Common.Models.Enums
 {
-    public enum Status
+    public enum OrderStatus
     {
         Created,
         Kitchen,

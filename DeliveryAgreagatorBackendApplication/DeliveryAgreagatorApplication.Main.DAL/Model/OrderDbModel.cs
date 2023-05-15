@@ -1,5 +1,5 @@
 ﻿using DeliveryAgreagatorApplication.API.Common.Models.DTO;
-using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+using DeliveryAgreagatorApplication.Common.Models.Enums;
 
 namespace DeliveryAgreagatorBackendApplication.Models
 {
@@ -11,7 +11,7 @@ namespace DeliveryAgreagatorBackendApplication.Models
         public DateTime OrderTime { get; set; }
         public int Price { get; set; } 
         public string Address { get; set; }
-        public Status Status { get; set; }
+        public OrderStatus Status { get; set; }
 
         public Guid? RestaurantId { get; set; }
         public RestaurantDbModel? Restaurant { get; set; }
@@ -33,7 +33,7 @@ namespace DeliveryAgreagatorBackendApplication.Models
             OrderTime = DateTime.UtcNow;
             Console.WriteLine(OrderTime);
             Address = model.Address;
-            Status = Status.Created; 
+            Status = OrderStatus.Created; 
             CustomerId = model.CustomerId;
             DishesInCart = model.DishesInCart.Select(x => new DishInCartDbModel(x, guid)).ToList();
             Price = model.DishesInCart.Sum(x => x.Dish.Price * x.Counter);

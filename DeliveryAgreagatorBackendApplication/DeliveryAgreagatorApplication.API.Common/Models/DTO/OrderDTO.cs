@@ -1,4 +1,4 @@
-﻿using DeliveryAgreagatorApplication.API.Common.Models.Enums;
+﻿using DeliveryAgreagatorApplication.Common.Models.Enums;
 
 namespace DeliveryAgreagatorApplication.API.Common.Models.DTO
 {
@@ -10,7 +10,7 @@ namespace DeliveryAgreagatorApplication.API.Common.Models.DTO
         public DateTime OrderTime { get; set; }
         public int Price { get; set; }
         public string Address { get; set; }
-        public Status Status { get; set; }
+        public OrderStatus Status { get; set; }
         public ICollection<DishInCartDTO>? DishesInCart { get; set; }
     }
 }
