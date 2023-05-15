@@ -15,8 +15,6 @@ using DeliveryAgreagatorApplication.Notifications.BL.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-string connection = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new NullReferenceException("Specify connection string!");
-builder.Services.AddDbContext<NotificationDbContext>(options => options.UseNpgsql(connection));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -44,30 +42,28 @@ builder.Services.AddSignalR().AddJsonProtocol(options =>
     options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 builder.Services.AddSingleton<IUserIdProvider, UserIdProvider>();
-var app = builder.Build();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-	.AddJwtBearer(options =>
-	{
-		options.TokenValidationParameters = new TokenValidationParameters
-		{
-			ValidateIssuer = true,
-			ValidIssuer = JwtConfigurations.Issuer,
-			ValidateAudience = true,
-			ValidAudience = JwtConfigurations.Audience,
-			ValidateLifetime = true,
-			IssuerSigningKey = JwtConfigurations.GetSymmetricSecurityKey(),
-			ValidateIssuerSigningKey = true,
-
-		};
-	});
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .WithOrigins("https://localhost:5500","https://localhost:7217", "http://127.0.0.1:5500");
+    });
+});
 
 builder.Services.AddAuthorization(options =>
 {
-	options.DefaultPolicy = new AuthorizationPolicyBuilder()
-			.RequireAuthenticatedUser()
-			.RequireClaim("TokenTypeClaim", "Access")
-			.Build();
+    options.DefaultPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .RequireClaim("TokenTypeClaim", "Access")
+            .Build();
 });
+var app = builder.Build();
+
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -76,12 +72,12 @@ if (app.Environment.IsDevelopment())
 }
 app.UseRouting();
 
-app.MapHub<NotificationsHub>("/notifications").RequireAuthorization(); ;
 
 app.UseHttpsRedirection();
-
+app.UseCors();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapHub<NotificationsHub>("/notifications").RequireAuthorization();
 app.Run();

@@ -1,18 +1,13 @@
 ﻿using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
-using System.Threading.Channels;
 using System.Text;
-using System.Diagnostics;
 using Newtonsoft.Json;
 using DeliveryAgreagatorApplication.Common.Models.Notification;
 using DeliveryAgreagatorApplication.Notifications.Common.Models;
 using Microsoft.AspNetCore.SignalR;
 using DeliveryAgreagatorApplication.Common.Models;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using DeliveryAgreagatorApplication.Notifications.DAL;
-using System;
-using DeliveryAgreagatorApplication.Notifications.DAL.Models;
+
 
 namespace DeliveryAgreagatorApplication.Notifications.Common.Services
 {
@@ -44,8 +39,7 @@ namespace DeliveryAgreagatorApplication.Notifications.Common.Services
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var message = JsonConvert.DeserializeObject<Notification>(content);
                 var client = _hubContext.Clients.User(message.UserId.ToString());
-                await _hubContext.Clients.User(message.UserId.ToString()).SendAsync("notification", message);
-                Debug.WriteLine($"Получено сообщение: {message.Text}");
+                await _hubContext.Clients.User(message.UserId.ToString()).SendAsync("Notification", message.Text);
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 

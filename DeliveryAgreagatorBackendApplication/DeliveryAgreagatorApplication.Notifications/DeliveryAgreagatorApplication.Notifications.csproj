@@ -18,11 +18,6 @@
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Common\DeliveryAgreagatorApplication.Common.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Notifications.BL\DeliveryAgreagatorApplication.Notifications.BL.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Notifications.Common\DeliveryAgreagatorApplication.Notifications.Common.csproj" />
-    <ProjectReference Include="..\DeliveryAgreagatorApplication.Notifications.DAL\DeliveryAgreagatorApplication.Notifications.DAL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
