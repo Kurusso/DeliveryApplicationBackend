@@ -7,31 +7,31 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using DeliveryAgreagatorApplication.Notifications.Common.Models;
 using DeliveryAgreagatorApplication.Notifications.Common.Services;
-using DeliveryAgreagatorApplication.Notifications.DAL;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using DeliveryAgreagatorApplication.Notifications.BL.Services;
+using System.Text;
+using DeliveryAgreagatorApplication.Common.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtConfigurations>();
+var NotificationSettings = builder.Configuration.GetSection("NotificationSettings").Get<NotificationConfigurations>();
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<RabbitMqListener>();
-builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
+builder.Services.AddSingleton<IUserIdProvider, UserIdProvider>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = JwtConfigurations.Issuer,
+            ValidIssuer = jwtSettings.Issuer,
             ValidateAudience = true,
-            ValidAudience = JwtConfigurations.Audience,
+            ValidAudience = jwtSettings.Audience,
             ValidateLifetime = true,
-            IssuerSigningKey = JwtConfigurations.GetSymmetricSecurityKey(),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Key)),
             ValidateIssuerSigningKey = true,
 
         };

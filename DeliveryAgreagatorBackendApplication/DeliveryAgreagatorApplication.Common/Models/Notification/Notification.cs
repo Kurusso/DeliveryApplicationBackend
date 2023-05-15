@@ -1,10 +1,6 @@
 ﻿using DeliveryAgreagatorApplication.Common.Models.Enums;
 using DeliveryAgreagatorApplication.Common.Models.Notification.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DeliveryAgreagatorApplication.Common.Models.Notification
 {
@@ -27,7 +23,7 @@ namespace DeliveryAgreagatorApplication.Common.Models.Notification
                     Text += "is being prepared!";
                     break;
                 case OrderStatus.Packaging:
-                    Text= "is being packed!";
+                    Text += "is being packed!";
                     break;
                 case OrderStatus.Packed:
                     Text+= "is packed!";

@@ -7,7 +7,7 @@ using DeliveryAgreagatorApplication.Notifications.Common.Models;
 using Microsoft.AspNetCore.SignalR;
 using DeliveryAgreagatorApplication.Common.Models;
 using Microsoft.Extensions.Hosting;
-
+using Microsoft.Extensions.Options;
 
 namespace DeliveryAgreagatorApplication.Notifications.Common.Services
 {
@@ -15,18 +15,19 @@ namespace DeliveryAgreagatorApplication.Notifications.Common.Services
     {
         private IConnection _connection;
 		private IModel _channel;
+        private readonly NotificationConfigurations _notificationConfiguration;
         private IServiceProvider _provider;
 		private readonly IHubContext<NotificationsHub> _hubContext;
-        public RabbitMqListener(IHubContext<NotificationsHub> hubContext, IServiceProvider provider)
+        public RabbitMqListener(IHubContext<NotificationsHub> hubContext, IServiceProvider provider, IOptions<NotificationConfigurations> notificationConfiguration)
         {
-            // Не забудьте вынести значения "localhost" и "MyQueue"
-            // в файл конфигурации
+
+            _notificationConfiguration = notificationConfiguration.Value;
             _provider = provider;
             _hubContext = hubContext;
-            var factory = new ConnectionFactory { HostName = NotificationConfiguration.HostName };
+            var factory = new ConnectionFactory { HostName = _notificationConfiguration.HostName };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.QueueDeclare(queue: NotificationConfiguration.QueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
+            _channel.QueueDeclare(queue: _notificationConfiguration.QueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -43,7 +44,7 @@ namespace DeliveryAgreagatorApplication.Notifications.Common.Services
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 
-            _channel.BasicConsume(NotificationConfiguration.QueName, false, consumer);
+            _channel.BasicConsume(_notificationConfiguration.QueName, false, consumer);
 
             return Task.CompletedTask;
         }

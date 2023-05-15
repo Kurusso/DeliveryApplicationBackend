@@ -19,11 +19,11 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
         {
             // Не забудьте вынести значения "localhost" и "MyQueue"
             // в файл конфигурации
-            var factory = new ConnectionFactory() { HostName = NotificationConfiguration.HostName };
+            var factory = new ConnectionFactory() { HostName = NotificationConfigurations.HostName };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: NotificationConfiguration.QueName,
+                channel.QueueDeclare(queue: NotificationConfigurations.QueName,
                                durable: false,
                                exclusive: false,
                                autoDelete: false,
@@ -32,7 +32,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
 
                 channel.BasicPublish(exchange: "",
-                               routingKey: NotificationConfiguration.QueName,
+                               routingKey: NotificationConfigurations.QueName,
                                basicProperties: null,
                                body: body);
             }
