@@ -5,15 +5,20 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using System.Text.Json.Serialization;
 using System.Text.Json;
-using DeliveryAgreagatorApplication.Notifications.Common.Models;
 using DeliveryAgreagatorApplication.Notifications.Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using DeliveryAgreagatorApplication.Common.Models;
+using DeliveryAgreagatorApplication.Notifications.BL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtConfigurations>();
-var NotificationSettings = builder.Configuration.GetSection("NotificationSettings").Get<NotificationConfigurations>();
+builder.Services.Configure<JwtConfigurations>(builder.Configuration.GetSection("JwtSettings"));
+
+var notificationSettings = builder.Configuration.GetSection("NotificationSettings").Get<NotificationConfigurations>();
+builder.Services.Configure<NotificationConfigurations>(builder.Configuration.GetSection("NotificationSettings"));
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -48,7 +48,7 @@
             </tr>           
         </table>
 
-        <button type="submit" asp-page-handler="post" asp-route-p="@Model.PageNo" asp-route-s="@Model.PageSize" asp-route-name=@Model.RestaurantName>Изменить</button>
+        <button type="submit" asp-page-handler="post" asp-route-p="@Model.PageNo" asp-route-s="@Model.PageSize" asp-route-name=@Model.RestaurantName>Добавить</button>
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success">@TempData["SuccessMessage"]</div>

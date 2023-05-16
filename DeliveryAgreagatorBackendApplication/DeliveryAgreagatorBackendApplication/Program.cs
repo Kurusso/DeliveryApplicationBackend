@@ -1,4 +1,5 @@
 using DeliveryAgreagatorApplication.Common.Configurations;
+using DeliveryAgreagatorApplication.Common.Models;
 using DeliveryAgreagatorApplication.Common.Schemas;
 using DeliveryAgreagatorApplication.Main.BL.Services;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
@@ -34,6 +35,8 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtConfigurations>();
+var notificationSettings = builder.Configuration.GetSection("NotificationSettings").Get<NotificationConfigurations>();
+builder.Services.Configure<NotificationConfigurations>(builder.Configuration.GetSection("NotificationSettings"));
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IDishService, DishService>();

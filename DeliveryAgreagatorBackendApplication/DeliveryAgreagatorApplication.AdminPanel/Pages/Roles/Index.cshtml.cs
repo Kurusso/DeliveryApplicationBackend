@@ -1,11 +1,13 @@
 using DeliveryAgreagatorApplication.AdminPanel.Models.DTO;
 using DeliveryAgreagatorApplication.AdminPanel.Models.Enums;
 using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Roles
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly IRoleService _roleService;
@@ -33,7 +35,7 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Roles
             catch(Exception ex)
             {
                 TempData["SomethingWrongMessage"] = ex.Message;
-                return RedirectToPage(); //TODO: изменить
+                return RedirectToPage(); 
             }
         }
     }

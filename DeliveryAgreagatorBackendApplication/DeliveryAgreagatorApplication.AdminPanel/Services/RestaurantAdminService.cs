@@ -39,7 +39,8 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
 
             var managersId = await _context.Managers.Where(x => x.RestaurantId == restaurantId).Select(x => x.Id).ToListAsync();
             var managers = await _authContext.Users.Where(x => managersId.Contains(x.Id)).ToListAsync();
-
+            var restaurantDishes = await _context.Dishes.Where(x => x.RestaurantId == restaurantId).ToListAsync();
+            restaurantDishes.ForEach(x => x.IsActive = false);
             foreach(var manager in managers)
             {
                 await _userManager.RemoveFromRoleAsync(manager, Role.Manager.ToString());

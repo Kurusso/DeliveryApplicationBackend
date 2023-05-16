@@ -31,6 +31,9 @@ namespace DeliveryAgreagatorApplication.Common.Models.Notification
                 case OrderStatus.Delivery:
                     Text+= "is being delivered";
                     break;
+                case OrderStatus.Delivered:
+                    Text += "is delivered";
+                    break;
                 case OrderStatus.Canceled:
                     Text+= "was canceled by courier!";
                     break;

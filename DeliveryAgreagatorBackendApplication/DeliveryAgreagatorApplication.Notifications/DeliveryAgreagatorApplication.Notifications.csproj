@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Common\DeliveryAgreagatorApplication.Common.csproj" />
     <ProjectReference Include="..\DeliveryAgreagatorApplication.Notifications.BL\DeliveryAgreagatorApplication.Notifications.BL.csproj" />
-    <ProjectReference Include="..\DeliveryAgreagatorApplication.Notifications.Common\DeliveryAgreagatorApplication.Notifications.Common.csproj" />
   </ItemGroup>
 
 </Project>

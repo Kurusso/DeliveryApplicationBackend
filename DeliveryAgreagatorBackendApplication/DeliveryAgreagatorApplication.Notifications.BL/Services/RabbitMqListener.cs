@@ -3,11 +3,11 @@ using RabbitMQ.Client;
 using System.Text;
 using Newtonsoft.Json;
 using DeliveryAgreagatorApplication.Common.Models.Notification;
-using DeliveryAgreagatorApplication.Notifications.Common.Models;
 using Microsoft.AspNetCore.SignalR;
 using DeliveryAgreagatorApplication.Common.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using DeliveryAgreagatorApplication.Notifications.BL.Services;
 
 namespace DeliveryAgreagatorApplication.Notifications.Common.Services
 {
@@ -24,7 +24,7 @@ namespace DeliveryAgreagatorApplication.Notifications.Common.Services
             _notificationConfiguration = notificationConfiguration.Value;
             _provider = provider;
             _hubContext = hubContext;
-            var factory = new ConnectionFactory { HostName = _notificationConfiguration.HostName };
+            var factory = new ConnectionFactory { HostName = notificationConfiguration.Value.HostName };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.QueueDeclare(queue: _notificationConfiguration.QueName, durable: false, exclusive: false, autoDelete: false, arguments: null);

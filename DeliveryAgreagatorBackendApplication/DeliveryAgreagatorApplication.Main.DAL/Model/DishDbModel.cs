@@ -25,11 +25,13 @@ namespace DeliveryAgreagatorBackendApplication.Models
         {
             Id = new Guid();
             Name = model.Name;
+            Category = model.Category;
             Description = model.Description;
             Price = model.Price;
             IsVegetarian = model.IsVegetarian;
             PhotoUrl = model.PhotoUrl;
             RestaurantId = restaurantId;
+            IsActive = true;
         }
         public DishDTO ConvertToDTO()
         {
