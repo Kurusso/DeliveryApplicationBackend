@@ -10,5 +10,6 @@ namespace DeliveryAgreagatorApplication.Common.Models.Configurations
     {
         public string HostName { get; set; }
         public string QueName { get; set; }
+        public string HubPath { get; set; }
     }
 }

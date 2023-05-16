@@ -86,5 +86,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<NotificationsHub>("/notifications").RequireAuthorization();
+app.MapHub<NotificationsHub>($"/{notificationSettings.HubPath}").RequireAuthorization();
 app.Run();
