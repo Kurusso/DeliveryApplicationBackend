@@ -110,12 +110,17 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
 
         public async Task EditMenu(Guid menuId, MenuDTO menu, Guid managerId)
         {
+            var potentialMenu = await _context.Menus.FirstOrDefaultAsync(x => x.Id == menuId);
+            if (potentialMenu == null)
+            {
+                throw new WrongIdException(WrongIdExceptionSubject.Menu, menuId);
+            }
             var manager = await _context.Managers.FirstOrDefaultAsync(x => x.Id == managerId);
             var restaurant = await _context.Restaurants.Include(x=>x.Menus).FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
             var menuToChange = restaurant.Menus.FirstOrDefault(x => x.Id == menuId);
             if (menuToChange == null)
             {
-                throw new ArgumentException($"You haven't got access to menu with this {menuId} id!"); //TODO: разбить на несколько эксепшенов
+                throw new ArgumentException($"You haven't got access to menu with this {menuId} id!"); 
             }
             menuToChange.isActive = menu.IsActive;
             menuToChange.Name = menu.Name;

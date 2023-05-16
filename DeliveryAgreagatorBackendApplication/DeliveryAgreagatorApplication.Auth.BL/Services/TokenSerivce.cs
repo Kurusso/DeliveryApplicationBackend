@@ -28,7 +28,7 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
             _jwtSettings = jwtSettings.Value;
         }
 
-        private async Task<List<Claim>> GetClaims(ApplicationUser user, bool isrefresh, Guid refreshTokenId) //TODO: добавить все нужные клэймы
+        private async Task<List<Claim>> GetClaims(ApplicationUser user, bool isrefresh, Guid refreshTokenId) 
         {
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new List<Claim> {

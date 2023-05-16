@@ -22,12 +22,17 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
 
         public async Task AddDishToMenu(Guid managerId, Guid menuId, Guid dishId)
         {
+            var potentialMenu = await _context.Menus.FirstOrDefaultAsync(x => x.Id == menuId);
+            if (potentialMenu == null)
+            {
+                throw new WrongIdException(WrongIdExceptionSubject.Menu, menuId);
+            }
             var manager = await _context.Managers.FirstOrDefaultAsync(x => x.Id == managerId);
             var restaurant = await _context.Restaurants.Include(x => x.Menus).ThenInclude(x=>x.Dishes).FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
-            var menu = restaurant.Menus.FirstOrDefault(x => x.Id == menuId);
+            var menu = restaurant.Menus.FirstOrDefault(x => x.Id == menuId);      
             if (menu == null)
             {
-                throw new ArgumentException($"You haven't got access to menu with this {menuId} id!"); //TODO: разбить на несколько эксепшенов
+                throw new ArgumentException($"You haven't got access to menu with this {menuId} id!"); 
             }
             var dish = await _context.Dishes.FirstOrDefaultAsync(x=> x.Id == dishId);
             if (dish==null)
@@ -44,9 +49,14 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
 
         public async Task CreateDish(Guid managerId, Guid menuId, DishPostDTO dishPost)
         {
+            var potentialMenu = await _context.Menus.FirstOrDefaultAsync(x => x.Id == menuId);
+            if (potentialMenu == null)
+            {
+                throw new WrongIdException(WrongIdExceptionSubject.Menu, menuId);
+            }
             var manager = await _context.Managers.FirstOrDefaultAsync(x=>x.Id==managerId);
             var restaurant = await _context.Restaurants.Include(x=>x.Menus).ThenInclude(c=>c.Dishes).FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
-            var menu = restaurant.Menus.FirstOrDefault(x => x.Id == menuId);
+            var menu = restaurant.Menus.FirstOrDefault(x => x.Id == menuId);            
             if (menu == null)
             {
                 throw new ArgumentException($"You haven't got access to menu with this {menuId} id!"); //TODO: разбить на несколько эксепшенов
@@ -61,6 +71,10 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             var manager = await _context.Managers.FirstOrDefaultAsync(x => x.Id == managerId);
             var restaurant = await _context.Restaurants.FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
             var dish = await _context.Dishes.FirstOrDefaultAsync(x => x.Id == dishId);
+            if(dish==null)
+            {
+                throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId);
+            }
             if (dish.RestaurantId != restaurant.Id)
             {
                 throw new InvalidOperationException("You can't edit dish from another restaurant!");

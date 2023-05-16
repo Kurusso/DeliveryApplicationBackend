@@ -56,7 +56,13 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
                 return Problem(ex.Message, statusCode: 501);
             }
         }
-
+        /// <summary>
+        /// Добавить меню
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
+        /// <response code="501">Not Implemented</response>
         [HttpPost("menu")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> PostMenu(MenuDTO model)
@@ -78,6 +84,14 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
             }
         }
 
+        /// <summary>
+        /// Изменить меню
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
+        ///  <response code="404">Not Found</response>
+        /// <response code="501">Not Implemented</response>
         [HttpPut("menu/{id}")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> ChangeMenu(Guid id, MenuDTO model)
@@ -93,6 +107,10 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
                 await _menuService.EditMenu(id, model, managerId);
                 return Ok();
             }
+            catch(WrongIdException ex)
+            {
+                return Problem(ex.Message, statusCode: ex.StatusCode);
+            }
             catch (ArgumentException ex)
             {
                 return Problem(ex.Message, statusCode: 403);
@@ -103,6 +121,14 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
             }
         }
 
+        /// <summary>
+        /// Создать блюдо
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="501">Not Implemented</response>
         [HttpPost("menu/{menuId}/dish")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> CreateDish(Guid menuId, DishPostDTO model)
@@ -118,6 +144,10 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
                 await _dishService.CreateDish(managerId, menuId, model);
                 return Ok();
             }
+            catch (WrongIdException ex)
+            {
+                return Problem(ex.Message, statusCode: ex.StatusCode);
+            }
             catch (ArgumentException ex)
             {
                 return Problem(ex.Message, statusCode: 403);
@@ -128,6 +158,15 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
             }
         }
 
+        /// <summary>
+        /// Создать блюдо
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="400">Bad Requset</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="501">Not Implemented</response>
         [HttpPut("menu/{menuId}/dish/{dishId}")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> AddDish(Guid menuId, Guid dishId)
@@ -143,6 +182,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
                 await _dishService.AddDishToMenu(managerId,menuId, dishId);
                 return Ok();
             }
+
             catch (ArgumentException ex)
             {
                 return Problem(ex.Message, statusCode: 403);
@@ -161,6 +201,15 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
             }
         }
 
+        /// <summary>
+        /// Изменить блюдо
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="400">Bad Requset</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="501">Not Implemented</response>
         [HttpPut("dish/{dishId}")]
         [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> EditDish(Guid dishId, DishPutDTO model)
@@ -175,6 +224,10 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out managerId);
                 await _dishService.EditDish(managerId, dishId, model);
                 return Ok();
+            }
+            catch (WrongIdException ex)
+            {
+                return Problem(ex.Message, statusCode: ex.StatusCode);
             }
             catch (InvalidOperationException ex)
             {
