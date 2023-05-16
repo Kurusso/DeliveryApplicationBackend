@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeliveryAgreagatorApplication.Common.Models
+namespace DeliveryAgreagatorApplication.Common.Models.Configurations
 {
     public class NotificationConfigurations
     {

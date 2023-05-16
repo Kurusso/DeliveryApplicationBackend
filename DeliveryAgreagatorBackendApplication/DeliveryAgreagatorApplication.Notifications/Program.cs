@@ -8,8 +8,8 @@ using System.Text.Json;
 using DeliveryAgreagatorApplication.Notifications.Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Text;
-using DeliveryAgreagatorApplication.Common.Models;
 using DeliveryAgreagatorApplication.Notifications.BL.Services;
+using DeliveryAgreagatorApplication.Common.Models.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +18,8 @@ builder.Services.Configure<JwtConfigurations>(builder.Configuration.GetSection("
 
 var notificationSettings = builder.Configuration.GetSection("NotificationSettings").Get<NotificationConfigurations>();
 builder.Services.Configure<NotificationConfigurations>(builder.Configuration.GetSection("NotificationSettings"));
+
+var corsSettings = builder.Configuration.GetSection("CorsSettings").Get<CorsConfigurations>();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -54,7 +56,7 @@ builder.Services.AddCors(options =>
         builder.AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials()
-            .WithOrigins("https://localhost:5500","https://localhost:7217", "http://127.0.0.1:5500");
+            .WithOrigins(corsSettings.Origins);
     });
 });
 

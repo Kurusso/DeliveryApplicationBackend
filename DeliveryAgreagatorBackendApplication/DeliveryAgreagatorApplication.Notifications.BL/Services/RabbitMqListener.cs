@@ -4,10 +4,10 @@ using System.Text;
 using Newtonsoft.Json;
 using DeliveryAgreagatorApplication.Common.Models.Notification;
 using Microsoft.AspNetCore.SignalR;
-using DeliveryAgreagatorApplication.Common.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using DeliveryAgreagatorApplication.Notifications.BL.Services;
+using DeliveryAgreagatorApplication.Common.Models.Configurations;
 
 namespace DeliveryAgreagatorApplication.Notifications.Common.Services
 {

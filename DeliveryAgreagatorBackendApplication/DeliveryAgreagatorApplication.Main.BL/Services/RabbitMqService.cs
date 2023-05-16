@@ -1,4 +1,4 @@
-﻿using DeliveryAgreagatorApplication.Common.Models;
+﻿using DeliveryAgreagatorApplication.Common.Models.Configurations;
 using DeliveryAgreagatorApplication.Common.Models.Notification;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.Extensions.Options;

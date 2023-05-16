@@ -1,5 +1,5 @@
 using DeliveryAgreagatorApplication.Common.Configurations;
-using DeliveryAgreagatorApplication.Common.Models;
+using DeliveryAgreagatorApplication.Common.Models.Configurations;
 using DeliveryAgreagatorApplication.Common.Schemas;
 using DeliveryAgreagatorApplication.Main.BL.Services;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
