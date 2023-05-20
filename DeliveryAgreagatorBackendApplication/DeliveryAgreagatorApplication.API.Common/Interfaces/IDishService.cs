@@ -10,5 +10,6 @@ namespace DeliveryAgreagatorApplication.Main.Common.Interfaces
         public Task CreateDish(Guid managerId, Guid menuId, DishPostDTO dishPost);
         public Task EditDish(Guid managerId, Guid dishId, DishPutDTO dishPut);
         public Task AddDishToMenu(Guid managerId, Guid menuId, Guid dishId);
+        public Task DeleteDishFromMenu(Guid managerId, Guid dishId, Guid menuId);
     }
 }

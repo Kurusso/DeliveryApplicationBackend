@@ -159,7 +159,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         }
 
         /// <summary>
-        /// Создать блюдо
+        /// Добавить блюдо в меню
         /// </summary>
         /// <returns></returns>
         /// <response code="400">Bad Requset</response>
@@ -223,6 +223,38 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
                 Guid managerId;
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out managerId);
                 await _dishService.EditDish(managerId, dishId, model);
+                return Ok();
+            }
+            catch (WrongIdException ex)
+            {
+                return Problem(ex.Message, statusCode: ex.StatusCode);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(ex.Message, statusCode: 403);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message, statusCode: 501);
+            }
+        }
+        /// <summary>
+        /// Удалить блюдо из меню
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="403">Forbidden</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="501">Not Implemented</response>
+        [HttpDelete("menu/{menuId}/dish/{dishId}")]
+        [Authorize(Policy = "OrderOperationsManager", AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> DeleteDishFromMenu(Guid menuId, Guid dishId)
+        {
+            try
+            {
+                Guid managerId;
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out managerId);
+                await _dishService.DeleteDishFromMenu(managerId, dishId, menuId);
                 return Ok();
             }
             catch (WrongIdException ex)

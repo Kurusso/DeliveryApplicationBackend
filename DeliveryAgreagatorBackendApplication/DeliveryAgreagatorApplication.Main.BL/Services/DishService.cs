@@ -66,6 +66,31 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteDishFromMenu(Guid managerId, Guid dishId, Guid menuId)
+        {
+            var manager = await _context.Managers.FirstOrDefaultAsync(x => x.Id == managerId);
+            var restaurant = await _context.Restaurants.Include(x=>x.Menus).ThenInclude(x=>x.Dishes).FirstOrDefaultAsync(x => x.Id == manager.RestaurantId);
+            var dish = await _context.Dishes.FirstOrDefaultAsync(x => x.Id == dishId);
+            if (dish == null)
+            {
+                throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId);
+            }
+            if (dish.RestaurantId != restaurant.Id)
+            {
+                throw new InvalidOperationException("You can't delete dish from another restaurant!");
+            }
+            var menu = restaurant.Menus.FirstOrDefault(m => m.Id == menuId);
+            if (menu == null)
+            {
+                throw new WrongIdException(WrongIdExceptionSubject.Menu, menuId, "in this restaurant");
+            }
+            if(!menu.Dishes.Any(x => x.Id == menuId)) {
+                throw new WrongIdException(WrongIdExceptionSubject.Dish, dishId, "in this menu");
+            }
+            menu.Dishes.Remove(dish);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task EditDish(Guid managerId, Guid dishId, DishPutDTO dishPut)
         {
             var manager = await _context.Managers.FirstOrDefaultAsync(x => x.Id == managerId);
