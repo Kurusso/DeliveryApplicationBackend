@@ -29,7 +29,8 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// <response code="501">Not Implemented</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
-        [HttpGet]
+        /// <response code="404">Not Found</response>
+        [HttpGet("{page}")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
         [ProducesResponseType(typeof(List<OrderDTO>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Get(int page)
@@ -37,9 +38,13 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
             try
             {
                 Guid courierId;
-                Guid.TryParse(User.FindFirst("IdClaim").Value, out courierId);
-                var orders = await _orderService.GetOrdersAvaliableToCourier(courierId);
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out courierId); //TODO: исправить метод
+                var orders = await _orderService.GetOrdersAvaliableToCourier(courierId, page);
                 return Ok(orders);
+            }
+            catch(ArgumentOutOfRangeException ex)
+            {
+                return Problem(ex.Message, statusCode: 404);
             }
             catch (Exception ex)
             {
@@ -57,6 +62,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
         /// <response code="400">Bad Request</response>
         /// <response code="401">Unauthorized</response>
         /// <response code="403">Forbidden</response>
+        /// <response code="404">Not Found</response>
         /// <response code="501">Not Implemented</response>
         [HttpPut("{id}")]
         [Authorize(Policy = "OrderOperationsCourier", AuthenticationSchemes = "Bearer")]
@@ -72,6 +78,10 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
                 Guid.TryParse(User.FindFirst("IdClaim").Value, out courierId);
                 await _orderService.TakeOrderCourier(id, courierId, model);
                 return Ok();
+            }
+            catch (WrongIdException ex)
+            {
+                return Problem(ex.Message, statusCode: ex.StatusCode);
             }
             catch (InvalidOperationException ex)
             {

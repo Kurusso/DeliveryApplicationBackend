@@ -13,7 +13,7 @@ namespace DeliveryAgreagatorApplication.Main.Common.Interfaces
         public Task RepeatOrder(Guid orderId, Guid userId);
         public Task<List<OrderDTO>> GetOrdersAvaliableToCook(bool active,DateSort? sort, int page, Guid cookId);
         public Task TakeOrderCook(Guid orderId, Guid cookId, StatusDTO status);
-        public Task<List<OrderDTO>> GetOrdersAvaliableToCourier(Guid courierId);
+        public Task<List<OrderDTO>> GetOrdersAvaliableToCourier(Guid courierId, int page);
         public Task TakeOrderCourier(Guid orderId, Guid courierId, StatusDTO status);
         public Task CancelOrderCourier(Guid orderId, Guid courierId);
         public Task<List<OrderDTO>> GetRestaurantOrders(int page, Guid managerId, DateTime startDateOrder, DateTime endDateOrder, DateTime startDateDelivery, DateTime endDateDelivery, int? number);

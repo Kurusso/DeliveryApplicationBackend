@@ -59,7 +59,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             var menu = restaurant.Menus.FirstOrDefault(x => x.Id == menuId);            
             if (menu == null)
             {
-                throw new ArgumentException($"You haven't got access to menu with this {menuId} id!"); //TODO: разбить на несколько эксепшенов
+                throw new ArgumentException($"You haven't got access to menu with this {menuId} id!"); 
             }
             var newDish = new DishDbModel(dishPost, restaurant.Id);
             menu.Dishes.Add(newDish);

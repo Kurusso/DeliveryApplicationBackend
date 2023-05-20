@@ -10,6 +10,7 @@ using DeliveryAgreagatorBackendApplication.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DeliveryAgreagatorApplication.Main.BL.Services
 {
@@ -213,10 +214,23 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
         }
 
 
-        public async Task<List<OrderDTO>> GetOrdersAvaliableToCourier(Guid coourierId)
+        public async Task<List<OrderDTO>> GetOrdersAvaliableToCourier(Guid courierId, int page)
         {
-            var orders = _context.Orders.Where(x => x.Status == OrderStatus.Packed);
-            var ordersDTO = orders.Select(x=>x.ConvertToDTO()).ToList() ;
+            var ordersCount = await _context.Orders.Where(x => x.Status == OrderStatus.Packed).CountAsync();
+            if ((ordersCount % _pageSize) == 0)
+            {
+                _pageCount = (ordersCount / _pageSize);
+            }
+            else
+            {
+                _pageCount = (ordersCount / _pageSize) + 1;
+            }
+            if (page > _pageCount || page <= 0)
+            {
+                throw new ArgumentOutOfRangeException($"{page} is incorrect page number!");
+            }
+            var orders =await _context.Orders.Where(x => x.Status == OrderStatus.Packed).Skip(_pageSize * (page - 1)).Take(_pageSize).ToListAsync();
+            var ordersDTO = orders.Select(x => x.ConvertToDTO()).ToList();
             return ordersDTO;
         }
 
@@ -227,11 +241,11 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == OrderStatus.Packed);
                 if (order == null)
                 {
-                    throw new InvalidOperationException($"You can't take order with this {orderId} id!"); //TODO: сделать более точные исключения
+                    throw new WrongIdException(WrongIdExceptionSubject.Order, orderId);
                 }
                 if (order.Status != OrderStatus.Packed)
                 {
-                    throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order!");
+                    throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order, because it's status is {order.Status}!");
                 }
                 order.DeliveryTime = DateTime.UtcNow.AddHours(1);
                 order.Status = status.Status;
@@ -240,11 +254,19 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
             }
             else if (status.Status == OrderStatus.Delivered)
             {
-                var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId && x.Status == OrderStatus.Delivery && x.CourierId==courierId);
+                var order = await _context.Orders.FirstOrDefaultAsync(x => x.Id == orderId);
                 if (order == null)
                 {
-                    throw new InvalidOperationException($"You can't modify order with this {orderId} id!"); //TODO: сделать более точные исключения
+                    throw new WrongIdException(WrongIdExceptionSubject.Order, orderId);
                 }
+                if (order.Status != OrderStatus.Delivery)
+                {
+                    throw new InvalidOperationException($"You cannot set this {status.Status} Status to this {orderId} order, because it's status is {order.Status}!");
+                }
+                if(order.CourierId!=courierId)
+                {
+                    throw new InvalidOperationException($"Order with this {orderId} is not your order!");
+                }               
                 order.Status = status.Status;
                 await _rabbitMqService.SendMessage(new Notification(order.CustomerId, order.Number, status.Status));
             }
