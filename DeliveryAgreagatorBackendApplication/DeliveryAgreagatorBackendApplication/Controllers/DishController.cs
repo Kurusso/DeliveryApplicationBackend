@@ -44,7 +44,7 @@ namespace DeliveryAgreagatorBackendApplication.Controllers
             }
         }
         /// <summary>
-        /// Получить информацию о блюде
+        /// Оценить блюдо
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Success</response>

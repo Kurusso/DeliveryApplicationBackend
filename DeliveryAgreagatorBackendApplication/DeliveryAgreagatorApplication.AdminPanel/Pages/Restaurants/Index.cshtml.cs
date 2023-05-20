@@ -1,5 +1,6 @@
 using DeliveryAgreagatorApplication.AdminPanel.Models.DTO;
 using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
+using DeliveryAgreagatorApplication.Common.Exceptions;
 using DeliveryAgreagatorApplication.Main.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -84,9 +85,15 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurants
                 await _restaurantAdminService.DeleteRestaurant(id);
                 return RedirectToPage("/Restaurants/Index", new { p = p, s =s, name=name});
             }
+            catch(WrongIdException ex)
+            {
+                TempData["SomethingWrongMessage"] = ex.Message;
+                return RedirectToPage();
+            }
             catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                TempData["SomethingWrongMessage"] = ex.Message;
+                return RedirectToPage();
             }
         }
 

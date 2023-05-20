@@ -22,8 +22,9 @@ namespace DeliveryAgreagatorBackendApplication.Models
             DishId= model.DishId;
             CustomerId= model.CustomerId;
             OrderId= orderId;
-            Active = true;
+            Active = model.Active;
             Counter = model.Counter;
+            PriceWhenOpdered = model.Dish.Price;
         }
         public DishInCartDbModel() { }
 

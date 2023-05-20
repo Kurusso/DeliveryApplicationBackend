@@ -1,6 +1,7 @@
 ﻿using DeliveryAgreagatorApplication.Auth.Common.Models.Enums;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DeliveryAgreagatorApplication.Auth.Common.Models
 {
@@ -25,6 +26,7 @@ namespace DeliveryAgreagatorApplication.Auth.Common.Models
         [Required]
         public DateTime BirthDate { get; set; }
 
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public Gender Gender { get; set; }
 
         [Required]

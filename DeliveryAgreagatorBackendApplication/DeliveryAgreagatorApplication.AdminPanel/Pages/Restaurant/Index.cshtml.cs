@@ -49,7 +49,8 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurant
             }
             catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                TempData["SomethingWrongMessage"] = ex.Message;
+                return RedirectToPage();
             }
         }
 
@@ -74,7 +75,8 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurant
             }
             catch (Exception ex)
             {
-                return NotFound();
+                TempData["SomethingWrongMessage"] = ex.Message;
+                return RedirectToPage();
             }
         }
     }
