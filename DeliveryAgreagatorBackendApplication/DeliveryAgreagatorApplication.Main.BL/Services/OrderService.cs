@@ -96,7 +96,7 @@ namespace DeliveryAgreagatorApplication.Main.BL.Services
                 RestaurantId= dishesInCart[0].Dish.RestaurantId,
                 CustomerId = userId,
                 DishesInCart = dishesInCart,
-                Number = guid.GetHashCode(),     
+                Number = Math.Abs(guid.GetHashCode()),
                 OrderTime = DateTime.UtcNow,
                 Address = address,
                 Status = OrderStatus.Created,

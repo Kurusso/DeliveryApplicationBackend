@@ -31,7 +31,6 @@ namespace DeliveryAgreagatorBackendApplication.Models
             Number= Math.Abs(guid.GetHashCode());
             DeliveryTime = model.DeliveryTime;
             OrderTime = DateTime.UtcNow;
-            Console.WriteLine(OrderTime);
             Address = model.Address;
             Status = OrderStatus.Created; 
             CustomerId = model.CustomerId;

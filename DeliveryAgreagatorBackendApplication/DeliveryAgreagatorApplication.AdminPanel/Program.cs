@@ -1,3 +1,4 @@
+using DeliveryAgreagatorApplication.AdminPanel.Models.Configurations;
 using DeliveryAgreagatorApplication.AdminPanel.Services;
 using DeliveryAgreagatorApplication.AdminPanel.Services.Interfaces;
 using DeliveryAgreagatorApplication.Auth.DAL;
@@ -13,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 string connection = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new NullReferenceException("Specify connection string!");
 string connection2 = builder.Configuration.GetConnectionString("DefaultConnection2") ?? throw new NullReferenceException("Specify connection string!");
+var cookieSettings = builder.Configuration.GetSection("CookieSettings").Get<CookieConfigurations>();
 builder.Services.AddDbContext<BackendDbContext>(options => options.UseNpgsql(connection));
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connection2));
 builder.Services.AddControllers();
@@ -27,9 +29,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
         .AddDefaultTokenProviders();
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.Name = "YourCookieName";
+    options.Cookie.Name = cookieSettings.Name;
     options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+    options.ExpireTimeSpan = TimeSpan.FromDays(cookieSettings.LifeTime);
     options.SlidingExpiration = true;
 });
 builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
