@@ -32,7 +32,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromDays(7);
     options.SlidingExpiration = true;
 });
-
+builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
+{
+    options.Conventions.AddPageRoute("/Restaurants/Index", "");
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
