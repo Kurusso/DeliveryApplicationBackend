@@ -62,6 +62,8 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurants
 
                 TotalRecords = await _restaurantAdminService.GetRestaurantsCount(RestaurantName);
                 Restaurant.Get = await _restaurantService.GetRestaurants(p, RestaurantName, s);
+                PageNo = p;
+                PageSize = s;
                 return Page();
             }
             try

@@ -115,48 +115,59 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Services
         }
         public async Task EditUserRoles(SetRoleDTO model)
         {
-            var userAuth = await _userManager.FindByEmailAsync(model.Email);
-            var restaurant = model.RestaurantId==null ? null : await _backendDbContext.Restaurants.FindAsync(model.RestaurantId);
-            if(userAuth == null)
-            {
-                throw new ArgumentException($"There is no user with this {model.Email} email!");
-            }
-            var roles =  await _userManager.GetRolesAsync(userAuth);
-            if (model.Action == RoleAction.Give)
+            using (var transaction = _authDbContext.Database.BeginTransaction())
             {
                 try
                 {
-                    await GiveUserARole(model, roles, userAuth, restaurant);
+                    var userAuth = await _userManager.FindByEmailAsync(model.Email);
+                    var restaurant = model.RestaurantId == null ? null : await _backendDbContext.Restaurants.FindAsync(model.RestaurantId);
+                    if (userAuth == null)
+                    {
+                        throw new ArgumentException($"There is no user with this {model.Email} email!");
+                    }
+                    var roles = await _userManager.GetRolesAsync(userAuth);
+                    if (model.Action == RoleAction.Give)
+                    {
+                        try
+                        {
+                            await GiveUserARole(model, roles, userAuth, restaurant);
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+                    }
+                    if (model.Action == RoleAction.Retrive)
+                    {
+                        try
+                        {
+                            await RemoveUserRole(model, roles, userAuth, restaurant);
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+                    }
+                    if (model.Action == RoleAction.Ban)
+                    {
+                        userAuth.Baned = true;
+                    }
+                    if (model.Action == RoleAction.Unban)
+                    {
+                        userAuth.Baned = false;
+                    }
+                    var refreshes = await _authDbContext.RefreshTokens.Where(x => x.Expires < DateTime.UtcNow).ToListAsync();
+                    _authDbContext.RefreshTokens.RemoveRange(refreshes);
+                    await _authDbContext.SaveChangesAsync();
+                    await _backendDbContext.SaveChangesAsync();
+                    transaction.Commit();
                 }
                 catch
                 {
+                    transaction.Rollback();
                     throw;
                 }
-            }
-            if(model.Action == RoleAction.Retrive)
-            {
-                try
-                {
-                    await RemoveUserRole(model, roles, userAuth, restaurant);
-                }
-                catch
-                {
-                    throw;
-                }
-            }
-            if(model.Action == RoleAction.Ban)
-            {
-                userAuth.Baned = true;
-            }
-            if(model.Action == RoleAction.Unban)
-            {
-                userAuth.Baned = false;
-            }
-           var refreshes = await _authDbContext.RefreshTokens.Where(x=>x.Expires<DateTime.UtcNow).ToListAsync();
-           _authDbContext.RefreshTokens.RemoveRange(refreshes);
-           await _authDbContext.SaveChangesAsync();
-           await _backendDbContext.SaveChangesAsync();
-
+             }
         }
 
         public async Task<List<UserDTO>> GetUsersWithRole(Guid? restaurantId, Role role)
