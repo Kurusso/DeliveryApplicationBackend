@@ -1,0 +1,61 @@
+﻿@page
+@using DeliveryAgreagatorApplication.AdminPanel.Models.Enums;
+@model DeliveryAgreagatorApplication.AdminPanel.Pages.Roles.IndexModel
+@{
+	<html>
+		<head>
+			<title>Head</title>
+		</head>
+
+		<body>
+        <form method="post">
+             <table>
+                 <tr>
+                <td>Email:</td>
+                  <td>
+                        <input type="text" asp-for="RoleModel.Email" />
+                        <span asp-validation-for="RoleModel.Email" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Дествие:</td>
+                    <td>
+                        <select asp-for="RoleModel.Action" id="selected-action" asp-items="Html.GetEnumSelectList<RoleAction>()"></select>
+                        <span asp-validation-for="RoleModel.Action" class="text-danger"></span>
+
+                    </td>
+                </tr>
+                <tr id="id-field-2" style="display:">
+                    <td>Роль:</td>
+                    <td>
+                        <select id="selected-role" asp-for="RoleModel.Role" asp-items="Html.GetEnumSelectList<Role>()"></select>
+                        <span asp-validation-for="RoleModel.Role" class="text-danger"></span>
+
+                    </td>
+                </tr>
+                <tr id="id-field" style="display:">
+                    <td>RestaurantId:</td>
+                    <td>
+                        <input type="text" asp-for="RoleModel.RestaurantId" />
+                        <span asp-validation-for="RoleModel.RestaurantId" class="text-danger"></span>
+                    </td>
+                </tr>
+            </table>
+            <input type="submit" value="Изменить" />
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+            @if (TempData["SomethingWrongMessage"] != null)
+            {
+                <div class="alert alert-danger">@TempData["SomethingWrongMessage"]</div>
+            }
+        </form>
+
+		</body>
+	</html>
+    @section Scripts{
+        <script src="~/js/RolesField.js" asp-append-version="true"></script>
+    }
+
+}

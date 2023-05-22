@@ -1,0 +1,63 @@
+﻿@page 
+@model DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurants.IndexModel
+@{
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, AuthoringTagHelpers
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Head</title>
+</head>
+<body>
+    <form method="get">
+
+    <input type="text" name="RestaurantName" asp-for="RestaurantName" value="@Model.RestaurantName">
+
+    <button type="submit" asp-page-handler="get">Поиск</button>
+    </form>
+    <form method="post">
+        <table>
+    @foreach (var restaurant in Model.Restaurant.Get)
+    {
+            
+                <tr>
+                    <td><a asp-page="/Restaurant/Index" asp-route-id="@restaurant.Id">@restaurant.Id</a></td>
+                    <td>@restaurant.Name</td>
+                    <td>@restaurant.Picture</td>
+                    <td><button type="submit" asp-page-handler="delete" asp-route-id="@restaurant.Id" asp-route-p="@Model.PageNo" asp-route-s="@Model.PageSize" asp-route-name=@Model.RestaurantName>Удалить</button></td>
+                </tr>
+    }
+        </table>
+        <paging total-records="Model.TotalRecords" page-no="Model.PageNo" page-size="Model.PageSize"></paging>
+        <table>
+            <tr>
+                <td>Название:</td>
+                <td>
+                    <input type="text" asp-for="Restaurant.Post.Name" /> 
+                    <span asp-validation-for="Restaurant.Post.Name" class="text-danger"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Изображение:</td>
+                <td>
+                    <input type="text" asp-for="Restaurant.Post.Picture" />
+                    <span asp-validation-for="Restaurant.Post.Picture" class="text-danger"></span>
+                </td>
+            </tr>           
+        </table>
+
+        <button type="submit" asp-page-handler="post" asp-route-p="@Model.PageNo" asp-route-s="@Model.PageSize" asp-route-name=@Model.RestaurantName>Добавить</button>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["SomethingWrongMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SomethingWrongMessage"]</div>
+        }
+    </form>
+
+</body>
+</html>

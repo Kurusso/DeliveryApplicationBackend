@@ -87,7 +87,7 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("RestaurantId")
+                    b.Property<Guid?>("RestaurantId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -184,7 +184,7 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("RestaurantId")
+                    b.Property<Guid?>("RestaurantId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Status")
@@ -282,8 +282,7 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                     b.HasOne("DeliveryAgreagatorBackendApplication.Models.RestaurantDbModel", "Restaurant")
                         .WithMany()
                         .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Restaurant");
                 });
@@ -320,13 +319,13 @@ namespace DeliveryAgreagatorBackendApplication.Migrations
                 {
                     b.HasOne("DeliveryAgreagatorBackendApplication.Models.CookDbModel", "Cook")
                         .WithMany()
-                        .HasForeignKey("CookId");
+                        .HasForeignKey("CookId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("DeliveryAgreagatorBackendApplication.Models.RestaurantDbModel", "Restaurant")
                         .WithMany()
                         .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Cook");
 

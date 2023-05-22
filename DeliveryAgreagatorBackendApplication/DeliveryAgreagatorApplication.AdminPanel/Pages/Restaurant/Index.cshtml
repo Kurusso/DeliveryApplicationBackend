@@ -1,0 +1,111 @@
+﻿@page "{id}"
+@model DeliveryAgreagatorApplication.AdminPanel.Pages.Restaurant.IndexModel
+@{
+}
+<html>
+    <head>
+        <title>Head</title>
+    </head>
+
+<body>
+        <form method="post">
+        <table style="border: 0px; border-collapse: separate; border-spacing: 50px 0">
+            <td style="border: 0px; vertical-align:top">
+            <img src="@Model.Restaurant.Picture">
+            <div>Название: @Model.Restaurant.Name</div>
+            <div>ID: @Model.Restaurant.Id</div>
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+                <table>
+                        <tr>
+                            <input type="hidden" asp-for="Restaurant.Id" placeholder="@Model.Restaurant.Name">  
+                            <td>Название:</td>
+                            <td>
+                                <input type="text" asp-for="Restaurant.Name" placeholder="@Model.Restaurant.Name">
+                                <span asp-validation-for="Restaurant.Name" class="text-danger"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Изображение:</td>
+                            <td>
+                                <input type="text" asp-for="Restaurant.Picture" placeholder="@Model.Restaurant.Picture"/>
+                                <span asp-validation-for="Restaurant.Picture" class="text-danger"></span>
+                            </td>
+                        </tr>
+                </table>
+                    <input type="submit" value="Изменить" />
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                    }
+
+                    @if (TempData["SomethingWrongMessage"] != null)
+                    {
+                        <div class="alert alert-danger">@TempData["SomethingWrongMessage"]</div>
+                    }
+
+            </td>
+
+            <td style="border: 0px; vertical-align:top">
+                    <h5>Повара</h5>
+                <table id="table1">
+                    <thead>
+                        <tr>
+                            <th>Guid</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>                        
+                    <tbody>
+                        @foreach(var cook in Model.Cooks)
+                        {
+                            <tr>
+                                <td>@cook.Id</td>
+                                <td>@cook.Name</td>
+                                <td>@cook.Email</td>
+                            </tr>
+        
+                        }
+                    </tbody>
+                </table> 
+            </td>
+
+            <td style="border: 0px; vertical-align:top">
+                <h5>Менеджеры</h5>
+                <table id="table2">
+                    <thead>
+                        <tr>
+                            <th>Guid</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead> 
+                    <tbody>
+                    @foreach (var cook in Model.Managers)
+                    {
+                        <tr>
+                            <td>@cook.Id</td>
+                            <td>@cook.Name</td>
+                            <td>@cook.Email</td>
+                        </tr>
+
+                    }
+                    </tbody>
+                </table>
+            </td>
+
+            </table>
+                    
+        </form>
+
+</body>
+</html>
+@section Scripts{
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <link href="~/lib/datatables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+        <script src="~/lib/datatables/DataTables/js/jquery.dataTables.min.js"></script>
+        <script src="~/lib/datatables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+        <script src="~/js/StaffPagination.js" asp-append-version="true"></script>    
+    }

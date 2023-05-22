@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\RolesField.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="jQuery" Version="3.6.4" />
+    <PackageReference Include="jquery.datatables" Version="1.10.15" />
+    <PackageReference Include="LazZiya.TagHelpers" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.API.Common\DeliveryAgreagatorApplication.Main.Common.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.Auth.DAL\DeliveryAgreagatorApplication.Auth.DAL.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.Common\DeliveryAgreagatorApplication.Common.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.Main.BL\DeliveryAgreagatorApplication.Main.BL.csproj" />
+    <ProjectReference Include="..\DeliveryAgreagatorApplication.Main.DAL\DeliveryAgreagatorApplication.Main.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

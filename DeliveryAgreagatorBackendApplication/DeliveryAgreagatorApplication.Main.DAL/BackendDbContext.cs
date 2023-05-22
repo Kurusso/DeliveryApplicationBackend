@@ -16,6 +16,25 @@ namespace DeliveryAgreagatorApplication.Main.DAL
         public DbSet<ManagerDbModel> Managers { get; set; }
         public BackendDbContext(DbContextOptions<BackendDbContext> options) : base(options) { }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OrderDbModel>()
+                .HasOne(o => o.Cook)
+                .WithMany()
+                .HasForeignKey(o => o.CookId)
+                .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<OrderDbModel>()
+                .HasOne(o => o.Restaurant)
+                .WithMany()
+                .HasForeignKey(o => o.RestaurantId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<DishDbModel>()
+                .HasOne(o => o.Restaurant)
+                .WithMany()
+                .HasForeignKey(o => o.RestaurantId)
+                .OnDelete(DeleteBehavior.SetNull);
+        }
     }
 }

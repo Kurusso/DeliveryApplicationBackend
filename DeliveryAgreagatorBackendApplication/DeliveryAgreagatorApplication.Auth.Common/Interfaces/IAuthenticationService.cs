@@ -7,7 +7,7 @@ namespace DeliveryAgreagatorApplication.Auth.Common.Interfaces
     public interface IAuthenticationService
     {
         public Task<TokenPairDTO> Login (LoginDTO model);
-        public Task<TokenPairDTO> Refresh(ClaimsPrincipal user);
+        public Task<string> Refresh(ClaimsPrincipal user);
         public Task<TokenPairDTO> Register(RegisterDTO model);
     }
 }

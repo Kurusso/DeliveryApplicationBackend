@@ -50,7 +50,11 @@ namespace DeliveryAgreagatorApplication.Auth.BL.Services
                 customer.Address = model.Address==null ? customer.Address : model.Address;
             }
             user.BirthDate = model.BirthDate == null ? user.BirthDate : (DateTime)model.BirthDate; 
-            user.Email = model.Email == null ? user.Email : model.Email;
+            if(model.Email!= null)
+            {
+                var token = await _userManager.GenerateChangeEmailTokenAsync(user, model.Email);
+                await _userManager.ChangeEmailAsync(user, model.Email, token);
+            }
             user.UserName = model.UserName == null ? user.UserName : model.UserName;
             user.PhoneNumber = model.Phone == null ? user.PhoneNumber : model.Phone;
             await _context.SaveChangesAsync();
