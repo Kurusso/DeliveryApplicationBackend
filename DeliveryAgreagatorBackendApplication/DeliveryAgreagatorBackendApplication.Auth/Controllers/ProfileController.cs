@@ -19,7 +19,7 @@ namespace DeliveryAgreagatorApplication.Auth.Controllers
             _profileService = profileService;
         }
         /// <summary>
-        /// Получение профиля польхователя
+        /// Получение профиля пользователя
         /// </summary>
         /// <returns></returns>
         /// <response code="200">Success</response>

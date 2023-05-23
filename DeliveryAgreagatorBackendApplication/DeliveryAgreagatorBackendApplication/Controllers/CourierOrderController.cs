@@ -38,7 +38,7 @@ namespace DeliveryAgreagatorApplication.Main.Controllers
             try
             {
                 Guid courierId;
-                Guid.TryParse(User.FindFirst("IdClaim").Value, out courierId); //TODO: исправить метод
+                Guid.TryParse(User.FindFirst("IdClaim").Value, out courierId);
                 var orders = await _orderService.GetOrdersAvaliableToCourier(courierId, page);
                 return Ok(orders);
             }
