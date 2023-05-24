@@ -38,7 +38,7 @@ $(document).ready(function () {
         initComplete: function () {
             this.api().columns().every(function () {
                 var column = this;
-                if (column.index() === 1) { // добавьте выпадающий список для поиска по имени
+                if (column.index() === 1) { 
 
 
                     column.data().unique().sort().each(function (d, j) {

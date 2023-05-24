@@ -21,9 +21,9 @@ builder.Services.Configure<NotificationConfigurations>(builder.Configuration.Get
 
 var corsSettings = builder.Configuration.GetSection("CorsSettings").Get<CorsConfigurations>();
 
-// Add services to the container.
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<RabbitMqListener>();
@@ -71,7 +71,7 @@ var app = builder.Build();
 
 
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

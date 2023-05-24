@@ -46,7 +46,6 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Login
 
                 if (userVerified.IsLogedIn)
                 {
-                    // Sign in the user and create a cookie
                    await _signInManager.SignInAsync(userVerified.User, Input.RememberMe);
 
                     return LocalRedirect(returnUrl);
@@ -57,8 +56,6 @@ namespace DeliveryAgreagatorApplication.AdminPanel.Pages.Login
                     return Page();
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }
